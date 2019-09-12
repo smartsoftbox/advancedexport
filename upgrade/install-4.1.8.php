@@ -14,10 +14,12 @@ if (!defined('_PS_VERSION_')) {
 
 function upgrade_module_4_1_8($object)
 {
-    $query = 'ALTER TABLE `'._DB_PREFIX_.'advancedexport` ADD `start_id` int(10) NOT NULL DEFAULT 0 after `last_exported_id`';
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'advancedexport` 
+        ADD `start_id` int(10) NOT NULL DEFAULT 0 after `last_exported_id`';
     $return = Db::getInstance()->execute($query);
 
-    $query = 'ALTER TABLE `'._DB_PREFIX_.'advancedexport` ADD `end_id` int(10) NOT NULL DEFAULT 0 after `start_id`';
+    $query = 'ALTER TABLE `'._DB_PREFIX_.'advancedexport` 
+        ADD `end_id` int(10) NOT NULL DEFAULT 0 after `start_id`';
     $return &= Db::getInstance()->execute($query);
 
     return $return;

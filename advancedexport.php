@@ -32,7 +32,11 @@ class Advancedexport extends Module
     );
 
     public $products = array(
-        array('name' => 'Product Id', 'field' => 'id_product', 'database' => 'products', 'import' => 1, 'import_combination' => 1, 'import_combination_name' => 'Product ID*', 'import_name' => 'ID', 'alias' => 'p'),
+        array(
+            'name' => 'Product Id', 'field' => 'id_product', 'database' => 'products',
+            'import' => 1, 'import_combination' => 1, 'import_combination_name' => 'Product ID*',
+            'import_name' => 'ID', 'alias' => 'p'
+        ),
         array('name' => 'Product Reference', 'field' => 'reference', 'database' => 'products', 'import' => 13,  'import_combination' => 5, 'import_combination_name' => 'Reference', 'import_name' => 'Reference #', 'alias' => 'p', 'attribute' => true),
         array('name' => 'Name', 'field' => 'name', 'database' => 'products_lang', 'import' => 2, 'import_name' => 'Name *', 'alias' => 'pl'),
         array('name' => 'Short Description', 'field' => 'description_short', 'database' => 'products_lang', 'import' => 30, 'import_name' => 'Description', 'alias' => 'pl'),
@@ -464,7 +468,7 @@ class Advancedexport extends Module
         if ($this->getValue('addfield') || $this->isSubmit('updateadvancedexportfield')) {
             $this->_html .= $this->displayAddFieldForm(Tools::getValue('type'));
         } elseif ($this->getValue('add_model') || Tools::isSubmit('updateadvancedexport') || Tools::isSubmit('btnSubmit')) {
-            $this->_html .= $this->displayAddModelForm($helper = new HelperForm());
+            $this->_html .= $this->displayAddModelForm(new HelperForm());
         } elseif ($this->getValue('editfields') || $this->isSubmit('editfields')) {
             $this->_html .= $this->displayEditFieldsForm(Tools::getValue('type'));
         } else {
@@ -1800,8 +1804,8 @@ class Advancedexport extends Module
 
         foreach ($this->export_types as $value) {
             $html .= "<div class='product-tab-content hide' alt='$value'>";
-            $html .= $this->displayModelListForm($helper = new HelperList(), $value);
-            $html .= $this->displayFilesForm($helper = new HelperList(), $value);
+            $html .= $this->displayModelListForm(new HelperList(), $value);
+            $html .= $this->displayFilesForm(new HelperList(), $value);
             $html .= '</div>';
         }
 
@@ -2378,7 +2382,7 @@ class Advancedexport extends Module
         $attachments_url = array();
         $attachments = $obj->getAttachments($ae->id_lang);
 
-        foreach($attachments as $attachment) {
+        foreach ($attachments as $attachment) {
             $attachments_url[] = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.'download/'.$attachment['file'];
         }
 
@@ -2447,19 +2451,18 @@ class Advancedexport extends Module
     {
         $categories = $obj->getCategories();
         $paths = array();
-        foreach ($categories as $cat)
-        {
+        foreach ($categories as $cat) {
             $category = new Category($cat, $ae->id_lang);
             $parents = $category->getParentsCategories($ae->id_lang);
             $parentWithoutIds = null;
 
-            foreach($parents as $parent) {
-                if($parent['id_category'] != 1 AND $parent['id_category'] != 2) {
+            foreach ($parents as $parent) {
+                if ($parent['id_category'] != 1 AND $parent['id_category'] != 2) {
                     $parentWithoutIds[] = $parent['name'];
                 }
             }
 
-            if($parentWithoutIds != null) {
+            if ($parentWithoutIds != null) {
                 $paths[] = implode(' > ', array_reverse($parentWithoutIds));
             }
         }
@@ -2467,7 +2470,7 @@ class Advancedexport extends Module
         return implode(',', $paths);
     }
 
-    public function productsSupplierReference($obj, $ae)
+    public function productsSupplierReference($obj)
     {
         // build query
         $query = new DbQuery();
@@ -2527,7 +2530,7 @@ class Advancedexport extends Module
         return $imageLink;
     }
 
-    public function productsImagePosition($obj, $ae)
+    public function productsImagePosition($obj)
     {
         $imagePosition = array();
         $images = $obj->getImages($obj->id);
@@ -2612,7 +2615,7 @@ class Advancedexport extends Module
         return $combArray;
     }
 
-    public function combinationSupplierNameAll($obj, $product_attribute, $ae)
+    public function combinationSupplierNameAll($obj, $product_attribute)
     {
         $sups = $this->executeS('
             SELECT DISTINCT(s.`name`)
@@ -2794,7 +2797,7 @@ class Advancedexport extends Module
         return (is_array($images) ? implode(',', $images) : '');
     }
 
-    public function combinationImagePosition($obj, $product_attribute, $ae)
+    public function combinationImagePosition($obj, $product_attribute)
     {
         $images = array();
         if (isset($product_attribute['images']) and is_array($product_attribute['images'])) {
