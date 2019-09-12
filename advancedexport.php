@@ -2041,7 +2041,10 @@ class Advancedexport extends Module
              || !$this->createSettingsTables()
              || !Configuration::updateGlobalValue('AdvancedExport_CURRENT', 0)
              || !Configuration::updateGlobalValue('AdvancedExport_TOTAL', 0)
-             || !Configuration::updateGlobalValue('ADVANCEDEXPORT_SECURE_KEY', Tools::strtoupper(Tools::passwdGen(16)))) {
+             || !Configuration::updateGlobalValue(
+                 'ADVANCEDEXPORT_SECURE_KEY',
+                 Tools::strtoupper(Tools::passwdGen(16)))
+        ) {
             return false;
         }
 
@@ -3826,7 +3829,9 @@ class Advancedexport extends Module
                 'name' => 'attributes',
                 'is_bool' => true,
                 'class' => 't',
-                'desc' => $this->l('Each combination will be exported in new line and specific values will be overwrite'),
+                'desc' => $this->l(
+                    'Each combination will be exported in new line and specific values will be overwrite'
+                ),
                 'values' => array(
                     array(
                         'id' => 'active_on',
@@ -4121,7 +4126,7 @@ class Advancedexport extends Module
             $parentWithoutIds = null;
 
             foreach ($parents as $parent) {
-                if ($parent['id_category'] != 1 AND $parent['id_category'] != 2) {
+                if ($parent['id_category'] != 1 and $parent['id_category'] != 2) {
                     $parentWithoutIds[] = $parent['name'];
                 }
             }
@@ -4301,7 +4306,8 @@ class Advancedexport extends Module
 			SELECT DISTINCT(ps.`id_supplier`)
 			FROM `'._DB_PREFIX_.'product_supplier` ps
 			JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-			WHERE ps.`id_product` = '.$obj->id.' AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
+			WHERE ps.`id_product` = '.$obj->id.' 
+			AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
 
         $suppliers = array();
         if (is_array($suppliers)) {
@@ -4317,7 +4323,8 @@ class Advancedexport extends Module
         $warehouse = $this->executeS('
 		SELECT `id_warehouse`
 		FROM `'._DB_PREFIX_.'warehouse_product_location`
-		WHERE `id_product` = '.$obj->id.' AND `id_product_attribute` = '.$products_attribute['id_product_attribute']);
+		WHERE `id_product` = '.$obj->id.' 
+		AND `id_product_attribute` = '.$products_attribute['id_product_attribute']);
 
         return $warehouse[0]['id_warehouse'];
     }
@@ -4337,7 +4344,8 @@ class Advancedexport extends Module
         $name = array();
         foreach ($products_attribute['attributes_name'] as $attribute) {
             $attributeGroup = new AttributeGroup($attribute[1]);
-            $name[] = addslashes(htmlspecialchars($attribute[0])).':'.addslashes(htmlspecialchars($attributeGroup->group_type)).':'.
+            $name[] = addslashes(htmlspecialchars($attribute[0])).':'.
+                addslashes(htmlspecialchars($attributeGroup->group_type)).':'.
                 addslashes(htmlspecialchars($attributeGroup->position));
         }
 
@@ -4454,7 +4462,11 @@ class Advancedexport extends Module
         if (isset($product_attribute['images']) and is_array($product_attribute['images'])) {
             foreach ($product_attribute['images'] as $image) {
                 $attrImage = ($image['id_image'] ? new Image($image['id_image']) : null);
-                $images[] = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id . '-' . $attrImage->id, $ae->image_type);
+                $images[] = 'http://'.$this->link->getImageLink(
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $attrImage->id,
+                    $ae->image_type
+                );
             }
         }
 
@@ -4498,7 +4510,11 @@ class Advancedexport extends Module
     {
         $attrImage = ($product_attribute['id_image'] ? new Image($product_attribute['id_image']) : null);
         if ($attrImage) {
-            return 'http://'. $this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$attrImage->id, $ae->image_type);
+            return 'http://'. $this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id.'-'.$attrImage->id,
+                $ae->image_type
+            );
         } else {
             return '';
         }
@@ -4583,40 +4599,53 @@ class Advancedexport extends Module
 
     public function ordersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT o.`id_order` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
+        $sql = 'SELECT o.`id_order` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
                 FROM '._DB_PREFIX_.'orders o
                 LEFT JOIN `'._DB_PREFIX_.'order_detail` od ON ( od.`id_order` = o.`id_order` )
                 LEFT JOIN `'._DB_PREFIX_.'shop` sh ON ( o.`id_shop` = sh.`id_shop` )
                 LEFT JOIN `'._DB_PREFIX_.'customer` cu ON ( o.`id_customer` = cu.`id_customer` )
-                LEFT JOIN `'._DB_PREFIX_.'gender_lang` gl ON ( cu.`id_gender` = gl.`id_gender` AND gl.`id_lang` = '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'gender_lang` inv_gl ON ( cu.`id_gender` = inv_gl.`id_gender` AND inv_gl.`id_lang` = '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'gender_lang` gl 
+                ON ( cu.`id_gender` = gl.`id_gender` AND gl.`id_lang` = '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'gender_lang` inv_gl 
+                ON ( cu.`id_gender` = inv_gl.`id_gender` AND inv_gl.`id_lang` = '.$ae->id_lang.')
                 LEFT JOIN `'._DB_PREFIX_.'address` a ON ( a.`id_address` = o.`id_address_delivery` )
                 LEFT JOIN `'._DB_PREFIX_.'address` inv_a ON ( inv_a.`id_address` = o.`id_address_invoice` )
                 LEFT JOIN `'._DB_PREFIX_.'state` s ON ( s.`id_state` = a.`id_state` )
                 LEFT JOIN `'._DB_PREFIX_.'state` inv_s ON ( inv_s.`id_state` = inv_a.`id_state` )
                 LEFT JOIN `'._DB_PREFIX_.'country` co ON ( co.`id_country` = a.`id_country` )
                 LEFT JOIN `'._DB_PREFIX_.'country` inv_co ON ( inv_co.`id_country` = inv_a.`id_country` )
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` cl ON ( cl.`id_country` = co.`id_country` AND cl.`id_lang`= '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` inv_cl ON ( inv_cl.`id_country` = inv_co.`id_country` AND inv_cl.`id_lang`= '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'country_lang` cl 
+                ON ( cl.`id_country` = co.`id_country` AND cl.`id_lang`= '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'country_lang` inv_cl 
+                ON ( inv_cl.`id_country` = inv_co.`id_country` AND inv_cl.`id_lang`= '.$ae->id_lang.')
                 LEFT JOIN `'._DB_PREFIX_.'carrier` ca ON ( ca.`id_carrier` = o.`id_carrier` )
                 LEFT JOIN `'._DB_PREFIX_.'order_payment` op ON ( op.`order_reference` = o.`reference` )
                 LEFT JOIN `'._DB_PREFIX_.'message` m ON ( m.`id_order` = o.`id_order` )
                 LEFT JOIN `'._DB_PREFIX_.'currency` cur ON ( o.`id_currency` = cur.`id_currency` )
                 LEFT JOIN `'._DB_PREFIX_.'order_detail_tax` odt ON ( od.`id_order_detail` = odt.`id_order_detail` )
                 LEFT JOIN `'._DB_PREFIX_.'tax` t ON ( odt.`id_tax` = t.`id_tax` )
-                LEFT JOIN `'._DB_PREFIX_.'order_state_lang` osl ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'order_state_lang` osl 
+                ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = '.$ae->id_lang.')
                 WHERE 1'.
                 (isset($ae->only_new) && $ae->only_new ? ' AND o.`id_order` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND o.`id_order` >= '.$ae->start_id : '').
                 ($ae->only_new == false && $ae->end_id ? ' AND o.`id_order` <= '.$ae->end_id : '').
-                (isset($sorted_fields['groups[]']) && $sorted_fields['groups[]'] ? ' AND cu.`id_default_group` IN ('.implode(', ', $sorted_fields['groups[]']).')' : '').
-                (isset($sorted_fields['payments[]']) && $sorted_fields['payments[]'] ? ' AND o.`module` IN ("'.implode('", "', $sorted_fields['payments[]']).'")' : '').
-                (isset($sorted_fields['carriers[]']) && $sorted_fields['carriers[]'] ? ' AND o.`id_carrier` IN ('.implode(', ', $sorted_fields['carriers[]']).')' : '').
-                (isset($sorted_fields['state[]']) && $sorted_fields['state[]'] ? ' AND o.`current_state` IN ('.implode(', ', $sorted_fields['state[]']).')' : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND o.`date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND o.`date_add` <= "'.($ae->date_to).'"' : '')
-                             .Shop::addSqlRestriction(false, 'o').
-                ' GROUP BY '.(isset($sorted_fields['order_detail']) && $sorted_fields['order_detail'] ? 'od.`id_order_detail`' : 'o.`id_order`');
+                (isset($sorted_fields['groups[]']) && $sorted_fields['groups[]'] ?
+                    ' AND cu.`id_default_group` IN ('.implode(', ', $sorted_fields['groups[]']).')' : '').
+                (isset($sorted_fields['payments[]']) && $sorted_fields['payments[]'] ?
+                    ' AND o.`module` IN ("'.implode('", "', $sorted_fields['payments[]']).'")' : '').
+                (isset($sorted_fields['carriers[]']) && $sorted_fields['carriers[]'] ?
+                    ' AND o.`id_carrier` IN ('.implode(', ', $sorted_fields['carriers[]']).')' : '').
+                (isset($sorted_fields['state[]']) && $sorted_fields['state[]'] ?
+                    ' AND o.`current_state` IN ('.implode(', ', $sorted_fields['state[]']).')' : '').
+                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                    ' AND o.`date_add` >= "'.($ae->date_from).'"' : '').
+                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                    ' AND o.`date_add` <= "'.($ae->date_to).'"' : '') .
+                Shop::addSqlRestriction(false, 'o').
+                ' GROUP BY '.(isset($sorted_fields['order_detail']) && $sorted_fields['order_detail'] ?
+                'od.`id_order_detail`' : 'o.`id_order`');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -4653,7 +4682,10 @@ class Advancedexport extends Module
 				SELECT cud.`value`, cu.`quantity`
 				FROM `'._DB_PREFIX_.'customization` cu
 				INNER JOIN `'._DB_PREFIX_.'customized_data` cud ON (cud.`id_customization` = cu.`id_customization`)
-				WHERE cu.`id_product` = '.(int) ($element['product_id']).' AND cu.`id_product_attribute` = '.(int) ($element['product_attribute_id']).'  AND cu.`id_cart` = '.(int) ($element['id_cart']));
+				WHERE cu.`id_product` = '.(int) ($element['product_id']).' 
+				AND cu.`id_product_attribute` = '.(int) ($element['product_attribute_id']).'  
+				AND cu.`id_cart` = '.(int) ($element['id_cart']));
+
         $cud = array();
         foreach ($result as $res) {
             $cud[] = 'value:'.$res['value'].' '.'quantity:'.$res['quantity'];
@@ -4669,16 +4701,19 @@ class Advancedexport extends Module
 
     public function categoriesQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT c.`id_category` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
+        $sql = 'SELECT c.`id_category` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
             FROM `'._DB_PREFIX_.'category` c
 			'.Shop::addSqlAssociation('category', 'c').'
-			LEFT JOIN `'._DB_PREFIX_.'category_lang` cl ON c.`id_category` = cl.`id_category`'.Shop::addSqlRestrictionOnLang('cl').'
+			LEFT JOIN `'._DB_PREFIX_.'category_lang` cl 
+			ON c.`id_category` = cl.`id_category`'.Shop::addSqlRestrictionOnLang('cl').'
 			WHERE 1'.($ae->id_lang ? ' AND `id_lang` = '.(int) $ae->id_lang : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_category` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND c.`id_category` >= '.$ae->start_id : '').
             ($ae->only_new == false && $ae->end_id ? ' AND c.`id_category` <= '.$ae->end_id : '').
             (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
-            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND c.`date_add` >= "'.($ae->date_from).'"' : '').
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' 
+            AND c.`date_add` >= "'.($ae->date_from).'"' : '').
             (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND c.`date_add` <= "'.($ae->date_to).'"' : '').'
 			GROUP BY c.id_category
 			ORDER BY c.`level_depth` ASC, category_shop.`position` ASC';
@@ -4704,7 +4739,11 @@ class Advancedexport extends Module
 
     public function categoriesImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$obj->id_image, $ae->image_type);
+        $imageLink = 'http://'.$this->link->getImageLink(
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id.'-'.$obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -4751,10 +4790,12 @@ class Advancedexport extends Module
 
     public function manufacturersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT m.`id_manufacturer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
-		FROM `'._DB_PREFIX_.'manufacturer` m
-		'.Shop::addSqlAssociation('manufacturer', 'm').'
-		INNER JOIN `'._DB_PREFIX_.'manufacturer_lang` ml ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = '.(int) $ae->id_lang.')'.'
+        $sql = 'SELECT m.`id_manufacturer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
+            FROM `'._DB_PREFIX_.'manufacturer` m
+            '.Shop::addSqlAssociation('manufacturer', 'm').'
+            INNER JOIN `'._DB_PREFIX_.'manufacturer_lang` ml 
+            ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = '.(int) $ae->id_lang.')'.'
             WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND m.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND m.`id_manufacturer` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND m.`id_manufacturer` >= '.$ae->start_id : '').
@@ -4769,7 +4810,11 @@ class Advancedexport extends Module
 
     public function manufacturersImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$obj->id_image, $ae->image_type);
+        $imageLink = 'http://'.$this->link->getImageLink(
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id.'-'.$obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -4816,16 +4861,19 @@ class Advancedexport extends Module
 
     public function suppliersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT s.`id_supplier` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
-		FROM `'._DB_PREFIX_.'supplier` s
-		'.Shop::addSqlAssociation('supplier', 's').'
-		INNER JOIN `'._DB_PREFIX_.'supplier_lang` sl ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = '.(int) $ae->id_lang.')'.'
+        $sql = 'SELECT s.`id_supplier` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
+            FROM `'._DB_PREFIX_.'supplier` s
+            '.Shop::addSqlAssociation('supplier', 's').'
+		    INNER JOIN `'._DB_PREFIX_.'supplier_lang` sl 
+		    ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = '.(int) $ae->id_lang.')'.'
             WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND s.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND s.`id_supplier` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND s.`id_supplier` >= '.$ae->start_id : '').
             ($ae->only_new == false && $ae->end_id ? ' AND s.`id_supplier` <= '.$ae->end_id : '').
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND s.`date_add` >= "'.($ae->date_from).'"' : '').
             (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND s.`date_add` <= "'.($ae->date_to).'"' : '');
+
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
 
@@ -4834,7 +4882,11 @@ class Advancedexport extends Module
 
     public function suppliersImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$obj->id_image, $ae->image_type);
+        $imageLink = 'http://'.$this->link->getImageLink(
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id.'-'.$obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -4922,19 +4974,24 @@ class Advancedexport extends Module
 
     public function customersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT c.`id_customer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
+        $sql = 'SELECT c.`id_customer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
 				FROM '._DB_PREFIX_.'customer c
                 LEFT JOIN `'._DB_PREFIX_.'address` a ON ( a.`id_customer` = c.`id_customer` )
                 LEFT JOIN `'._DB_PREFIX_.'state` s ON ( a.`id_state` = s.`id_state` )
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` co ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = '.$ae->id_lang.')
+                LEFT JOIN `'._DB_PREFIX_.'country_lang` co 
+                ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = '.$ae->id_lang.')
 				WHERE 1'.Shop::addSqlRestriction(Shop::SHARE_CUSTOMER).
             (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_customer` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND c.`id_customer` >= '.$ae->start_id : '').
             ($ae->only_new == false && $ae->end_id ? ' AND c.`id_customer` <= '.$ae->end_id : '').
             (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
-            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND c.`date_add` >= "'.($ae->date_from).'"' : '').
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND c.`date_add` <= "'.($ae->date_to).'"' : '');
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND c.`date_add` >= "'.($ae->date_from).'"' : '').
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND c.`date_add` <= "'.($ae->date_to).'"' : '');
+
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
 
@@ -4958,15 +5015,19 @@ class Advancedexport extends Module
 
     public function newslettersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT n.`id` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
+        $sql = 'SELECT n.`id` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
 				FROM '._DB_PREFIX_.'emailsubscription as n
 				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND n.`active` = 1' : '').
                 (isset($ae->only_new) && $ae->only_new ? ' AND n.`id` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND n.`id` >= '.$ae->start_id : '').
                 ($ae->only_new == false && $ae->end_id ? ' AND n.`id` <= '.$ae->end_id : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND n.`newsletter_date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND n.`newsletter_date_add` <= "'.($ae->date_to).'"' : '').'
+                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                    ' AND n.`newsletter_date_add` >= "'.($ae->date_from).'"' : '').
+                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                    ' AND n.`newsletter_date_add` <= "'.($ae->date_to).'"' : '').'
 				AND n.`id_shop` = '.$this->context->shop->id;
+
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
 
@@ -5015,19 +5076,23 @@ class Advancedexport extends Module
 
     public function addressesQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT a.`id_address` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.implode(', ', $sorted_fields['sqlfields'])).'
+        $sql = 'SELECT a.`id_address` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
+                implode(', ', $sorted_fields['sqlfields'])).'
 				FROM '._DB_PREFIX_.'address as a
 				LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON ( a.`id_manufacturer` = m.`id_manufacturer` )
 				LEFT JOIN `'._DB_PREFIX_.'supplier` s ON ( a.`id_supplier` = s.`id_supplier` )
 				LEFT JOIN `'._DB_PREFIX_.'state` st ON ( a.`id_state` = st.`id_state`)
-				LEFT JOIN `'._DB_PREFIX_.'country_lang` cl ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = '.$ae->id_lang.')
+				LEFT JOIN `'._DB_PREFIX_.'country_lang` cl 
+				ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = '.$ae->id_lang.')
 				LEFT JOIN `'._DB_PREFIX_.'customer` cu ON ( a.`id_customer` = cu.`id_customer`)
 				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND a.`active` = 1' : '').
                 (isset($ae->only_new) && $ae->only_new ? ' AND a.`id` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND a.`id` >= '.$ae->start_id : '').
                 ($ae->only_new == false && $ae->end_id ? ' AND a.`id` <= '.$ae->end_id : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND a.`date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND a.`date_add` <= "'.($ae->date_to).'"' : '');
+                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                    ' AND a.`date_add` >= "'.($ae->date_from).'"' : '').
+                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                    ' AND a.`date_add` <= "'.($ae->date_to).'"' : '');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -5186,7 +5251,8 @@ class Advancedexport extends Module
                 $field->import = (isset($item['import']) ? $item['import'] : false);
                 $field->import_name = (isset($item['import_name']) ? $item['import_name'] : '');
                 $field->import_combination = (isset($item['import_combination']) ? $item['import_combination'] : false);
-                $field->import_combination_name = (isset($item['import_combination_name']) ? $item['import_combination_name'] : '');
+                $field->import_combination_name =
+                    (isset($item['import_combination_name']) ? $item['import_combination_name'] : '');
 
                 $field->add();
             }
