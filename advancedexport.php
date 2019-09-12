@@ -2043,7 +2043,8 @@ class Advancedexport extends Module
              || !Configuration::updateGlobalValue('AdvancedExport_TOTAL', 0)
              || !Configuration::updateGlobalValue(
                  'ADVANCEDEXPORT_SECURE_KEY',
-                 Tools::strtoupper(Tools::passwdGen(16)))
+                 Tools::strtoupper(Tools::passwdGen(16))
+            )
         ) {
             return false;
         }
@@ -2134,7 +2135,8 @@ class Advancedexport extends Module
 
         if ($this->getValue('addfield') || $this->isSubmit('updateadvancedexportfield')) {
             $this->_html .= $this->displayAddFieldForm(Tools::getValue('type'));
-        } elseif ($this->getValue('add_model') || Tools::isSubmit('updateadvancedexport') || Tools::isSubmit('btnSubmit')) {
+        } elseif ($this->getValue('add_model') || Tools::isSubmit('updateadvancedexport') ||
+            Tools::isSubmit('btnSubmit')) {
             $this->_html .= $this->displayAddModelForm(new HelperForm());
         } elseif ($this->getValue('editfields') || $this->isSubmit('editfields')) {
             $this->_html .= $this->displayEditFieldsForm(Tools::getValue('type'));
@@ -2204,7 +2206,8 @@ class Advancedexport extends Module
 
         if (Tools::getValue('advancedexportfield_pagination') != false) {
             $limit = Tools::getValue('advancedexportfield_pagination');
-            $this->context->cookie->{'advancedexportfield_pagination'} = Tools::getValue('advancedexportfield_pagination');
+            $this->context->cookie->{'advancedexportfield_pagination'} =
+                Tools::getValue('advancedexportfield_pagination');
         } elseif (isset($this->context->cookie->{'advancedexportfield_pagination'})) {
             $limit = $this->context->cookie->{'advancedexportfield_pagination'};
         } else {
@@ -2239,7 +2242,8 @@ class Advancedexport extends Module
         } else {
             $page = 1;
         }
-        $helper->currentIndex = AdminController::$currentIndex.'&editfields=1&type='.$type.'&configure='.$this->name.'&submitFilteradvancedexportfield='.$page;
+        $helper->currentIndex = AdminController::$currentIndex.'&editfields=1&type='.$type.'&configure='.
+            $this->name.'&submitFilteradvancedexportfield='.$page;
 
         $return = $helper->generateList($fields, $fields_list);
 
@@ -2328,9 +2332,15 @@ class Advancedexport extends Module
             if ($field->table == 'static') {
                 $field->delete();
 
-                $this->redirect('editfields&deleteFieldConfirmation&type='.Tools::getValue('type').'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'));
+                $this->redirect(
+                    'editfields&deleteFieldConfirmation&type='.Tools::getValue('type').
+                    '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield')
+                );
             } else {
-                $this->redirect('editfields&deleteFieldError&type='.Tools::getValue('type').'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'));
+                $this->redirect(
+                    'editfields&deleteFieldError&type='.Tools::getValue('type').
+                    '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield')
+                );
             }
         } elseif ($this->isSubmit('submitAddField')) {
             $id = Tools::getValue('id_advancedexportfield');
@@ -2349,7 +2359,11 @@ class Advancedexport extends Module
                 $field->save();
             }
 
-            $this->redirect('editfields&saveFieldConfirmation&type='.Tools::getValue('type').'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'));
+            $this->redirect(
+                'editfields&saveFieldConfirmation&type='.
+                Tools::getValue('type').'&submitFilteradvancedexportfield='.
+                (int) Tools::getValue('submitFilteradvancedexportfield')
+            );
         } elseif (Tools::isSubmit('saveModelConfirmation')) {
             $this->_html .= $this->displayConfirmation($this->l('Model save successfully.'));
         } elseif (Tools::isSubmit('deleteModelConfirmation')) {
@@ -2449,7 +2463,10 @@ class Advancedexport extends Module
 
     public function redirect($action)
     {
-        Tools::redirectAdmin(AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules').'&'.$action);
+        Tools::redirectAdmin(
+            AdminController::$currentIndex.'&configure='.$this->name.'&token='.
+            Tools::getAdminTokenLite('AdminModules').'&'.$action
+        );
     }
 
     public function deleteModel()
@@ -2490,7 +2507,8 @@ class Advancedexport extends Module
         $helper->allow_employee_form_lang = (int) Configuration::get('PS_LANG_DEFAULT');
         $helper->submit_action = 'btnSubmit';
         $helper->token = $this->getValue('token');
-        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.
+            '&module_name='.$this->name;
         $helper->fields_value = $this->getModelFieldsValues($type);
 
         return $helper->generateForm($this->modelFormFields($type));
@@ -2516,7 +2534,9 @@ class Advancedexport extends Module
         $helper->allow_employee_form_lang = (int) Configuration::get('PS_LANG_DEFAULT');
         $helper->submit_action = 'submitAddField';
         $helper->token = $this->getValue('token');
-        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&addfield=1&tab_module='.$this->tab.'&module_name='.$this->name.'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield');
+        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&addfield=1&tab_module='.
+            $this->tab.'&module_name='.$this->name.'&submitFilteradvancedexportfield='.
+            (int) Tools::getValue('submitFilteradvancedexportfield');
         $helper->fields_value = $this->getAddFieldFieldsValues($type);
 
         return $helper->generateForm($this->addFieldFormFields($type));
@@ -2580,7 +2600,33 @@ class Advancedexport extends Module
 
     public function getModelFieldsValues($type)
     {
-        $fields = array('id_advancedexport', 'type', 'name', 'delimiter', 'separator', 'id_lang', 'charset', 'add_header', 'decimal_separator', 'decimal_round', 'strip_tags', 'file_type', 'only_new', 'save_type', 'shops', 'image_type', 'filename', 'email', 'ftp_hostname', 'ftp_user_pass', 'ftp_user_name', 'date_from', 'date_to', 'start_id', 'end_id');
+        $fields = array(
+            'id_advancedexport',
+            'type',
+            'name',
+            'delimiter',
+            'separator',
+            'id_lang',
+            'charset',
+            'add_header',
+            'decimal_separator',
+            'decimal_round',
+            'strip_tags',
+            'file_type',
+            'only_new',
+            'save_type',
+            'shops',
+            'image_type',
+            'filename',
+            'email',
+            'ftp_hostname',
+            'ftp_user_pass',
+            'ftp_user_name',
+            'date_from',
+            'date_to',
+            'start_id',
+            'end_id'
+        );
         $fields_specific = null;
         $fields_value = null;
 
@@ -2655,7 +2701,8 @@ class Advancedexport extends Module
                 'buttons' => array(
                     'cancelBlock' => array(
                         'title' => $this->l('Cancel'),
-                        'href' => $this->getAdminUrl().'&editfields&type='.$type.'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'),
+                        'href' => $this->getAdminUrl().'&editfields&type='.$type.'&submitFilteradvancedexportfield='.
+                            (int) Tools::getValue('submitFilteradvancedexportfield'),
                         'icon' => 'process-icon-cancel',
                     ),
                 ),
@@ -3049,7 +3096,8 @@ class Advancedexport extends Module
 
     public function getAdminUrl()
     {
-        return AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules');
+        return AdminController::$currentIndex.'&configure='.
+            $this->name.'&token='.Tools::getAdminTokenLite('AdminModules');
     }
 
     public function isFeatureActive()
@@ -3072,7 +3120,8 @@ class Advancedexport extends Module
 
     public function showTimeAndMemoryUsage($time_start)
     {
-        echo "</br></br></br></br></br></br></br><b>Using <span style='font-size:20px;'>".memory_get_peak_usage(1).'</span> bytes of ram.</b>';
+        echo "</br></br></br></br></br></br></br><b>Using <span style='font-size:20px;'>".
+            memory_get_peak_usage(1).'</span> bytes of ram.</b>';
         $time_end = microtime(true);
         //dividing with 60 will give the execution time in minutes other wise seconds
         $execution_time = ($time_end - $time_start) / 60;
@@ -3116,13 +3165,17 @@ class Advancedexport extends Module
                     //Jeśli jest podany alias w array
                     //to użyj ten alias jako prefix w nazwie tabeli
                     //wraz z kropką.
-                    $alias = (isset($allFields[$field]['alias']) && $allFields[$field]['alias'] ? $allFields[$field]['alias'].'.' : '');
+                    $alias = (isset($allFields[$field]['alias']) &&
+                    $allFields[$field]['alias'] ? $allFields[$field]['alias'].'.' : '');
 
                     //jeśli wartość as jest false
                     //to utwórz polecenie as
                     //wymagane przy nazwach pól które się powtarzają
                     if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
-                        $fields['sqlfields'][] = $alias.'`'.Tools::substr(strstr($allFields[$field]['field'], '_'), Tools::strlen('_')).'` as '.$allFields[$field]['field'].'';
+                        $fields['sqlfields'][] = $alias.'`'.Tools::substr(
+                            strstr($allFields[$field]['field'], '_'),
+                            Tools::strlen('_')
+                         ).'` as '.$allFields[$field]['field'].'';
                     } else {
                         $fields['sqlfields'][] = $alias.'`'.$allFields[$field]['field'].'`';
                     }
@@ -3255,7 +3308,8 @@ class Advancedexport extends Module
             }
         }
 
-        if ($ae->type == 'products' && isset($ae->fields['attributes']) && $ae->fields['attributes'] && isset($sorted_fields['attribute_fields'])) {
+        if ($ae->type == 'products' && isset($ae->fields['attributes']) && $ae->fields['attributes'] &&
+            isset($sorted_fields['attribute_fields'])) {
             $this->processWithAttributes($obj, $element, $file, $sorted_fields, $ae);
         }
 
@@ -3438,7 +3492,19 @@ class Advancedexport extends Module
         $file_attachement['mime'] = 'text/csv';
 
         $id_lang = $this->getConfiguration("PS_LANG_DEFAULT");
-        Mail::Send($id_lang, 'index', $name, null, $email, null, null, "advanced export", $file_attachement, null, dirname(__FILE__).'/mails/');
+        Mail::Send(
+            $id_lang,
+            'index',
+            $name,
+            null,
+            $email,
+            null,
+            null,
+            "advanced export",
+            $file_attachement,
+            null,
+            dirname(__FILE__) . '/mails/'
+        );
     }
 
     public function getConfiguration($value)
@@ -3449,7 +3515,8 @@ class Advancedexport extends Module
     public function displayIndexForm()
     {
         $html = '<script type="text/javascript">
-            var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='.Tools::getAdminTokenLite('AdminModules').'";
+            var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='
+            .Tools::getAdminTokenLite('AdminModules').'";
         </script>';
         $html .= '<div class="row">';
         $html .= '<div class="col-lg-12">';
@@ -3605,7 +3672,8 @@ class Advancedexport extends Module
                 break;
             case 'editfields':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&addfield=1&type='.$type.'&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'),
+                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&addfield=1&type='.$type.
+                        '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'),
                     'desc' => $this->l('Add new'),
                 );
                 $this->toolbar_btn['cancel'] = array(
@@ -3854,7 +3922,10 @@ class Advancedexport extends Module
                 'multiple' => true,
                 'desc' => $this->l('If you want all leave blank. All are exported by default.'),
                 'options' => array(
-                    'query' => Supplier::getSuppliers(false, $this->getConfiguration('PS_LANG_DEFAULT')),
+                    'query' => Supplier::getSuppliers(
+                        false,
+                        $this->getConfiguration('PS_LANG_DEFAULT')
+                    ),
                     'id' => 'id_supplier',
                     'name' => 'name',
                 ),
@@ -3868,7 +3939,10 @@ class Advancedexport extends Module
                 'desc' => $this->l('If you want all leave blank. All are exported by default.'),
                 'multiple' => true,
                 'options' => array(
-                    'query' => Manufacturer::getManufacturers(false, $this->getConfiguration('PS_LANG_DEFAULT')),
+                    'query' => Manufacturer::getManufacturers(
+                        false,
+                        $this->getConfiguration('PS_LANG_DEFAULT')
+                    ),
                     'id' => 'id_manufacturer',
                     'name' => 'name',
                 ),
@@ -3934,7 +4008,8 @@ class Advancedexport extends Module
         $sql = 'SELECT p.`id_product` '.(empty($set['sqlfields']) ? '' : ', '.implode(', ', $set['sqlfields'])).
             ' FROM '._DB_PREFIX_.'product as p'.
             Shop::addSqlAssociation('product', 'p').'
-            LEFT JOIN `'._DB_PREFIX_.'product_lang` pl ON (p.`id_product` = pl.`id_product` '.Shop::addSqlRestrictionOnLang('pl').')
+            LEFT JOIN `'._DB_PREFIX_.'product_lang` pl 
+            ON (p.`id_product` = pl.`id_product` '.Shop::addSqlRestrictionOnLang('pl').')
             LEFT JOIN `'._DB_PREFIX_.'supplier` s ON (p.`id_supplier` = s.`id_supplier`)
             LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON (m.`id_manufacturer` = p.`id_manufacturer`)
             LEFT JOIN `'._DB_PREFIX_.'stock_available` sa ON (sa.`id_product` = p.`id_product` AND sa
@@ -3947,19 +4022,26 @@ class Advancedexport extends Module
 					 ON s1.id_product = s2.id_product AND s1.id_specific_price < s2.id_specific_price
 				WHERE s2.id_specific_price IS NULL ) as sp_tmp
 			ON (p.`id_product` = sp_tmp.`id_product`  && sp_tmp.`id_cart` = 0)'.
-            (isset($set['categories']) && $set['categories'] ? ' LEFT JOIN `'._DB_PREFIX_.'category_product` c ON (c.`id_product` = p.`id_product`)' : '').'
+            (isset($set['categories']) && $set['categories'] ? ' LEFT JOIN `'._DB_PREFIX_.'category_product` c 
+            ON (c.`id_product` = p.`id_product`)' : '').'
 			WHERE pl.`id_lang` = '.(int) $ae->id_lang.
-            (isset($ae->only_new) && $ae->only_new && $ae->last_exported_id ? ' AND p.`id_product` > '.$ae->last_exported_id : '').
+            (isset($ae->only_new) && $ae->only_new && $ae->last_exported_id ? ' 
+            AND p.`id_product` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND p.`id_product` >= '.$ae->start_id : '').
             ($ae->only_new == false && $ae->end_id ? ' AND p.`id_product` <= '.$ae->end_id : '').
-            (isset($set['categories']) && $set['categories'] ? ' AND c.`id_category` IN ('.implode(',', $set['categories']).')' : '').
-            (isset($set['suppliers[]']) && $set['suppliers[]'] ? ' AND p.`id_supplier` IN ('.implode(',', $set['suppliers[]']).')' : '').
-            (isset($set['manufacturers[]']) && $set['manufacturers[]'] ? ' AND p.`id_manufacturer` IN ('.implode(',', $set['manufacturers[]']).')' : '').
+            (isset($set['categories']) && $set['categories'] ?
+                ' AND c.`id_category` IN ('.implode(',', $set['categories']).')' : '').
+            (isset($set['suppliers[]']) && $set['suppliers[]'] ?
+                ' AND p.`id_supplier` IN ('.implode(',', $set['suppliers[]']).')' : '').
+            (isset($set['manufacturers[]']) && $set['manufacturers[]'] ?
+                ' AND p.`id_manufacturer` IN ('.implode(',', $set['manufacturers[]']).')' : '').
             (isset($set['active']) && $set['active'] ? ' AND product_shop.`active` = 1' : '').
             (isset($set['out_of_stock']) && $set['out_of_stock'] ? ' AND sa.`quantity` <= 0' : '').
             (isset($set['ean13']) && $set['ean13'] ? ' AND p.`ean13` != ""' : '').
-            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' AND p.`date_add` >= "'.($ae->date_from).'"' : '').
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND p.`date_add` <= "'.($ae->date_to).'"' : '').
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND p.`date_add` >= "'.($ae->date_from).'"' : '').
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND p.`date_add` <= "'.($ae->date_to).'"' : '').
             ' GROUP BY p.`id_product`';
 
         $result = $this->query($sql);
@@ -4185,7 +4267,11 @@ class Advancedexport extends Module
         $imagelinks = array();
         $images = $obj->getImages($obj->id);
         foreach ($images as $image) {
-            $imagelinks[] = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$image['id_image'], $ae->image_type);
+            $imagelinks[] = 'http://'.$this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id.'-'.$image['id_image'],
+                $ae->image_type
+            );
         }
 
         return implode(',', $imagelinks);
@@ -4194,7 +4280,11 @@ class Advancedexport extends Module
     public function productsImage($obj, $ae)
     {
         $image = Product::getCover($obj->id);
-        $imageLink = 'http://'.$this->link->getImageLink($obj->link_rewrite[$ae->id_lang], $obj->id.'-'.$image['id_image'], $ae->image_type);
+        $imageLink = 'http://'.$this->link->getImageLink(
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id.'-'.$image['id_image'],
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -4261,20 +4351,28 @@ class Advancedexport extends Module
                 $combArray[$combinaison['id_product_attribute']]['weight'] = $combinaison['weight'];
                 $combArray[$combinaison['id_product_attribute']]['unit_impact'] = $combinaison['unit_price_impact'];
                 $combArray[$combinaison['id_product_attribute']]['reference'] = $combinaison['reference'];
-                $combArray[$combinaison['id_product_attribute']]['supplier_reference'] = $combinaison['supplier_reference'];
+                $combArray[$combinaison['id_product_attribute']]['supplier_reference'] =
+                    $combinaison['supplier_reference'];
                 $combArray[$combinaison['id_product_attribute']]['ean13'] = $combinaison['ean13'];
                 $combArray[$combinaison['id_product_attribute']]['upc'] = $combinaison['upc'];
                 $combArray[$combinaison['id_product_attribute']]['minimal_quantity'] = $combinaison['minimal_quantity'];
                 $combArray[$combinaison['id_product_attribute']]['location'] = $combinaison['location'];
                 $combArray[$combinaison['id_product_attribute']]['quantity'] = $combinaison['quantity'];
-                $combArray[$combinaison['id_product_attribute']]['id_image'] = isset($combinationImages[$combinaison['id_product_attribute']][0]['id_image']) ? $combinationImages[$combinaison['id_product_attribute']][0]['id_image'] : 0;
-                $combArray[$combinaison['id_product_attribute']]['images'] = isset($combinationImages[$combinaison['id_product_attribute']]) ? $combinationImages[$combinaison['id_product_attribute']] : '';
+                $combArray[$combinaison['id_product_attribute']]['id_image'] =
+                    isset($combinationImages[$combinaison['id_product_attribute']][0]['id_image']) ?
+                        $combinationImages[$combinaison['id_product_attribute']][0]['id_image'] : 0;
+                $combArray[$combinaison['id_product_attribute']]['images'] =
+                    isset($combinationImages[$combinaison['id_product_attribute']]) ?
+                        $combinationImages[$combinaison['id_product_attribute']] : '';
                 $combArray[$combinaison['id_product_attribute']]['default_on'] = $combinaison['default_on'];
                 $combArray[$combinaison['id_product_attribute']]['ecotax'] = $combinaison['ecotax'];
                 $combArray[$combinaison['id_product_attribute']]['id_product_attribute'] = $combinaison['id_product_attribute'];
-                $combArray[$combinaison['id_product_attribute']]['attributes'][] = array($combinaison['group_name'], $combinaison['attribute_name'], $combinaison['id_attribute']);
-                $combArray[$combinaison['id_product_attribute']]['attributes_name'][] = array($combinaison['group_name'], $combinaison['id_attribute_group']);
-                $combArray[$combinaison['id_product_attribute']]['attributes_value'][] = array($combinaison['attribute_name'], $combinaison['id_attribute']);
+                $combArray[$combinaison['id_product_attribute']]['attributes'][] =
+                    array($combinaison['group_name'], $combinaison['attribute_name'], $combinaison['id_attribute']);
+                $combArray[$combinaison['id_product_attribute']]['attributes_name'][] =
+                    array($combinaison['group_name'], $combinaison['id_attribute_group']);
+                $combArray[$combinaison['id_product_attribute']]['attributes_value'][] =
+                    array($combinaison['attribute_name'], $combinaison['id_attribute']);
                 if ($combinaison['is_color_group']) {
                     $groups[$combinaison['id_attribute_group']] = $combinaison['group_name'];
                 }
@@ -4291,7 +4389,8 @@ class Advancedexport extends Module
             FROM `'._DB_PREFIX_.'product_supplier` ps
             LEFT JOIN `'._DB_PREFIX_.'supplier` s ON (ps.`id_supplier`= s.`id_supplier`)
             LEFT JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-            WHERE ps.`id_product` = '.$obj->id.' AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
+            WHERE ps.`id_product` = '.$obj->id.' 
+            AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
         $suppliers = array();
         foreach ($sups as $sup) {
             $suppliers[] = $sup['name'];
