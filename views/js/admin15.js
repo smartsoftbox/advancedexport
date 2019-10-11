@@ -97,19 +97,19 @@ jQuery(function($) {
 
      $('span.exportspan').hide();
 
-	$('.list-group-item').click(function(){
-		var id = $(this).attr('id');
-		$('.list-group-item').removeClass('active');
-		$(this).addClass('active');
+  $('.list-group-item').click(function(){
+    var id = $(this).attr('id');
+    $('.list-group-item').removeClass('active');
+    $(this).addClass('active');
 
-		$('.product-tab-content').addClass('hide');
-		$('.product-tab-content[alt=' + id + ']').removeClass('hide');
+    $('.product-tab-content').addClass('hide');
+    $('.product-tab-content[alt=' + id + ']').removeClass('hide');
 
-        var current_tab_id = $('div.list-group a.list-group-item.active').attr('id');
-        $.cookie('current_tab_id', current_tab_id);
+    var current_tab_id = $('div.list-group a.list-group-item.active').attr('id');
+    $.cookie('current_tab_id', current_tab_id);
 
-        return false;
-	});
+    return false;
+  });
 
 	$('#save_type').change(function(){
 		var id = $(this).val();
@@ -180,5 +180,32 @@ jQuery(function($) {
         var form = $('.form');
         var action = form.attr('action').substring(0, form.attr('action').indexOf('#'));
         form.attr('action', action + "&submitSaveFields=1").submit();
+    });
+
+    $('#checkConnection').click(function() {
+      let params = {};
+      params.hostname = $('#ftp_hostname').val();
+      params.port = $('#ftp_port').val();
+      params.username = $('#ftp_username').val();
+      params.password = $('#ftp_password').val();
+      params.path = $('#ftp_path').val();
+      params.save_type = $('#save_typ').val();
+
+      $.post( urlJson + '&ajax=1&action=checkConnection', {'params': params}, function( data ) {
+        let errors = $('#ftp_errors');
+        let success = $('#ftp_success');
+        if( !data ) {
+          errors.html('');
+          errors.show();
+          success.hide();
+          $(data).each(function(error){
+            errors.append(error);
+          });
+        } else {
+          errors.html('');
+          errors.hide();
+          success.show();
+        }
+      });
     });
  });

@@ -34,6 +34,8 @@ class AdvancedExportClass extends ObjectModel
     public $ftp_user_name;
     public $ftp_hostname;
     public $ftp_user_pass;
+    public $ftp_directory;
+    public $ftp_port;
     public $filename;
 
     public static $definition = array(
@@ -49,6 +51,16 @@ class AdvancedExportClass extends ObjectModel
                 $this->{$key} = $value;
             }
         }
+    }
+
+    public static function getAll($type)
+    {
+        $query = 'SELECT * FROM `'._DB_PREFIX_.'advancedexport`
+                  WHERE type = "' .$type.'"';
+
+        $fields = Db::getInstance()->ExecuteS($query);
+
+        return $result;
     }
 
     public function getFields()
@@ -79,6 +91,8 @@ class AdvancedExportClass extends ObjectModel
         $fields['ftp_hostname'] = (string) ($this->ftp_hostname);
         $fields['ftp_user_pass'] = (string) ($this->ftp_user_pass);
         $fields['ftp_user_name'] = (string) ($this->ftp_user_name);
+        $fields['ftp_directory'] = (string) ($this->ftp_directory);
+        $fields['ftp_port'] = (string) ($this->ftp_port);
         $fields['filename'] = (string) ($this->filename);
 
         return $fields;

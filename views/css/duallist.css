@@ -1,0 +1,48 @@
+.dual-list .list-group {
+    margin-top: 8px;
+}
+
+.list-left li, .list-right li {
+    cursor: pointer;
+}
+
+.list-arrows {
+    padding-top: 100px;
+}
+
+.list-arrows button {
+    margin-bottom: 20px;
+}
+.glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    line-height: 1;
+}
+.group-filters {
+    display: inline-block;
+}
+.list-group {
+    text-align: left;
+}
+.filters_hide {
+    display: none !important;
+}
+.bootstrap .well {
+  padding: 14px 0;
+}
+.bootstrap .well .row {
+  padding: 0px 19px;
+}
+.bootstrap .well div[class^=col-md-]{
+  padding: 0;
+}
+#filter-group {
+  padding: 5px 14px;
+  background: #a0efff82;
+  margin: 7px 0px 0px;
+}
+.bootstrap .btn-group, .bootstrap .btn-group-vertical {
+  float: right;
+}
+

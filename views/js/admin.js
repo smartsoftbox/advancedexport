@@ -91,14 +91,14 @@ jQuery(function($) {
          })).after($("<div class='clear'></div>"));
     });
 
-     if($("#fields").length) {
-         var type = $("#fields").attr('class').split(' ')[1];
-         $('#bsmContainer0').append($('<span> | </span><a href="?controller=AdminModules&configure=advancedexport&editfields=1&cleanpage&type=' + type + '&token=' + getUrlParam('token') + '" id="field">Edit Fields</a>'));
-     }
+    //  if($("#fields").length) {
+    //      var type = $("#fields").attr('class').split(' ')[1];
+    //      $('#bsmContainer0').append($('<span> | </span><a href="?controller=AdminModules&configure=advancedexport&editfields=1&cleanpage&type=' + type + '&token=' + getUrlParam('token') + '" id="field">Edit Fields</a>'));
+    //  }
      $('#bsmSelectbsmContainer0').attr("multiple", "multiple");
      $('#bsmSelectbsmContainer0 option:first').remove();
 
-	$('.list-group-item').click(function(){
+	$('#entities .list-group-item').click(function(){
 		var id = $(this).attr('id');
 		$('.list-group-item').removeClass('active');
 		$(this).addClass('active');
@@ -114,10 +114,13 @@ jQuery(function($) {
 
 	$('#save_type').change(function(){
 		var id = $(this).val();
-		$('input.process1').parent().parent().hide();
-		$('input.process2').parent().parent().hide();
+		if(parseInt(id) === 3) {
+		  id = 1;
+    }
+		$('.process1').parent().parent().hide();
+		$('.process2').parent().parent().hide();
 	 	var current = 'process' + id;
-		$('input[class=' + current + ']').parent().parent().show();
+		$('.' + current).parent().parent().show();
 
         return false;
 	});
@@ -180,6 +183,36 @@ jQuery(function($) {
              $(btn).tooltip('hide');
          }, 1000);
      }
+
+     $('#checkConnection').click(function() {
+       let params = {};
+       params.hostname = $('#ftp_hostname').val();
+       params.port = $('#ftp_port').val();
+       params.username = $('#ftp_user_name').val();
+       params.password = $('#ftp_user_pass').val();
+       params.path = $('#ftp_directory').val();
+       params.save_type = $('#save_type').val();
+
+       $(this).text('Please wait...');
+
+       $.post( urlJson + '&ajax=1&action=checkConnection', {'params': params}, function( data ) {
+          let errors = JSON.parse(data);
+          let ftp_errors = $('#ftp_errors');
+          let success = $('#ftp_success');
+         if (errors !== null) {
+            ftp_errors.html('');
+            ftp_errors.removeClass('hide');
+            success.addClass('hide');
+            $(errors).each(function(key, error){
+              ftp_errors.append(error);
+            });
+          } else {
+            ftp_errors.html('');
+            success.removeClass('hide');
+          }
+          $('#checkConnection').text('Test Connection');
+       });
+     });
 
      function getUrlParam(name){
          var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
