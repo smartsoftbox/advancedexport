@@ -19,12 +19,13 @@ class FTP implements FtpInterface
     private $errors;
     private $connection = false;
 
-    public function __construct($host, $username, $password, $port = false) {
+    public function __construct($host, $username, $password, $port = false)
+    {
         $this->host = $host;
         $this->username = $username;
         $this->password = $password;
 
-        if($port === false){
+        if ($port === false) {
             $port = 21;
         }
         $this->port = $port;
@@ -41,7 +42,7 @@ class FTP implements FtpInterface
         }
         $login = ftp_login($connection, $this->username, $this->password);
 
-        if (!$login){
+        if (!$login) {
             $this->errors[] = 'Login Faild';
             return false;
         }
@@ -52,7 +53,7 @@ class FTP implements FtpInterface
 
     public function testConnection()
     {
-        if ($this->connection === false){
+        if ($this->connection === false) {
             $this->errors[] = 'There is a problem with connection';
             return false;
         }

@@ -2341,7 +2341,7 @@ class Advancedexport extends Module
     {
         foreach ($this->export_types as $tab) {
             foreach ($this->$tab as $item) {
-                if(!isset($item['version']) OR isset($item['version']) AND _PS_VERSION_ >= $item['version']) {
+                if (!isset($item['version']) || isset($item['version']) && _PS_VERSION_ >= $item['version']) {
                     $field = new AdvancedExportFieldClass();
                     $field->tab = $tab;
                     $field->name = $item['name'];
@@ -2472,7 +2472,7 @@ class Advancedexport extends Module
             if ($this->saveModel()) {
                 $this->redirect('saveModelConfirmation');
             }
-        } else if (Tools::isSubmit('btnSubmitAddCron')) {
+        } elseif (Tools::isSubmit('btnSubmitAddCron')) {
             if ($this->saveCron()) {
                 $this->redirect('saveCronConfirmation');
             }
@@ -2604,7 +2604,7 @@ class Advancedexport extends Module
                     new FTP($params['hostname'], $params['username'], $params['password'], $params['port']) :
                     new SFTP($params['hostname'], $params['username'], $params['password'], $params['port']));
 
-                if(!count($protocol->getErrors())) {
+                if (!count($protocol->getErrors())) {
                     $protocol->changeDir($params['path']);
                 }
 
@@ -2670,7 +2670,7 @@ class Advancedexport extends Module
         foreach ($specific as $value) {
             $trimmed = str_replace('[]', '', $value['name']);
             if ($this->getValue($trimmed) != '') {
-                if((string)$trimmed === 'fields') {
+                if ((string)$trimmed === 'fields') {
                     $fields = $this->getValue($trimmed);
                     // for backwords compatiblity we have to leave field name to fields[]
                     $to_serialize[$value['name']] = json_decode($fields[0]);
@@ -3125,22 +3125,22 @@ class Advancedexport extends Module
 
     public function ftpFile($protocol, $export_file, $directory)
     {
-          if(count($protocol->getErrors())) {
-              $this->displayErrors($protocol->getErrors());
-              return false;
-          }
+        if (count($protocol->getErrors())) {
+            $this->displayErrors($protocol->getErrors());
+            return false;
+        }
 
-          $protocol->changeDir($directory);
-          $protocol->put('', $export_file);
-            if(count($protocol->getErrors())) {
-                $this->displayErrors($protocol->getErrors());
-                return false;
-            }
+        $protocol->changeDir($directory);
+        $protocol->put('', $export_file);
+        if (count($protocol->getErrors())) {
+            $this->displayErrors($protocol->getErrors());
+            return false;
+        }
     }
 
     public function displayErrors($errors)
     {
-        if(count($errors)) {
+        if (count($errors)) {
             foreach ($errors as $error) {
                 echo $error . '</br>';
             }
@@ -3703,7 +3703,7 @@ class Advancedexport extends Module
             } else {
                 // fields needs to be array because in smarty we check if it is
                 // in array
-                if($value['name'] === 'fields[]') {
+                if ($value['name'] === 'fields[]') {
                     $fields_value[$value['name']] = array();
                 } else {
                     $fields_value[$value['name']] = null;
@@ -4624,7 +4624,7 @@ class Advancedexport extends Module
      */
     private function displayStartForm()
     {
-         $cron_url =  $this->context->link->getModuleLink(
+        $cron_url =  $this->context->link->getModuleLink(
             $this->name,
             'cron',
             array('secure_key' => (string)Configuration::get('ADVANCEDEXPORT_SECURE_KEY'))
@@ -5355,7 +5355,6 @@ class Advancedexport extends Module
     {
 //        return Product::getPriceStatic((int) $obj->id, false, (int) $product_attribute['id_product_attribute']);
         return $product_attribute['price'];
-
     }
 
     public function combinationWeight($obj, $product_attribute)
@@ -6195,5 +6194,3 @@ class Advancedexport extends Module
         return $this->display(__FILE__, 'views/templates/admin/fromto.tpl');
     }
 }
-
-

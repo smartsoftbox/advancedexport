@@ -6,7 +6,7 @@
 *}
 
 
-<a class="pointer export" title="Export" href="{$location_ok}">
+<a class="pointer export" title="Export" href="{$location_ok|escape:'url':'UTF-8'}">
 	{if version_compare($smarty.const._PS_VERSION_,'1.6','>=')}
 		<i class="icon-share-square"></i><span class="exportspan"> Export</span>
 	{else}

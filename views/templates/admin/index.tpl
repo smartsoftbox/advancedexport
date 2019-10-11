@@ -15,7 +15,9 @@
         <div class="list-group" id="entities">
           <a href="#" id="welcome" class="list-group-item"><b>Start</b></a>
           {foreach from=$export_types item=export_type name=blockCategTree}
-            <a href="#" id="{$export_type}" class="list-group-item">{$export_type}</a>
+            <a href="#" id="{$export_type|escape:'htmlall':'UTF-8'}" class="list-group-item">
+                {$export_type|escape:'htmlall':'UTF-8'}
+            </a>
           {/foreach}
           </div>
         </div>

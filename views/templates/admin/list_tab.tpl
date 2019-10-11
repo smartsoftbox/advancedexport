@@ -5,4 +5,4 @@
 *  International Registered Trademark & Property of Smart Soft
 *}
 
-<div class='product-tab-content hide' alt='{$export_type}'>
+<div class='product-tab-content hide' alt='{$export_type|escape:'htmlall':'UTF-8'}'>

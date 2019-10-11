@@ -26,7 +26,7 @@ class SFTP implements FtpInterface
         $this->username = $username;
         $this->password = $password;
 
-        if ($port === false){
+        if ($port === false) {
             $port = 22;
         }
         $this->port = $port;
@@ -51,7 +51,7 @@ class SFTP implements FtpInterface
 
         $login = $connection->login($this->username, $this->password);
 
-        if (!$login){
+        if (!$login) {
             $this->errors[] = 'Login Faild';
             return false;
         }
@@ -61,7 +61,7 @@ class SFTP implements FtpInterface
 
     public function testConnection()
     {
-        if ($this->connection === false){
+        if ($this->connection === false) {
             $this->errors[] = 'There is a problem with connection';
             return false;
         }
