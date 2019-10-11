@@ -74,11 +74,14 @@
   </div>
   <div class="panel col-lg-12">
     <div class="panel-heading">Support Contact</div>
-    Please feel free to contact us if you require any further information or help.
-    <br>Please use PrestaShop addons contact form
-    <a class="clear" href="https://addons.prestashop.com/contact-form.php?id_product=6927">
-      <b>https://addons.prestashop.com/contact-form.php?id_product=6927</b>
-    </a>
+    <span style="float:left;"><img width="90px;" style="margin-right:15px;" src="../modules/advancedexport/views/img/support.png"></span>
+    <br>
+      Please feel free to contact us if you require any further information or help.
+      <br>Please use PrestaShop addons contact form</br>
+      <a href="https://addons.prestashop.com/contact-form.php?id_product=6927">
+        <b>https://addons.prestashop.com/contact-form.php?id_product=6927</b>
+      </a>
+    </div>
   </div>
   <div class="panel col-lg-12">
     <div class="panel-heading">Documentation</div>
