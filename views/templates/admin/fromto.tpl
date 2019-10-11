@@ -1,3 +1,10 @@
+{*
+*  @author Marcin Kubiak
+*  @copyright  Smart Soft
+*  @license    Commercial license
+*  International Registered Trademark & Property of Smart Soft
+*}
+
 <div class="input-group fixed-width-xl" style="float:left;margin-right: 10px;">
   <span class="input-group-addon">from</span>
   <input type="text" name="{$from_name}" value="{$from_value}" class="{$class}" size="70">

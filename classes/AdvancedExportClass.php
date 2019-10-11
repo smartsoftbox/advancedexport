@@ -58,9 +58,7 @@ class AdvancedExportClass extends ObjectModel
         $query = 'SELECT * FROM `'._DB_PREFIX_.'advancedexport`
                   WHERE type = "' .$type.'"';
 
-        $fields = Db::getInstance()->ExecuteS($query);
-
-        return $result;
+        return Db::getInstance()->ExecuteS($query);
     }
 
     public function getFields()

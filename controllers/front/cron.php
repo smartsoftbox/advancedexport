@@ -30,7 +30,8 @@ class AdvancedexportCronModuleFrontController extends ModuleFrontController
         $hour = ($cron['cron_hour'] === '*') ? date('H') : $cron['cron_hour'];
         $day = ($cron['cron_day'] === '*') ? date('d') : $cron['cron_day'];
         $month = ($cron['cron_month'] === '*') ? date('m') : $cron['cron_month'];
-        $day_of_week = ($cron['cron_week'] === '*') ? date('D') : date('D', strtotime('Sunday +' . $cron['cron_week'] . ' days'));
+        $day_of_week = ($cron['cron_week'] === '*') ? date('D') :
+            date('D', strtotime('Sunday +' . $cron['cron_week'] . ' days'));
 
         $day = date('Y').'-'.str_pad($month, 2, '0', STR_PAD_LEFT).'-'.str_pad($day, 2, '0', STR_PAD_LEFT);
         $execution = $day_of_week.' '.$day.' '.str_pad($hour, 2, '0', STR_PAD_LEFT);

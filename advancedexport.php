@@ -2203,6 +2203,7 @@ class Advancedexport extends Module
         include_once $path.'/classes/AdvancedExportFieldClass.php';
         include_once $path.'/classes/FTP.php';
         include_once $path.'/classes/SFTP.php';
+        $fields = array();
 
         if (_PS_VERSION_ >= 1.7) {
             //    Delivery in stock
@@ -3464,12 +3465,12 @@ class Advancedexport extends Module
         $helper->token = $this->getValue('token');
         $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.
             '&module_name='.$this->name;
-        $helper->fields_value = $this->getCronFieldsValues($type);
+        $helper->fields_value = $this->getCronFieldsValues();
 
         return $helper->generateForm($this->cronFormFields($type));
     }
 
-    public function getCronFieldsValues($type)
+    public function getCronFieldsValues()
     {
         $ac = null;
         if ($this->getValue('id_advancedexportcron')) {
@@ -4662,9 +4663,6 @@ class Advancedexport extends Module
         $this->addJS($this->_path.'views/js/duallist.js');
         $this->addJS($this->_path.'views/js/selectall.chosen.js');
         $this->addJS($this->_path.'views/js/jquery.percentageloader-0.1.min.js');
-        $this->addJS($this->_path.'views/js/jquery.bsmselect.js');
-        $this->addJS($this->_path.'views/js/jquery.bsmselect.compatibility.js');
-        $this->addJS($this->_path.'views/js/jquery.bsmselect.sortable.js');
 
         $this->addJS($this->_path.'views/js/jquery.cooki-plugin.js');
         $this->addJS($this->_path.'views/js/clipboard.min.js');

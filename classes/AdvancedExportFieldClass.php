@@ -1,6 +1,6 @@
 <?php
 /**
- * 2016 Smart Soft.
+ * 2019 Smart Soft.
  *
  *  @author    Marcin Kubiak
  *  @copyright Smart Soft

@@ -1,3 +1,10 @@
+/**
+ *  @author Marcin Kubiak
+ *  @copyright  Smart Soft
+ *  @license    Commercial license
+ *  International Registered Trademark & Property of Smart Soft
+ */
+
 jQuery(function ($) {
     $('body').on('click', '.list-group .list-group-item', function () {
         $(this).toggleClass('active');

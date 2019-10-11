@@ -1,4 +1,12 @@
 <?php
+/**
+ * 2019 Smart Soft.
+ *
+ *  @author    Marcin Kubiak
+ *  @copyright Smart Soft
+ *  @license   Commercial License
+ *  International Registered Trademark & Property of Smart Soft
+ */
 
 include_once('FtpInterface.php');
 
@@ -12,12 +20,13 @@ class SFTP implements FtpInterface
     private $connection = false;
     private $pathToPhpseclib = __DIR__ . '/phpseclib';
 
-    public function __construct($host, $username, $password, $port = false) {
+    public function __construct($host, $username, $password, $port = false)
+    {
         $this->host = $host;
         $this->username = $username;
         $this->password = $password;
 
-        if( $port === false ){
+        if ($port === false){
             $port = 22;
         }
         $this->port = $port;
@@ -28,21 +37,21 @@ class SFTP implements FtpInterface
     {
         set_include_path($this->pathToPhpseclib);
 
-        if(!include('Net/SFTP.php')) {
+        if (!include('Net/SFTP.php')) {
             $this->errors[] = 'Can not load SFTP class';
             return false;
         }
 
         $connection = new Net_SFTP($this->host, $this->port);
 
-        if(!$connection) {
+        if (!$connection) {
             $this->errors[] = 'Can not connect to host (SFTP)';
             return false;
         }
 
         $login = $connection->login($this->username, $this->password);
 
-        if(!$login){
+        if (!$login){
             $this->errors[] = 'Login Faild';
             return false;
         }
@@ -52,7 +61,7 @@ class SFTP implements FtpInterface
 
     public function testConnection()
     {
-        if($this->connection === false){
+        if ($this->connection === false){
             $this->errors[] = 'There is a problem with connection';
             return false;
         }
@@ -65,17 +74,17 @@ class SFTP implements FtpInterface
 
     public function put($target, $local)
     {
-        $this->connection->put($target, $local, NET_SFTP_LOCAL_FILE );
+        $this->connection->put($target, $local, NET_SFTP_LOCAL_FILE);
     }
 
     public function listDir($directory)
     {
-        return $this->connection->nlist( $directory );
+        return $this->connection->nlist($directory);
     }
 
     public function deleteFile($file)
     {
-        return $this->connection->delete( $file );
+        return $this->connection->delete($file);
     }
 
     public function makeDir($directory)

@@ -1,3 +1,10 @@
+/**
+ *  @author Marcin Kubiak
+ *  @copyright  Smart Soft
+ *  @license    Commercial license
+ *  International Registered Trademark & Property of Smart Soft
+ */
+
 jQuery(function ($) {
     $("select").on("chosen:showing_dropdown", function(evnt, params) {
         var chosen = params.chosen,

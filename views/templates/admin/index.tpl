@@ -1,3 +1,10 @@
+{*
+*  @author Marcin Kubiak
+*  @copyright  Smart Soft
+*  @license    Commercial license
+*  International Registered Trademark & Property of Smart Soft
+*}
+
 <div class="row">
   <div class="col-lg-12">
     <div id="loader-container">

@@ -1,4 +1,12 @@
 <?php
+/**
+ * 2019 Smart Soft.
+ *
+ *  @author    Marcin Kubiak
+ *  @copyright Smart Soft
+ *  @license   Commercial License
+ *  International Registered Trademark & Property of Smart Soft
+ */
 
 include_once('FtpInterface.php');
 
@@ -16,7 +24,7 @@ class FTP implements FtpInterface
         $this->username = $username;
         $this->password = $password;
 
-        if( $port === false ){
+        if($port === false){
             $port = 21;
         }
         $this->port = $port;
@@ -27,24 +35,24 @@ class FTP implements FtpInterface
     {
         $connection = ftp_connect($this->host);
 
-        if(!$connection) {
+        if (!$connection) {
             $this->errors[] = 'Can not connect to host (FTP)';
             return false;
         }
         $login = ftp_login($connection, $this->username, $this->password);
 
-        if(!$login){
+        if (!$login){
             $this->errors[] = 'Login Faild';
             return false;
         }
 
-        ftp_pasv( $connection, true );
+        ftp_pasv($connection, true);
         return $connection;
     }
 
     public function testConnection()
     {
-        if($this->connection === false){
+        if ($this->connection === false){
             $this->errors[] = 'There is a problem with connection';
             return false;
         }
@@ -52,7 +60,7 @@ class FTP implements FtpInterface
 
     public function changeDir($directory)
     {
-        if(!ftp_chdir($this->connection, $directory)) {
+        if (!ftp_chdir($this->connection, $directory)) {
             $this->errors[] = 'Can not change directory.';
             return false;
         }

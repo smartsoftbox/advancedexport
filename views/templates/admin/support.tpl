@@ -1,3 +1,10 @@
+{*
+*  @author Marcin Kubiak
+*  @copyright  Smart Soft
+*  @license    Commercial license
+*  International Registered Trademark & Property of Smart Soft
+*}
+
 <div id="form-list-support">
   <div class="panel col-lg-12">
     <div class="panel-heading">Support</div>
