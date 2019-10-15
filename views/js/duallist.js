@@ -6,12 +6,18 @@
  */
 
 jQuery(function ($) {
+
     $('body').on('click', '.list-group .list-group-item', function () {
         $(this).toggleClass('active');
     });
     $('#filter-group select').change(function (e) {
         // get all active filter
         var group = $(this).val();
+
+        if(group == 'all') {
+          $(this).closest('.well').find('ul.list-group li').removeClass('filters_hide');
+          return false;
+        }
         // clean all filters and clean all check groups
         $(this).closest('.well').find('ul.list-group li').addClass('filters_hide');
         // show all li with filter groups and change icon for button
@@ -96,15 +102,25 @@ jQuery(function ($) {
       return false;
     });
 
-  addSlectedValue(); // serialize on start field selected
+    addSlectedValue(); // serialize on start field selected
 
-  $('.list-right ul.list-group li input').live('change', function (e) {
+    // version 1.7
+    $('.list-right ul.list-group').on('change', 'input', function (e) {
       addSlectedValue();
     });
 
-    $('.list-right ul.list-group li input').live('click', function (event) {
-        $(this).parent().removeClass('active');
+    $('.list-right ul.list-group').on('click', 'input', function (event) {
+        event.stopPropagation();
     });
+
+    // version 1.6
+    // $('.list-right ul.list-group li input').live('change', function (e) {
+    //   addSlectedValue();
+    // });
+    //
+    // $('.list-right ul.list-group li input').live('click', function (event) {
+    //   $(this).parent().removeClass('active');
+    // });
 
     $('.dual-list .selector').click(function (e) {
         var $checkBox = $(this);

@@ -100,6 +100,7 @@
                 </div>
               <div class="row" id="filter-group">
                 <select>
+                  <option value="all">All Tabs</option>
                     {foreach $input.options.optiongroup.query AS $optiongroup}
                       <option value="{$optiongroup[$input.options.optiongroup.label]|escape:'htmlall':'UTF-8'}">
                           {$optiongroup[$input.options.optiongroup.label]|escape:'htmlall':'UTF-8'}
@@ -121,14 +122,21 @@
                         {/foreach}
                     {/foreach}
                 </ul>
-              </div>
-              <div class="row"">
-                <a href="#" class="btn btn-default btn-sm move-left">
-                  <i class="icon-plus"></i> Add Static Field
-                </a>
+                <div class="">
+                  <div class="col-md-5">
+                    <a href="{$link|escape:'html'}&editfields=1" class="btn btn-default" title="change global field name">
+                      <i class="icon-pencil"></i> Global Field Name
+                    </a>
+                  </div>
+                  <div  class="btn-group col-md-5">
+                    <a href="{$link|escape:'html'}&addfield=1" class="btn btn-default" title="add static field">
+                      <i class="icon-pencil"></i> Add Static Field
+                    </a>
+                  </div>
               </div>
             </div>
         </div>
+      </div>
 
         <div class="list-arrows col-md-1 text-center">
             <a href="#" class="btn btn-default btn-sm move-left">

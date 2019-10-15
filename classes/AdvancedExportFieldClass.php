@@ -24,6 +24,8 @@ class AdvancedExportFieldClass extends ObjectModel
     public $import_combination;
     public $import_combination_name;
     public $isCustom;
+    public $group;
+    public $group17;
 
     public static $definition = array(
         'table' => 'advancedexportfield',
@@ -148,6 +150,8 @@ class AdvancedExportFieldClass extends ObjectModel
         $fields['import_name'] = (string) ($this->import_name);
         $fields['import_name'] = (string) ($this->import_name);
         $fields['isCustom'] = (bool) ($this->isCustom);
+        $fields['group'] = (string) ($this->group);
+        $fields['group17'] = (string) ($this->group17);
 
         return $fields;
     }

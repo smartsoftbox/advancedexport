@@ -18,7 +18,7 @@ class SFTP implements FtpInterface
     private $port;
     private $errors;
     private $connection = false;
-    private $pathToPhpseclib = __DIR__ . '/phpseclib';
+    private $pathToPhpseclib = _MODULE_DIR_ . '/classes/phpseclib';
 
     public function __construct($host, $username, $password, $port = false)
     {

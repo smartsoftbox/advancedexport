@@ -12,7 +12,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-function upgrade_module_4_1_8($object)
+function upgrade_module_4_1_8()
 {
     $query = 'ALTER TABLE `'._DB_PREFIX_.'advancedexport` 
         ADD `start_id` int(10) NOT NULL DEFAULT 0 after `last_exported_id`';
