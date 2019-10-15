@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 use AdvancedExportClass;
 
 require_once dirname(__FILE__).'/../../../advancedexport.php';
-require_once dirname(__FILE__).'/../../../classes/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/AdvancedExportClass.php';
 require_once dirname(__FILE__).'/../../../upgrade/install-4.3.0.php';
 
 class Install430Test extends TestCase

@@ -8,18 +8,25 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__) . '/classes/groups/ProductPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/OrderPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/CategoriesPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/CustomerPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/AddressPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/SupplierPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/NewsletterPageTab.php';
-require_once dirname(__FILE__) . '/classes/groups/ManufacturerPageTab.php';
-
 //if (!defined('_PS_VERSION_')) {
 //    exit
 //}
+
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    include_once __DIR__ . '/vendor/autoload.php';
+}
+
+use PrestaShop\Module\AdvancedExport\Group\AddressGroup;
+use PrestaShop\Module\AdvancedExport\Group\CategoryGroup;
+use PrestaShop\Module\AdvancedExport\Group\CustomerGroup;
+use PrestaShop\Module\AdvancedExport\Group\ManufacturerGroup;
+use PrestaShop\Module\AdvancedExport\Group\NewsletterGroup;
+use PrestaShop\Module\AdvancedExport\Group\OrderGroup;
+use PrestaShop\Module\AdvancedExport\Group\ProductGroup;
+use PrestaShop\Module\AdvancedExport\Group\SupplierGroup;
+use PrestaShop\Module\AdvancedExport\Model\AdvancedExportClass;
+use PrestaShop\Module\AdvancedExport\Model\AdvancedExportCronClass;
+use PrestaShop\Module\AdvancedExport\Model\AdvancedExportFieldClass;
 
 class Advancedexport extends Module
 {
@@ -39,7 +46,7 @@ class Advancedexport extends Module
             'import_combination_name' => 'Product ID*',
             'import_name' => 'ID',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Product Reference',
@@ -51,7 +58,7 @@ class Advancedexport extends Module
             'import_name' => 'Reference #',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Name',
@@ -60,7 +67,7 @@ class Advancedexport extends Module
             'import' => 2,
             'import_name' => 'Name *',
             'alias' => 'pl',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Short Description',
@@ -69,7 +76,7 @@ class Advancedexport extends Module
             'import' => 30,
             'import_name' => 'Description',
             'alias' => 'pl',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Long Description',
@@ -78,7 +85,7 @@ class Advancedexport extends Module
             'import' => 31,
             'import_name' => 'Short description',
             'alias' => 'pl',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Quantity',
@@ -89,7 +96,7 @@ class Advancedexport extends Module
             'import_combination' => 10,
             'import_combination_name' => 'Quantity',
             'attribute' => true,
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Price',
@@ -99,14 +106,14 @@ class Advancedexport extends Module
             'import_combination' => 9,
             'import_combination_name' => 'Impact on Price',
             'attribute' => true,
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Price Catalogue TTC',
             'field' => 'price_tax_nodiscount',
             'database' => 'other',
             'attribute' => true,
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Price Tax',
@@ -115,7 +122,7 @@ class Advancedexport extends Module
             'import' => 5,
             'import_name' => 'Price tax included',
             'attribute' => true,
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Wholesale Price',
@@ -126,21 +133,21 @@ class Advancedexport extends Module
             'import_name' => 'Wholesale price',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Supplier Id (default)',
             'field' => 'id_supplier',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Suppliers
+            'group' => ProductGroup::SUPPLIERS
         ),
         array(
             'name' => 'Suppliers Ids',
             'field' => 'id_supplier_all',
             'database' => 'other',
             'attribute' => true,
-            'group' => ProductPageTab::Suppliers
+            'group' => ProductGroup::SUPPLIERS
         ),
         array(
             'name' => 'Supplier Name (default)',
@@ -150,21 +157,21 @@ class Advancedexport extends Module
             'import' => 15,
             'import_name' => 'Supplier',
             'alias' => 's',
-            'group' => ProductPageTab::Suppliers
+            'group' => ProductGroup::SUPPLIERS
         ),
         array(
             'name' => 'Supplier Names',
             'field' => 'supplier_name_all',
             'database' => 'other',
             'attribute' => true,
-            'group' => ProductPageTab::Suppliers
+            'group' => ProductGroup::SUPPLIERS
         ),
         array(
             'name' => 'Manufacturer Id',
             'field' => 'id_manufacturer',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Manufacturer Name',
@@ -172,7 +179,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 16,
             'import_name' => 'Manufacturer',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Tax Id Rules Group',
@@ -181,26 +188,26 @@ class Advancedexport extends Module
             'import' => 6,
             'import_name' => 'Tax rules ID',
             'alias' => 'p',
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Tax Rate',
             'field' => 'tax_rate',
             'database' => 'other',
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Default Category Id',
             'field' => 'id_category_default',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Default Category Name',
             'field' => 'nameCategoryDefault',
             'database' => 'other',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Categories Names',
@@ -208,19 +215,19 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 4,
             'import_name' => 'Categories (x,y,z...)',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Categories Path',
             'field' => 'categories_path',
             'database' => 'other',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Categories Ids',
             'field' => 'categories_ids',
             'database' => 'other',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'On Sale',
@@ -229,7 +236,7 @@ class Advancedexport extends Module
             'import' => 8,
             'import_name' => 'On sale (0/1)',
             'alias' => 'p',
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'EAN 13',
@@ -241,7 +248,7 @@ class Advancedexport extends Module
             'import_combination_name' => 'EAN 13',
             'import_name' => 'EAN13',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Supplier Reference',
@@ -252,7 +259,7 @@ class Advancedexport extends Module
             'import_combination_name' => 'Supplier reference',
             'import_name' => 'Supplier reference #',
             'attribute' => true,
-            'group' => ProductPageTab::Suppliers
+            'group' => ProductGroup::SUPPLIERS
         ),
         array(
             'name' => 'Date Added',
@@ -261,14 +268,14 @@ class Advancedexport extends Module
             'import' => 40,
             'import_name' => 'Product creation date',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Date Update',
             'field' => 'date_upd',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Active',
@@ -277,7 +284,7 @@ class Advancedexport extends Module
             'import' => 2,
             'import_name' => 'Active (0/1)',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Meta Title',
@@ -286,7 +293,7 @@ class Advancedexport extends Module
             'import' => 33,
             'import_name' => 'Meta title',
             'alias' => 'pl',
-            'group' => ProductPageTab::SEO
+            'group' => ProductGroup::SEO
         ),
         array(
             'name' => 'Meta Description',
@@ -295,7 +302,7 @@ class Advancedexport extends Module
             'import' => 35,
             'import_name' => 'Meta description',
             'alias' => 'pl',
-            'group' => ProductPageTab::SEO
+            'group' => ProductGroup::SEO
         ),
         array(
             'name' => 'Meta Keywords',
@@ -304,7 +311,7 @@ class Advancedexport extends Module
             'import' => 35,
             'import_name' => 'Meta keywords',
             'alias' => 'pl',
-            'group' => ProductPageTab::SEO
+            'group' => ProductGroup::SEO
         ),
         array(
             'name' => 'Available Now',
@@ -313,7 +320,7 @@ class Advancedexport extends Module
             'import' => 36,
             'import_name' => 'Text when in stock',
             'alias' => 'pl',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Available Later',
@@ -322,7 +329,7 @@ class Advancedexport extends Module
             'import' => 37,
             'import_name' => 'Text when backorder allowed',
             'alias' => 'pl',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Tags',
@@ -330,7 +337,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 32,
             'import_name' => 'Tags (x,y,z...)',
-            'group' => ProductPageTab::SEO
+            'group' => ProductGroup::SEO
         ),
         array(
             'name' => 'Accessories',
@@ -338,7 +345,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 32,
             'import_name' => 'Accessories (x,y,z...)',
-            'group' => ProductPageTab::Associations
+            'group' => ProductGroup::ASSOCIATIONS
         ),
         array(
             'name' => 'Images',
@@ -347,7 +354,7 @@ class Advancedexport extends Module
             'attribute' => true,
             'import_combination' => 16,
             'import_combination_name' => 'Image URLs (x,y,z...)',
-            'group' => ProductPageTab::Images
+            'group' => ProductGroup::IMAGES
         ),
         array(
             'name' => 'Online only',
@@ -356,7 +363,7 @@ class Advancedexport extends Module
             'import' => 47,
             'import_name' => 'Available online only (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Upc',
@@ -368,7 +375,7 @@ class Advancedexport extends Module
             'import_name' => 'UPC',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Ecotax',
@@ -380,7 +387,7 @@ class Advancedexport extends Module
             'import_name' => 'Ecotax',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Unity',
@@ -389,7 +396,7 @@ class Advancedexport extends Module
             'import' => 28,
             'import_name' => 'Unity',
             'alias' => 'p',
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Unit Price Ratio',
@@ -398,7 +405,7 @@ class Advancedexport extends Module
             'import' => 29,
             'import_name' => 'Unit Price',
             'alias' => 'p',
-            'group' => ProductPageTab::Prices
+            'group' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Minimal Quantity',
@@ -410,7 +417,7 @@ class Advancedexport extends Module
             'import_name' => 'Minimal quantity',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Additional Shipping Cost',
@@ -419,7 +426,7 @@ class Advancedexport extends Module
             'import' => 27,
             'import_name' => 'Additional shipping cost',
             'alias' => 'p',
-            'group' => ProductPageTab::Shipping
+            'group' => ProductGroup::SHIPPING
         ),
         array(
             'name' => 'Location',
@@ -427,7 +434,7 @@ class Advancedexport extends Module
             'database' => 'products',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Width',
@@ -436,7 +443,7 @@ class Advancedexport extends Module
             'import' => 20,
             'import_name' => 'Width',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Height',
@@ -445,7 +452,7 @@ class Advancedexport extends Module
             'import' => 21,
             'import_name' => 'Height',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Depth',
@@ -454,7 +461,7 @@ class Advancedexport extends Module
             'import' => 22,
             'import_name' => 'Depth',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Weight',
@@ -466,7 +473,7 @@ class Advancedexport extends Module
             'import_name' => 'Weight',
             'alias' => 'p',
             'attribute' => true,
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Out Of Stock',
@@ -475,14 +482,14 @@ class Advancedexport extends Module
             'import' => 53,
             'import_name' => 'Out of stock',
             'alias' => 'p',
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Quantity Discount',
             'field' => 'quantity_discount',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Customizable',
@@ -491,7 +498,7 @@ class Advancedexport extends Module
             'import' => 49,
             'import_name' => 'Customizable (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Customization
+            'group' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Uploadable Files',
@@ -500,7 +507,7 @@ class Advancedexport extends Module
             'import' => 50,
             'import_name' => 'Uploadable files (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Customization
+            'group' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Text Fields',
@@ -509,7 +516,7 @@ class Advancedexport extends Module
             'import' => 52,
             'import_name' => 'Text fields (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Customization
+            'group' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Available For Order',
@@ -518,7 +525,7 @@ class Advancedexport extends Module
             'import' => 38,
             'import_name' => 'Available for order (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Condition',
@@ -527,7 +534,7 @@ class Advancedexport extends Module
             'import' => 48,
             'import_name' => 'Condition',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Show Price',
@@ -536,35 +543,35 @@ class Advancedexport extends Module
             'import' => 41,
             'import_name' => 'Show Price',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Indexed',
             'field' => 'indexed',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Cache Is Pack',
             'field' => 'cache_is_pack',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Cache Has Attachments',
             'field' => 'cache_has_attachments',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Attachments
+            'group' => ProductGroup::ATTACHMENTS
         ),
         array(
             'name' => 'Cache Default Attribute',
             'field' => 'cache_default_attribute',
             'database' => 'products',
             'alias' => 'p',
-            'group' => ProductPageTab::Attachments
+            'group' => ProductGroup::ATTACHMENTS
         ),
         array(
             'name' => 'Link Rewrite',
@@ -573,13 +580,13 @@ class Advancedexport extends Module
             'import' => 36,
             'import_name' => 'URL rewritten',
             'alias' => 'pl',
-            'group' => ProductPageTab::SEO
+            'group' => ProductGroup::SEO
         ),
         array(
             'name' => 'Url Product',
             'field' => 'url_product',
             'database' => 'other',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Features',
@@ -587,14 +594,14 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 46,
             'import_name' => 'Feature(Name:Value:Position)',
-            'group' => ProductPageTab::Features
+            'group' => ProductGroup::FEATURES
         ),
         array(
             'name' => 'Attributes',
             'field' => 'attributes',
             'database' => 'other',
             'attribute' => true,
-            'group' => ProductPageTab::Combinations
+            'group' => ProductGroup::COMBINATIONS
         ),
         array(
             'name' => 'Attributes Name',
@@ -603,7 +610,7 @@ class Advancedexport extends Module
             'attribute' => true,
             'import_combination' => 2,
             'import_combination_name' => 'Attributes Name',
-            'group' => ProductPageTab::Combinations
+            'group' => ProductGroup::COMBINATIONS
         ),
         array(
             'name' => 'Attributes Value',
@@ -612,7 +619,7 @@ class Advancedexport extends Module
             'attribute' => true,
             'import_combination' => 3,
             'import_combination_name' => 'Attributes Value',
-            'group' => ProductPageTab::Combinations
+            'group' => ProductGroup::COMBINATIONS
         ),
         array(
             'name' => 'Visibility',
@@ -621,7 +628,7 @@ class Advancedexport extends Module
             'import' => 26,
             'import_name' => 'Visibility',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ), //xxxxxxxx
         array(
             'name' => 'Product available date',
@@ -633,7 +640,7 @@ class Advancedexport extends Module
             'import_combination' => 21,
             'import_combination_name' => 'Combination availability date',
             'alias' => 'p',
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Discount amount',
@@ -642,7 +649,7 @@ class Advancedexport extends Module
             'import' => 9,
             'import_name' => 'Discount amount',
             'alias' => 'sp_tmp',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Discount percent',
@@ -651,7 +658,7 @@ class Advancedexport extends Module
             'import' => 10,
             'import_name' => 'Discount percent',
             'alias' => 'sp_tmp',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Discount from (yyyy-mm-dd)',
@@ -660,7 +667,7 @@ class Advancedexport extends Module
             'import' => 11,
             'import_name' => 'Discount from (yyyy-mm-dd)',
             'alias' => 'sp_tmp',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Discount to (yyyy-mm-dd)',
@@ -669,7 +676,7 @@ class Advancedexport extends Module
             'import' => 12,
             'import_name' => 'Discount to (yyyy-mm-dd)',
             'alias' => 'sp_tmp',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Cover',
@@ -677,7 +684,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 42,
             'import_name' => 'Image URLs (x,y,z...)',
-            'group' => ProductPageTab::Images
+            'group' => ProductGroup::IMAGES
         ),
         array(
             'name' => 'Id shop default',
@@ -688,7 +695,7 @@ class Advancedexport extends Module
             'alias' => 'p',
             'import_combination' => 2,
             'import_combination_name' => 'ID / Name of shop',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Advanced stock management',
@@ -699,7 +706,7 @@ class Advancedexport extends Module
             'import_combination' => 20,
             'import_combination_name' => 'Advanced stock managment',
             'alias' => 'p',
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Depends On Stock',
@@ -709,7 +716,7 @@ class Advancedexport extends Module
             'import_name' => 'Depends On Stock',
             'import_combination' => 21,
             'import_combination_name' => 'Depends on stock',
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Warehouse',
@@ -719,7 +726,7 @@ class Advancedexport extends Module
             'import_name' => 'Warehouse',
             'import_combination' => 22,
             'import_combination_name' => 'Warehouse',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Image alt',
@@ -730,7 +737,7 @@ class Advancedexport extends Module
             'import_combination' => 17,
             'import_combination_name' => 'Image alt texts (x,y,z...)',
             'attribute' => true,
-            'group' => ProductPageTab::Images
+            'group' => ProductGroup::IMAGES
         ),
         array(
             'name' => 'Image position',
@@ -741,7 +748,7 @@ class Advancedexport extends Module
             'import_combination' => 16,
             'import_combination_name' => 'Image position',
             'attribute' => true,
-            'group' => ProductPageTab::Images
+            'group' => ProductGroup::IMAGES
         ),
         array(
             'name' => 'Default (0 = No 1 = Yes)',
@@ -750,13 +757,13 @@ class Advancedexport extends Module
             'import_combination' => 16,
             'import_combination_name' => 'Default (0 = No, 1 = Yes)',
             'attribute' => true,
-            'group' => ProductPageTab::Combinations
+            'group' => ProductGroup::COMBINATIONS
         ),
         array(
             'name' => 'Product attachments url',
             'field' => 'attachments',
             'database' => 'other',
-            'group' => ProductPageTab::Attachments
+            'group' => ProductGroup::ATTACHMENTS
         ),
         array(
             'name' => 'Is Virtual',
@@ -765,7 +772,7 @@ class Advancedexport extends Module
             'import' => 1,
             'import_name' => 'Virtual product (0 = No, 1 = Yes)',
             'alias' => 'p',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'NB Downloadable',
@@ -774,7 +781,7 @@ class Advancedexport extends Module
             'import' => 1,
             'import_name' => 'Number of allowed downloads',
             'alias' => 'pd',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Date Expiration',
@@ -783,7 +790,7 @@ class Advancedexport extends Module
             'import' => 1,
             'import_name' => 'Expiration date (yyyy-mm-dd)',
             'alias' => 'pd',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Nb Days Accessible',
@@ -792,7 +799,7 @@ class Advancedexport extends Module
             'import' => 1,
             'import_name' => 'Number of days',
             'alias' => 'pd',
-            'group' => ProductPageTab::Information
+            'group' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'File URL',
@@ -800,7 +807,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 1,
             'import_name' => 'Number of days',
-            'group' => ProductPageTab::Combinations
+            'group' => ProductGroup::COMBINATIONS
         ),
         array(
             'field' => 'delivery_in_stock',
@@ -810,7 +817,7 @@ class Advancedexport extends Module
             'import_name' => 'Delivery time of in-stock products',
             'alias' => 'pl',
             'version' => 1.7,
-            'group' => ProductPageTab::Shipping
+            'group' => ProductGroup::SHIPPING
         ),
         array(
             'field' => 'delivery_out_stock',
@@ -820,7 +827,7 @@ class Advancedexport extends Module
             'import_name' => 'Delivery time of out-of-stock products with allowed orders',
             'alias' => 'pl',
             'version' => 1.7,
-            'group' => ProductPageTab::Shipping
+            'group' => ProductGroup::SHIPPING
         ),
         array(
             'field' => 'low_stock_threshold',
@@ -832,7 +839,7 @@ class Advancedexport extends Module
             'import_combination_name' => 'Default (0 = No, 1 = Yes)',
             'alias' => 'product_shop',
             'version' => 1.7,
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         ),
         array(
             'field' => 'low_stock_alert',
@@ -844,7 +851,7 @@ class Advancedexport extends Module
             'import_combination_name' => 'Default (0 = No, 1 = Yes)',
             'alias' => 'product_shop',
             'version' => 1.7,
-            'group' => ProductPageTab::Quantities
+            'group' => ProductGroup::QUANTITIES
         )
     );
 
@@ -855,7 +862,7 @@ class Advancedexport extends Module
             'field' => 'id_order',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Reference',
@@ -863,13 +870,13 @@ class Advancedexport extends Module
             'database' => 'orders',
             'alias' => 'o',
             'attribute' => true,
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Code (voucher)',
             'field' => 'code',
             'database' => 'other',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         //SHOP
         array(
@@ -877,189 +884,189 @@ class Advancedexport extends Module
             'field' => 'module',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Payment',
             'field' => 'payment',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Payment
+            'group' => OrderGroup::PAYMENT
         ),
         array(
             'name' => 'Total paid',
             'field' => 'total_paid',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total paid tax incl',
             'field' => 'total_paid_tax_incl',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total paid tax excl',
             'field' => 'total_paid_tax_excl',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total products with tax',
             'field' => 'total_products_wt',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total paid real',
             'field' => 'total_paid_real',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total products',
             'field' => 'total_products',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total shipping',
             'field' => 'total_shipping',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total shipping tax excl',
             'field' => 'total_shipping_tax_excl',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Carrier tax rate',
             'field' => 'carrier_tax_rate',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total wrapping',
             'field' => 'total_wrapping',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Shipping number',
             'field' => 'shipping_number',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Delivery number',
             'field' => 'delivery_number',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Invoice number',
             'field' => 'invoice_number',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Invoice date',
             'field' => 'invoice_date',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Delivery date',
             'field' => 'delivery_date',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Date added',
             'field' => 'date_add',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Date updated',
             'field' => 'date_upd',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Total discounts',
             'field' => 'total_discounts',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Gift message',
             'field' => 'gift_message',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Messages
+            'group' => OrderGroup::MESSAGES
         ),
         array(
             'name' => 'Valid',
             'field' => 'valid',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Carrier id',
             'field' => 'id_carrier',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Customer id',
             'field' => 'id_customer',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Customer
+            'group' => OrderGroup::CUSTOMER
         ),
         array(
             'name' => 'Recycled packaging',
             'field' => 'recyclable',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Gift wrapping',
             'field' => 'gift',
             'database' => 'orders',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Customization',
             'field' => 'customization',
             'database' => 'other',
             'alias' => 'o',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         //PS_CUSTOMER
         array(
@@ -1067,28 +1074,28 @@ class Advancedexport extends Module
             'field' => 'firstname',
             'database' => 'customer',
             'alias' => 'cu',
-            'group' => OrderPageTab::Customer
+            'group' => OrderGroup::CUSTOMER
         ),
         array(
             'name' => 'Customer Lastname',
             'field' => 'lastname',
             'database' => 'customer',
             'alias' => 'cu',
-            'group' => OrderPageTab::Customer
+            'group' => OrderGroup::CUSTOMER
         ),
         array(
             'name' => 'Customer Email',
             'field' => 'email',
             'database' => 'customer',
             'alias' => 'cu',
-            'group' => OrderPageTab::Customer
+            'group' => OrderGroup::CUSTOMER
         ),
         array(
             'name' => 'Customer id language',
             'field' => 'id_lang',
             'database' => 'customer',
             'alias' => 'cu',
-            'group' => OrderPageTab::Customer
+            'group' => OrderGroup::CUSTOMER
         ),
         //PS_ADRESS
         array(
@@ -1097,14 +1104,14 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'gender',
             'alias' => 'gl',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery Company Name',
             'field' => 'company',
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery Firstname',
@@ -1112,7 +1119,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery Lastname',
@@ -1120,7 +1127,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery address line 1',
@@ -1128,7 +1135,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery address line 2',
@@ -1136,7 +1143,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery postcode',
@@ -1144,7 +1151,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery city',
@@ -1152,7 +1159,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery phone',
@@ -1160,7 +1167,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery phone(mobile)',
@@ -1168,7 +1175,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery VAT',
@@ -1176,7 +1183,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery DNI',
@@ -1184,7 +1191,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery Other',
@@ -1193,7 +1200,7 @@ class Advancedexport extends Module
             'database' => 'address',
             'alias'
             => 'a',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         //PS_STATE
         array(
@@ -1201,7 +1208,7 @@ class Advancedexport extends Module
             'field' => 'iso_code',
             'database' => 'country',
             'alias' => 'co',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Delivery state',
@@ -1209,7 +1216,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'state',
             'alias' => 's',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         //PS_COUNTRY_LANG
         array(
@@ -1218,7 +1225,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'country_lang',
             'alias' => 'cl',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         //PS_ADRESS
         array(
@@ -1227,7 +1234,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice address line 2',
@@ -1235,7 +1242,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice postcode',
@@ -1243,7 +1250,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice city',
@@ -1251,7 +1258,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice phone',
@@ -1259,7 +1266,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice phone (mobile)',
@@ -1267,7 +1274,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice gender',
@@ -1275,7 +1282,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'gender',
             'alias' => 'inv_gl',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice firstname',
@@ -1283,7 +1290,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice lastname',
@@ -1291,7 +1298,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice company name',
@@ -1299,7 +1306,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'address',
             'alias' => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice other',
@@ -1308,7 +1315,7 @@ class Advancedexport extends Module
             'database' => 'address',
             'alias'
             => 'inv_a',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice state',
@@ -1316,7 +1323,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'state',
             'alias' => 'inv_s',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         array(
             'name' => 'Invoice country',
@@ -1324,7 +1331,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'country_lang',
             'alias' => 'inv_cl',
-            'group' => OrderPageTab::Invoice
+            'group' => OrderGroup::INVOICE
         ),
         //ORDER_PAYMENT
         array(
@@ -1332,7 +1339,7 @@ class Advancedexport extends Module
             'field' => 'transaction_id',
             'database' => 'order_payment',
             'alias' => 'op',
-            'group' => OrderPageTab::Payment
+            'group' => OrderGroup::PAYMENT
         ),
         //PS_CARRIER
         array(
@@ -1341,7 +1348,7 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'carrier',
             'alias' => 'ca',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         //PS_ORDER_DETAIL
         array(
@@ -1349,35 +1356,35 @@ class Advancedexport extends Module
             'field' => 'product_id',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Ref',
             'field' => 'product_reference',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Name',
             'field' => 'product_name',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Price',
             'field' => 'product_price',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Quantity',
             'field' => 'product_quantity',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Shop name',
@@ -1385,7 +1392,7 @@ class Advancedexport extends Module
             'database' => 'shop',
             'as' => true,
             'alias' => 'sh',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
 
         array(
@@ -1393,7 +1400,7 @@ class Advancedexport extends Module
             'field' => 'message',
             'database' => 'message',
             'alias' => 'm',
-            'group' => OrderPageTab::Messages
+            'group' => OrderGroup::MESSAGES
         ),
         array(
             'name' => 'Order currency',
@@ -1401,133 +1408,133 @@ class Advancedexport extends Module
             'database' => 'currency',
             'as' => true,
             'alias' => 'cur',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Product quantity discount',
             'field' => 'product_quantity_discount',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Reduction amount',
             'field' => 'reduction_amount',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Reduction amount tax incl',
             'field' => 'reduction_amount_tax_incl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Reduction amount tax excl',
             'field' => 'reduction_amount_tax_excl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product group reduction',
             'field' => 'group_reduction',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product ean13',
             'field' => 'product_ean13',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Unit price tax incl',
             'field' => 'unit_price_tax_incl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Unit price tax excl',
             'field' => 'unit_price_tax_excl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Total price tax excl',
             'field' => 'total_price_tax_incl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Total price tax excl',
             'field' => 'total_price_tax_excl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product Total shipping price tax excl',
             'field' => 'total_shipping_price_tax_incl',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Orginal wholesale price',
             'field' => 'original_wholesale_price',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product ecotax',
             'field' => 'ecotax',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product ecotax rate',
             'field' => 'ecotax_tax_rate',
             'database' => 'order_detail',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product tax rate (order detail table)',
             'field' => 'tax_rate',
             'database' => 'tax',
             'alias' => 'od',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product tax rate (tax table)',
             'field' => 'rate',
             'database' => 'tax',
             'alias' => 't',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product tax unit amount',
             'field' => 'unit_amount',
             'database' => 'order_detail_tax',
             'alias' => 'odt',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Product tax total amount',
             'field' => 'total_amount',
             'database' => 'order_detail_tax',
             'alias' => 'odt',
-            'group' => OrderPageTab::Product
+            'group' => OrderGroup::PRODUCT
         ),
         array(
             'name' => 'Order state',
@@ -1535,13 +1542,13 @@ class Advancedexport extends Module
             'database' => 'order_state_lang',
             'as' => true,
             'alias' => 'osl',
-            'group' => OrderPageTab::Delivery // todo check
+            'group' => OrderGroup::DELIVERY // todo check
         ),
         array(
             'name' => 'Employee name (last state)',
             'field' => 'employee_name',
             'database' => 'other',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         ),
         array(
             'name' => 'Delivery state iso',
@@ -1549,13 +1556,13 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'state',
             'alias' => 's',
-            'group' => OrderPageTab::Delivery
+            'group' => OrderGroup::DELIVERY
         ),
         array(
             'name' => 'Total product weight',
             'field' => 'total_product_weight',
             'database' => 'other',
-            'group' => OrderPageTab::Order
+            'group' => OrderGroup::ORDER
         )
     );
     public $categories = array(
@@ -1566,7 +1573,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 1,
             'import_name' => 'ID',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Id parent',
@@ -1575,35 +1582,35 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 4,
             'import_name' => 'Parent category',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Id shop default',
             'field' => 'id_shop_default',
             'database' => 'category',
             'alias' => 'c',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Level depth',
             'field' => 'level_depth',
             'database' => 'category',
             'alias' => 'c',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'nleft',
             'field' => 'nleft',
             'database' => 'category',
             'alias' => 'c',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'nright',
             'field' => 'nright',
             'database' => 'category',
             'alias' => 'c',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'active',
@@ -1612,7 +1619,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 2,
             'import_name' => 'Active (0/1)',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Is root category',
@@ -1621,20 +1628,20 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 5,
             'import_name' => 'Root category (0/1)',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Id group',
             'field' => 'id_group',
             'database' => 'other',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Id shop',
             'field' => 'id_shop',
             'database' => 'category_lang',
             'alias' => 'cl',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Name',
@@ -1643,7 +1650,7 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 3,
             'import_name' => 'Name *',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Description',
@@ -1652,7 +1659,7 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 6,
             'import_name' => 'Description',
-            'group' => CategoriesPageTab::Information
+            'group' => CategoryGroup::INFORMATION
         ),
         array(
             'name' => 'Link rewrite',
@@ -1661,7 +1668,7 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 10,
             'import_name' => 'URL rewritten',
-            'group' => CategoriesPageTab::SEO
+            'group' => CategoryGroup::SEO
         ),
         array(
             'name' => 'Meta title',
@@ -1670,7 +1677,7 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 7,
             'import_name' => 'Meta title',
-            'group' => CategoriesPageTab::SEO
+            'group' => CategoryGroup::SEO
         ),
         array(
             'name' => 'Meta keywords',
@@ -1679,7 +1686,7 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 8,
             'import_name' => 'Meta keywords',
-            'group' => CategoriesPageTab::SEO
+            'group' => CategoryGroup::SEO
         ),
         array(
             'name' => 'Meta description',
@@ -1688,14 +1695,14 @@ class Advancedexport extends Module
             'alias' => 'cl',
             'import' => 9,
             'import_name' => 'Meta description',
-            'group' => CategoriesPageTab::SEO
+            'group' => CategoryGroup::SEO
         ),
         array(
             'name' => 'Position',
             'field' => 'position',
             'database' => 'category_shop',
             'alias' => 'category_shop',
-            'group' => CategoriesPageTab::SEO
+            'group' => CategoryGroup::SEO
         ),
         array(
             'name' => 'Image URL',
@@ -1703,7 +1710,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 11,
             'import_name' => 'Image URL',
-            'group' => CategoriesPageTab::Image
+            'group' => CategoryGroup::IMAGE
         )
     );
     public $manufacturers = array(
@@ -1714,7 +1721,7 @@ class Advancedexport extends Module
             'alias' => 'm',
             'import' => 1,
             'import_name' => 'ID',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'name',
@@ -1723,7 +1730,7 @@ class Advancedexport extends Module
             'alias' => 'm',
             'import' => 3,
             'import_name' => 'Name *',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'active',
@@ -1732,7 +1739,7 @@ class Advancedexport extends Module
             'alias' => 'm',
             'import' => 2,
             'import_name' => 'Active (0/1)',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'description',
@@ -1741,7 +1748,7 @@ class Advancedexport extends Module
             'alias' => 'ml',
             'import' => 4,
             'import_name' => 'Description',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'short description',
@@ -1750,7 +1757,7 @@ class Advancedexport extends Module
             'alias' => 'ml',
             'import' => 5,
             'import_name' => 'Short description',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'meta title',
@@ -1759,7 +1766,7 @@ class Advancedexport extends Module
             'alias' => 'ml',
             'import' => 6,
             'import_name' => 'Meta title',
-            'group' => ManufacturerPageTab::Seo
+            'group' => ManufacturerGroup::SEO
         ),
         array(
             'name' => 'meta keywords',
@@ -1768,7 +1775,7 @@ class Advancedexport extends Module
             'alias' => 'ml',
             'import' => 7,
             'import_name' => 'Meta keywords',
-            'group' => ManufacturerPageTab::Seo
+            'group' => ManufacturerGroup::SEO
         ),
         array(
             'name' => 'meta description',
@@ -1777,14 +1784,14 @@ class Advancedexport extends Module
             'alias' => 'ml',
             'import' => 8,
             'import_name' => 'Meta description',
-            'group' => ManufacturerPageTab::Seo
+            'group' => ManufacturerGroup::SEO
         ),
         array(
             'name' => 'id shop',
             'field' => 'id_shop',
             'database' => 'manufacturer',
             'alias' => 'manufacturer_shop',
-            'group' => ManufacturerPageTab::Information
+            'group' => ManufacturerGroup::INFORMATION
         ),
         array(
             'name' => 'Image URL',
@@ -1792,7 +1799,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 9,
             'import_name' => 'Image URL',
-            'group' => ManufacturerPageTab::Image
+            'group' => ManufacturerGroup::IMAGE
         )
     );
     public $suppliers = array(
@@ -1803,7 +1810,7 @@ class Advancedexport extends Module
             'alias' => 's',
             'import' => 1,
             'import_name' => 'ID',
-            'group' => SupplierPageTab::Information
+            'group' => SupplierGroup::INFORMATION
         ),
         array(
             'name' => 'name',
@@ -1812,7 +1819,7 @@ class Advancedexport extends Module
             'alias' => 's',
             'import' => 3,
             'import_name' => 'Name *',
-            'group' => SupplierPageTab::Information
+            'group' => SupplierGroup::INFORMATION
         ),
         array(
             'name' => 'active',
@@ -1821,7 +1828,7 @@ class Advancedexport extends Module
             'alias' => 's',
             'import' => 2,
             'import_name' => 'Active (0/1)',
-            'group' => SupplierPageTab::Information
+            'group' => SupplierGroup::INFORMATION
         ),
         array(
             'name' => 'description',
@@ -1830,7 +1837,7 @@ class Advancedexport extends Module
             'alias' => 'sl',
             'import' => 4,
             'import_name' => 'Description',
-            'group' => SupplierPageTab::Information
+            'group' => SupplierGroup::INFORMATION
         ),
         array(
             'name' => 'meta title',
@@ -1839,7 +1846,7 @@ class Advancedexport extends Module
             'alias' => 'sl',
             'import' => 6,
             'import_name' => 'Meta title',
-            'group' => SupplierPageTab::Seo
+            'group' => SupplierGroup::SEO
         ),
         array(
             'name' => 'meta keywords',
@@ -1848,7 +1855,7 @@ class Advancedexport extends Module
             'alias' => 'sl',
             'import' => 7,
             'import_name' => 'Meta keywords',
-            'group' => SupplierPageTab::Seo
+            'group' => SupplierGroup::SEO
         ),
         array(
             'name' => 'meta description',
@@ -1857,14 +1864,14 @@ class Advancedexport extends Module
             'alias' => 'sl',
             'import' => 8,
             'import_name' => 'Meta description',
-            'group' => SupplierPageTab::Seo
+            'group' => SupplierGroup::SEO
         ),
         array(
             'name' => 'id shop',
             'field' => 'id_shop',
             'database' => 'supplier',
             'alias' => 'supplier_shop',
-            'group' => SupplierPageTab::Information
+            'group' => SupplierGroup::INFORMATION
         ),
         array(
             'name' => 'Image URL',
@@ -1872,7 +1879,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 9,
             'import_name' => 'Image URL',
-            'group' => SupplierPageTab::Image
+            'group' => SupplierGroup::IMAGE
         )
     );
     public $customers = array(
@@ -1883,7 +1890,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 1,
             'import_name' => 'ID',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'id gender',
@@ -1892,28 +1899,28 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 3,
             'import_name' => 'Titles ID (Mr = 1, Ms = 2, else 0)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'company',
             'field' => 'company',
             'database' => 'customer',
             'alias' => 'c',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'siret',
             'field' => 'siret',
             'database' => 'customer',
             'alias' => 'c',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'ape',
             'field' => 'ape',
             'database' => 'customer',
             'alias' => 'c',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'firstname',
@@ -1922,7 +1929,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 8,
             'import_name' => 'First Name *',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'lastname',
@@ -1931,7 +1938,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 7,
             'import_name' => 'Last Name *',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'email',
@@ -1940,7 +1947,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 4,
             'import_name' => 'Email *',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'birthday',
@@ -1949,7 +1956,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 6,
             'import_name' => 'Birthday (yyyy-mm-dd)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'newsletter',
@@ -1958,14 +1965,14 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 9,
             'import_name' => 'Newsletter (0/1)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'website',
             'field' => 'website',
             'database' => 'customer',
             'alias' => 'c',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'password',
@@ -1974,7 +1981,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 5,
             'import_name' => 'Passowrd *',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'active',
@@ -1983,7 +1990,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 2,
             'import_name' => 'Active (0/1)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'optin',
@@ -1992,7 +1999,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 10,
             'import_name' => 'Opt-in (0/1)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'date add',
@@ -2001,7 +2008,7 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 11,
             'import_name' => 'Registration date (yyyy-mm-dd)',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'default group id',
@@ -2010,14 +2017,14 @@ class Advancedexport extends Module
             'alias' => 'c',
             'import' => 12,
             'import_name' => 'Default group ID',
-            'group' => CustomerPageTab::Association
+            'group' => CustomerGroup::ASSOCIATION
         ),
         array(
             'name' => 'id language',
             'field' => 'id_lang',
             'database' => 'customer',
             'alias' => 'c',
-            'group' => CustomerPageTab::Information
+            'group' => CustomerGroup::INFORMATION
         ),
         array(
             'name' => 'groups',
@@ -2025,7 +2032,7 @@ class Advancedexport extends Module
             'database' => 'other',
             'import' => 13,
             'import_name' => 'Groups (x,y,z...)',
-            'group' => CustomerPageTab::Association
+            'group' => CustomerGroup::ASSOCIATION
         ),
         array(
             'name' => 'address company',
@@ -2033,7 +2040,7 @@ class Advancedexport extends Module
             'database' => 'address',
             'as' => true,
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address firstname',
@@ -2041,7 +2048,7 @@ class Advancedexport extends Module
             'database' => 'address',
             'as' => true,
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address lastname',
@@ -2049,70 +2056,70 @@ class Advancedexport extends Module
             'database' => 'address',
             'as' => true,
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address address1',
             'field' => 'address1',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address address2',
             'field' => 'address2',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address postcode',
             'field' => 'postcode',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address city',
             'field' => 'city',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address other',
             'field' => 'other',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address phone',
             'field' => 'phone',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address phone_mobile',
             'field' => 'phone_mobile',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address vat_number',
             'field' => 'vat_number',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address dni',
             'field' => 'dni',
             'database' => 'address',
             'alias' => 'a',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address active',
@@ -2120,14 +2127,14 @@ class Advancedexport extends Module
             'database' => 'address',
             'alias' => 'a',
             'as' => true,
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address state',
             'field' => 'name',
             'database' => 'state',
             'alias' => 's',
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         ),
         array(
             'name' => 'address country',
@@ -2135,7 +2142,7 @@ class Advancedexport extends Module
             'database' => 'country_lang',
             'alias' => 'co',
             'as' => true,
-            'group' => CustomerPageTab::Address
+            'group' => CustomerGroup::ADDRESS
         )
     );
     public $newsletters = array(
@@ -2143,31 +2150,31 @@ class Advancedexport extends Module
             'name' => 'Email',
             'field' => 'email',
             'database' => 'newsletter',
-            'group' => CustomerPageTab::Information
+            'group' => NewsletterGroup::INFORMATION
         ),
         array(
             'name' => 'Date add',
             'field' => 'newsletter_date_add',
             'database' => 'newsletter',
-            'group' => CustomerPageTab::Information
+            'group' => NewsletterGroup::INFORMATION
         ),
         array(
             'name' => 'Ip',
             'field' => 'ip_registration_newsletter',
             'database' => 'newsletter',
-            'group' => CustomerPageTab::Information
+            'group' => NewsletterGroup::INFORMATION
         ),
         array(
             'name' => 'Referer',
             'field' => 'http_referer',
             'database' => 'newsletter',
-            'group' => CustomerPageTab::Information
+            'group' => NewsletterGroup::INFORMATION
         ),
         array(
             'name' => 'Active',
             'field' => 'active',
             'database' => 'newsletter',
-            'group' => CustomerPageTab::Information
+            'group' => NewsletterGroup::INFORMATION
         )
     );
     public $addresses = array(
@@ -2178,7 +2185,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 1,
             'import_name' => 'id',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'alias',
@@ -2187,7 +2194,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 2,
             'import_name' => 'Alias*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'active',
@@ -2196,7 +2203,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 3,
             'import_name' => 'Active (0/1)',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'email',
@@ -2205,7 +2212,7 @@ class Advancedexport extends Module
             'alias' => 'cu',
             'import' => 4,
             'import_name' => 'Customer e-mail*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'id customer',
@@ -2214,7 +2221,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 5,
             'import_name' => 'Customer ID',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'manufacturer',
@@ -2224,7 +2231,7 @@ class Advancedexport extends Module
             'as' => true,
             'import' => 6,
             'import_name' => 'Manufacturer',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'supplier',
@@ -2234,7 +2241,7 @@ class Advancedexport extends Module
             'as' => true,
             'import' => 7,
             'import_name' => 'Supplier',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'company',
@@ -2243,7 +2250,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 8,
             'import_name' => 'Company',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'lastname',
@@ -2252,7 +2259,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 9,
             'import_name' => 'Lastname*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'firstname',
@@ -2261,7 +2268,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 10,
             'import_name' => 'Firstname*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'address 1',
@@ -2270,7 +2277,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 11,
             'import_name' => 'Address 1*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'address 2',
@@ -2279,7 +2286,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 12,
             'import_name' => 'Address 2*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'postcode',
@@ -2288,7 +2295,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 13,
             'import_name' => 'Zipcode*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'city',
@@ -2297,7 +2304,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 14,
             'import_name' => 'City*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'country',
@@ -2307,7 +2314,7 @@ class Advancedexport extends Module
             'as' => true,
             'import' => 15,
             'import_name' => 'Country*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'state',
@@ -2317,7 +2324,7 @@ class Advancedexport extends Module
             'as' => true,
             'import' => 16,
             'import_name' => 'State*',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'other',
@@ -2326,7 +2333,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 17,
             'import_name' => 'Other',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'phone',
@@ -2335,7 +2342,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 18,
             'import_name' => 'Phone',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'mobile',
@@ -2344,7 +2351,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 19,
             'import_name' => 'Mobile Phone',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'vat number',
@@ -2353,7 +2360,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 20,
             'import_name' => 'VAT number',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         ),
         array(
             'name' => 'dni',
@@ -2362,7 +2369,7 @@ class Advancedexport extends Module
             'alias' => 'a',
             'import' => 21,
             'import_name' => 'DNI',
-            'group' => AddressPageTab::Information
+            'group' => AddressGroup::INFORMATION
         )
     );
     public $switch;
@@ -2488,18 +2495,6 @@ class Advancedexport extends Module
         $this->showTimeAndMemory = false;
         $this->switch = (_PS_VERSION_ >= 1.6 ? 'switch' : 'radio');
         parent::__construct();
-
-        $path = dirname(__FILE__);
-
-        if (strpos(__FILE__, 'Module.php') !== false) {
-            $path .= '/../modules/'.$this->name;
-        }
-
-        include_once $path.'/classes/AdvancedExportClass.php';
-        include_once $path.'/classes/AdvancedExportCronClass.php';
-        include_once $path.'/classes/AdvancedExportFieldClass.php';
-        include_once $path.'/classes/FTP.php';
-        include_once $path.'/classes/SFTP.php';
 
 
         $fields = array();
