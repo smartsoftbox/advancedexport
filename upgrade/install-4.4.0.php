@@ -106,10 +106,11 @@ function upgrade_module_4_4_0($module)
 
 function findKeyByValue($array, $field, $value)
 {
-    foreach($array as $key => $subarray)
+    foreach ($array as $key => $subarray)
     {
-        if ( $subarray[$field] === $value )
+        if ($subarray[$field] === $value) {
             return $key;
+        }
     }
     return false;
 }

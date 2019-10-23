@@ -13,4 +13,4 @@ class CustomerGroup
     const INFORMATION = "Information";
     const ADDRESS = 'Address';
     const ASSOCIATION = 'Association';
-};
+}

@@ -14,4 +14,4 @@ class SupplierGroup
     const SEO = "Seo";
     const IMAGE = 'Image';
     const ADDRESS = 'Address';
-};
+}

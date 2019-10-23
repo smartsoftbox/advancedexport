@@ -8,7 +8,7 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once __DIR__ . '/FtpInterface.php';
+require_once dirname(__DIR__) . '/FtpInterface.php';
 
 
 class SFTP implements FtpInterface

@@ -13,4 +13,4 @@ class CategoryGroup
     const INFORMATION = "Information";
     const IMAGE = 'Image';
     const SEO = 'SEO';
-};
+}

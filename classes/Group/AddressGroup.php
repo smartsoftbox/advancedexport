@@ -11,4 +11,4 @@
 class AddressGroup
 {
     const INFORMATION = "Information";
-};
+}

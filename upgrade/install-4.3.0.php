@@ -140,4 +140,3 @@ function changeIdsToFieldNames($model, $allFields)
 
     return Tools::jsonEncode($fields, true);
 }
-

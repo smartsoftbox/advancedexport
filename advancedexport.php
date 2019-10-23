@@ -12,24 +12,24 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    include_once __DIR__ . '/vendor/autoload.php';
+if (file_exists(dirname(__DIR__) . '/vendor/autoload.php')) {
+    include_once dirname(__DIR__) . '/vendor/autoload.php';
 }
-require_once __DIR__ . '/classes/Group/AddressGroup.php';
-require_once __DIR__ . '/classes/Group/CategoryGroup.php';
-require_once __DIR__ . '/classes/Group/CustomerGroup.php';
-require_once __DIR__ . '/classes/Group/ManufacturerGroup.php';
-require_once __DIR__ . '/classes/Group/NewsletterGroup.php';
-require_once __DIR__ . '/classes/Group/OrderGroup.php';
-require_once __DIR__ . '/classes/Group/ProductGroup.php';
-require_once __DIR__ . '/classes/Group/SupplierGroup.php';
-require_once __DIR__ . '/classes/SFTP.php';
-require_once __DIR__ . '/classes/FTP.php';
+require_once dirname(__DIR__) . '/classes/Group/AddressGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/CategoryGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/CustomerGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/ManufacturerGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/NewsletterGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/OrderGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/ProductGroup.php';
+require_once dirname(__DIR__) . '/classes/Group/SupplierGroup.php';
+require_once dirname(__DIR__) . '/classes/SFTP.php';
+require_once dirname(__DIR__) . '/classes/FTP.php';
 
 
-require_once __DIR__ . '/classes/Model/AdvancedExportClass.php';
-require_once __DIR__ . '/classes/Model/AdvancedExportCronClass.php';
-require_once __DIR__ . '/classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__DIR__) . '/classes/Model/AdvancedExportClass.php';
+require_once dirname(__DIR__) . '/classes/Model/AdvancedExportCronClass.php';
+require_once dirname(__DIR__) . '/classes/Model/AdvancedExportFieldClass.php';
 
 class Advancedexport extends Module
 {
@@ -2900,10 +2900,19 @@ class Advancedexport extends Module
                 }
 
                 $protocol = ($params['save_type'] == 1 ?
-                    new FTP((string)$params['hostname'], (string)$params['username'], (string)$params['password'],
-                        ($params['port'] ? (int)$params['port'] : false)) :
-                    new SFTP((string)$params['hostname'], (string)$params['username'], (string)$params['password'],
-                        ($params['port'] ? (int)$params['port'] : false)));
+                    new FTP(
+                        (string)$params['hostname'],
+                        (string)$params['username'],
+                        (string)$params['password'],
+                        ($params['port'] ? (int)$params['port'] : false)
+                    ) :
+                    new SFTP(
+                        (string)$params['hostname'],
+                        (string)$params['username'],
+                        (string)$params['password'],
+                        ($params['port'] ? (int)$params['port'] : false)
+                    )
+                );
 
                 if (!count($protocol->getErrors()) && $params['path']) {
                     $protocol->changeDir($params['path']);

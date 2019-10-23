@@ -14,4 +14,4 @@ class ManufacturerGroup
     const SEO = "Seo";
     const IMAGE = 'Image';
     const ADDRESS = 'Address';
-};
+}

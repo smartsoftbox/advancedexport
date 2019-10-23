@@ -19,8 +19,8 @@ class UpgradeHelper
 
     public static function insertColumn($column, $after, $table, $type = 'varchar(255)')
     {
-        if(self::isColumnExists($column, $table)) {
-           return true;
+        if (self::isColumnExists($column, $table)) {
+            return true;
         }
 
         $query = 'ALTER TABLE `'._DB_PREFIX_.$table.'` 
@@ -53,11 +53,11 @@ class UpgradeHelper
 
     public static function insertField($array, $table)
     {
-        if(self::isColumnAndTabWithValueExists('field', $array['tab'], $array['field'], $table)) {
+        if (self::isColumnAndTabWithValueExists('field', $array['tab'], $array['field'], $table)) {
             return true;
         }
 
-        $array = array_map(function($value){
+        $array = array_map(function ($value){
             return pSQL($value);
         }, $array);
 
@@ -69,11 +69,11 @@ class UpgradeHelper
 
     public static function updateField($array, $table)
     {
-        if(!self::isColumnWithValueExists('field', $array['field'], $table)) {
+        if (!self::isColumnWithValueExists('field', $array['field'], $table)) {
             return true;
         }
 
-        $array = array_map(function($value){
+        $array = array_map(function ($value){
             return pSQL($value);
         }, $array);
 

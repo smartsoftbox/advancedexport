@@ -11,4 +11,4 @@
 class NewsletterGroup
 {
     const INFORMATION = "Information";
-};
+}

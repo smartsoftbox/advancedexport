@@ -10,9 +10,9 @@
 {block name="input"}
     {if $input.type == 'html'}
         {if isset($input.html_content)}
-            {$input.html_content}
+            {$input.html_content|escape:'html'}
         {else}
-            {$input.name}
+            {$input.name|escape:'html'}
         {/if}
     {elseif $input.type == 'duallist'}
         <div class="dual-list list-left col-md-5" style="padding-left: 0px;">

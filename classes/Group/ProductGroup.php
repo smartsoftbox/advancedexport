@@ -22,4 +22,4 @@ class ProductGroup
     const CUSTOMIZATION = 'Customization';
     const ATTACHMENTS = 'Attachments';
     const SUPPLIERS = 'Suppliers';
-};
+}

@@ -17,4 +17,4 @@ class OrderGroup
     const CUSTOMER = 'Customer';
     const PAYMENT = 'Payment';
     const MESSAGES = 'Messages';
-};
+}
