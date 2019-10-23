@@ -31,7 +31,8 @@
         </a>
       </li>
       <li style="background:#D6682;">
-        <a href="http://storepresta.com/docs/advanced-export/getting-started/automatic-export-with-cron/" target="_blank">
+        <a href="http://storepresta.com/docs/advanced-export/getting-started/automatic-export-with-cron/"
+           target="_blank">
           Automatic export schedule task
         </a>
       </li>
@@ -56,7 +57,8 @@
         </a>
       </li>
       <li style="background:#D6682;">
-        <a href="http://storepresta.com/docs/advanced-export/getting-started/create-default-import-files/" target="_blank">
+        <a href="http://storepresta.com/docs/advanced-export/getting-started/create-default-import-files/"
+           target="_blank">
           Create default import files
         </a>
       </li>
@@ -70,20 +72,27 @@
   </div>
   <div class="panel col-lg-12">
     <div class="panel-heading">Cron Link For All Your Tasks</div>
+    <span style="float:left;"><img width="85px;" style="margin-right:15px;border-radius: 5px;"
+                                   src="../modules/advancedexport/views/img/cron.png"></span>
     0 * * * * curl "{$cron_url|escape:'html':'UTF-8'}"
   </div>
   <div class="panel col-lg-12">
     <div class="panel-heading">Support Contact</div>
-    <span style="float:left;"><img width="90px;" style="margin-right:15px;" src="../modules/advancedexport/views/img/support.png"></span>
-    <br>
-      Please feel free to contact us if you require any further information or help.
-      <br>Please use PrestaShop addons contact form</br>
-      <a href="https://addons.prestashop.com/contact-form.php?id_product=6927">
-        <b>https://addons.prestashop.com/contact-form.php?id_product=6927</b>
-      </a>
-    </div>
+    <span style="float:left;"><img width="90px;" style="margin-right:15px;border-radius: 5px;"
+                                   src="../modules/advancedexport/views/img/support.png"></span>
+
+    Please feel free to contact us if you require any further information or help.
+    <br>Please use PrestaShop addons contact form</br>
+    <a href="https://addons.prestashop.com/contact-form.php?id_product=6927">
+      https://addons.prestashop.com/contact-form.php?id_product=6927
+    </a>
+    <div style="clear: both;width:100%;"></div>
   </div>
   <div class="panel col-lg-12">
-    <div class="panel-heading">Documentation</div>
+    <div class="panel-heading">Rate Module</div>
+    <span style="float:left;"><img width="90px;" style="margin-right:15px;"
+                                   src="../modules/advancedexport/views/img/stars.png"></span>
+    <b>If you are happy with the module. please rate it with five star.</b>
+    <div style="clear: both;width:100%;"></div>
   </div>
 </div>

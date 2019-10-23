@@ -8,9 +8,7 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport;
-
-use FtpInterface;
+require_once __DIR__ . '/FtpInterface.php';
 
 class FTP implements FtpInterface
 {

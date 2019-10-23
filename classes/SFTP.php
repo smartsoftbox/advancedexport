@@ -8,9 +8,8 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport;
+require_once __DIR__ . '/FtpInterface.php';
 
-use FtpInterface;
 
 class SFTP implements FtpInterface
 {
@@ -20,7 +19,6 @@ class SFTP implements FtpInterface
     private $port;
     private $errors;
     private $connection = false;
-    private $pathToPhpseclib = _MODULE_DIR_ . '/classes/phpseclib';
 
     public function __construct($host, $username, $password, $port = false)
     {
@@ -37,7 +35,7 @@ class SFTP implements FtpInterface
 
     public function connect()
     {
-        set_include_path($this->pathToPhpseclib);
+        set_include_path(dirname(__FILE__) . '/../vendor/phpseclib');
 
         if (!include('Net/SFTP.php')) {
             $this->errors[] = 'Can not load SFTP class';

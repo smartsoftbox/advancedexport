@@ -8,10 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport\Model;
-
-use PrestaShop\PrestaShop\Adapter\Entity\ObjectModel;
-
 class AdvancedExportCronClass extends ObjectModel
 {
     public $id;

@@ -8,11 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport\Model;
-
-use PrestaShop\PrestaShop\Adapter\Entity\ObjectModel;
-use PrestaShop\PrestaShop\Adapter\Entity\Db;
-
 class AdvancedExportFieldClass extends ObjectModel
 {
     public $id;
@@ -29,8 +24,9 @@ class AdvancedExportFieldClass extends ObjectModel
     public $import_combination;
     public $import_combination_name;
     public $isCustom;
-    public $group;
+    public $group15;
     public $group17;
+    public $version;
 
     public static $definition = array(
         'table' => 'advancedexportfield',
@@ -155,8 +151,9 @@ class AdvancedExportFieldClass extends ObjectModel
         $fields['import_name'] = (string) ($this->import_name);
         $fields['import_name'] = (string) ($this->import_name);
         $fields['isCustom'] = (bool) ($this->isCustom);
-        $fields['group'] = (string) ($this->group);
+        $fields['group15'] = (string) ($this->group15);
         $fields['group17'] = (string) ($this->group17);
+        $fields['version'] = (string) ($this->version);
 
         return $fields;
     }

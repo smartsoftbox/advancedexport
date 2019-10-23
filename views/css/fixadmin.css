@@ -1,0 +1,107 @@
+.col-md-5 {
+  width: 41.66667%;
+  float: left;
+}
+.col-md-10 {
+  width: 83.33333%;
+  float: left;
+}
+.col-md-2 {
+  width: 16.66667%;
+  float: left;
+}
+.col-md-1 {
+  width: 8.33333%;
+  float: left;
+}
+.row {
+  padding: 0px 19px;
+  clear: both;
+}
+.row .button {
+  margin:5px;
+}
+.well {
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+  background-color:
+    #fcfdfe;
+  border: 1px solid
+  #e1ebf5;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px
+  rgba(0,0,0,.05);
+  min-height: 20px;
+  margin: 19px;
+  padding-top: 10px;
+}
+.well .button {
+  display: inline-block;
+  float: right;
+  margin: 0px;
+}
+.dual-list {
+  height: 540px;
+  border-radius: 5px;
+}
+.list-arrows {
+  height: 440px;
+  border-radius: 5px;
+}
+.well select, .well input {
+  width: 100%;
+}
+.list-arrows .button {
+  display: block;
+  clear: both;
+  margin: 10px 0px;
+}
+.text-right ul {
+  margin-bottom: 10px;
+}
+.additional-buttons .button {
+  display: block;
+  margin: 10px;
+}
+.panel {
+  background-color:
+    #fff;
+  border: 1px solid
+  #d3d8db;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  padding: 20px;
+  position: relative;
+}
+.panel .panel-heading  {
+  color: #555;
+  font-family: Ubuntu Condensed,Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  height: 32px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: none;
+  border-bottom-color: currentcolor;
+  border-bottom-style: none;
+  border-bottom-width: medium;
+  border-bottom: 1px solid #eee;
+  font-size: 1.2em;
+  height: 2.2em;
+  line-height: 2.2em;
+  margin: -20px -16px 15px;
+  padding: 0 0 0 5px;
+  text-transform: uppercase;
+}
+.rounded-list a::before {
+  height: 2em;
+  width: 2em;
+}
+#suppliers_chzn, #manufacturers_chzn {
+  width: 100% !important;
+}
+.list-right .list-group {
+  height: 450px !important;
+}
+.list-right .list-group input {
+  background: #a0efff3d;
+}

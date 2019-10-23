@@ -12,24 +12,61 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once dirname(__FILE__) . '/Field418.php';
+require_once dirname(__FILE__) . '/UpgradeHelper.php';
+
 function upgrade_module_4_3_0($module)
 {
     $upgrade_version = '4.3.0';
 
     $module->upgrade_detail[$upgrade_version] = array();
-    $result = $module->DbExecuteS('SHOW TABLES LIKE "'._DB_PREFIX_.'advancedexportfield"');
+    $result = DB::getInstance()->executeS('SHOW TABLES LIKE "'._DB_PREFIX_.'advancedexportfield"');
 
     if (count($result) != 1) {
-        if (!$module->createFieldTable()) {
+        $table_name = _DB_PREFIX_.'advancedexportfield';
+
+        $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+			`id_advancedexportfield` int(10) unsigned NOT NULL auto_increment,
+			`tab` varchar(255) NOT NULL,
+			`name` varchar(255) NOT NULL,
+			`field` varchar(255) NOT NULL,
+			`table` varchar(255) NOT NULL,
+			`alias` varchar(255) NOT NULL,
+			`as` varchar(255) NOT NULL,
+			`attribute` BOOL NOT NULL DEFAULT 0,
+			`return` varchar(255) NOT NULL,
+			`import` BOOL NOT NULL DEFAULT 0,
+			`import_name` varchar(255) NOT NULL,
+			`import_combination` BOOL NOT NULL DEFAULT 0,
+			`import_combination_name` varchar(255) NOT NULL,
+			`isCustom` BOOL NOT NULL DEFAULT 0,
+			PRIMARY KEY  (`id_advancedexportfield`)
+			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+
+        if (!DB::getInstance()->execute($query)) {
             $module->upgrade_detail[$upgrade_version][] =
                 $module->l(sprintf('Can not install %s table', _DB_PREFIX_.'advancedexportfield'));
         }
+
+        //insert fields
+        $field418 = new Field418();
+
+        foreach ($field418->export_types as $tab) {
+            foreach ($field418->$tab as $item) {
+                $item['table'] = $item['database'];
+                $item['tab'] = $tab;
+                unset($item['database']);
+                UpgradeHelper::insertField($item, 'advancedexportfield');
+            }
+        }
     }
 
-    $version = $module->DbExecuteS('SELECT version FROM `'._DB_PREFIX_.'module` WHERE name = "advancedexport"');
+    $version = DB::getInstance()->executeS(
+        'SELECT version FROM `'._DB_PREFIX_.'module` WHERE name = "advancedexport"'
+    );
 
     if ('4.2.0' == $version[0]['version']) {
-        $models = $module->getAllLinks();
+        $models = DB::getInstance()->executeS('select * from '._DB_PREFIX_.'advancedexport');
 
         foreach ($models as $model) {
             if (checkIfModelContainsCustomFields($model)) {
@@ -38,7 +75,7 @@ function upgrade_module_4_3_0($module)
             }
         }
         if (count($module->upgrade_detail[$upgrade_version]) == 0) {
-            $all = $module->dbExecuteS(
+            $all = DB::getInstance()->executeS(
                 sprintf("SELECT * FROM `%s`", _DB_PREFIX_.'advancedexportfield')
             );
 
@@ -50,9 +87,8 @@ function upgrade_module_4_3_0($module)
             foreach ($models as $model) {
                 $namesFields = changeIdsToFieldNames($model, $allFields);
 
-                $ae = new AdvancedExportClass($model['id_advancedexport']);
-                $ae->fields = $namesFields;
-                $ae->save();
+                DB::getInstance()->execute('UPDATE `'._DB_PREFIX_.'advancedexport` SET fields = "' . pSQL($namesFields) .
+                    '" WHERE id_advancedexport = ' . $model['id_advancedexport']);
             }
         }
     } else {
@@ -104,3 +140,4 @@ function changeIdsToFieldNames($model, $allFields)
 
     return Tools::jsonEncode($fields, true);
 }
+

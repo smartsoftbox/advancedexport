@@ -8,11 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport\Model;
-
-use PrestaShop\PrestaShop\Adapter\Entity\ObjectModel;
-use PrestaShop\PrestaShop\Adapter\Entity\Db;
-
 class AdvancedExportClass extends ObjectModel
 {
     public $id;
@@ -42,6 +37,7 @@ class AdvancedExportClass extends ObjectModel
     public $ftp_directory;
     public $ftp_port;
     public $filename;
+    public $orderPerFile;
 
     public static $definition = array(
         'table' => 'advancedexport',

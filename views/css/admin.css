@@ -134,7 +134,6 @@
   *list-style: decimal; /* Keep using default numbering for IE6/7 */
   font: 15px 'trebuchet MS', 'lucida sans';
   padding: 0;
-  margin-bottom: 4em;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
   margin-left: 1em;
 }
@@ -176,4 +175,7 @@
   font-weight: bold;
   border-radius: 2em;
   transition: all .3s ease-out;
+}
+.other-border {
+  border: 1px solid #3ecc2a !important;
 }

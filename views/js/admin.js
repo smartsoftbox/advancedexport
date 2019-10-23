@@ -32,19 +32,26 @@ jQuery(function($) {
 
          // A function representing a single 'frame' of our animation
          var animateFunc = function() {
-             $.post( urlJson + '&ajax=1&action=getCurrentIndex', function( data ) {
-                 var dataObject = JSON.parse(data);
-                 $topLoader.setProgress(dataObject.current / dataObject.total);
+             $.ajax({
+               type: 'POST' ,
+               cache: false,
+               async: true,
+               url: '/modules/advancedexport/progress.txt',
+               dataType: "json",
+               success: function (response) {
+                 $topLoader.setProgress(response.current / response.total);
                  // $topLoader.setValue(dataObject.total.toString());
 
-                 if (dataObject.current < dataObject.total) {
-                     setTimeout(animateFunc, 500);
+                 if (response.current < response.total) {
+                   setTimeout(animateFunc, 1000);
                  } else {
-                     topLoaderRunning = false;
+                   topLoaderRunning = false;
+                   clearInterval(animateFunc);
                  }
+               }
              });
-         }
-         setTimeout(animateFunc, 500);
+         };
+         setTimeout(animateFunc, 1000);
      });
 
      $(".ds-select").each(function() {
@@ -60,43 +67,6 @@ jQuery(function($) {
      function sort_li(a, b){
          return ($(b).data('sortby')) < ($(a).data('sortby')) ? 1 : -1;
      }
-
-     $(".ds-select").each(function() {
-         $(this).bsmSelect({
-            addItemTarget: 'bottom',
-             animate: true,
-             highlight: true,
-             sortable: true,
-            plugins: [
-                $.bsmSelect.plugins.sortable()
-            ],
-            removeLabel: '<strong>X</strong>',
-            containerClass: 'bsmContainer', // Class for container that wraps this widget
-            listClass: 'bsmList-custom', // Class for the list ($ol)
-            listItemClass: 'bsmListItem-custom', // Class for the <li> list items
-            listItemLabelClass: 'bsmListItemLabel-custom', // Class for the label text that appears in list items
-            removeClass: 'bsmListItemRemove-custom'
-
-        }).after($("<a href='#' rel='" + $(this).attr('id') + "'>Remove All</a>").click(function() {
-            var id = '#' + $(this).attr('rel');
-             $(id).parent().find('.bsmList-custom a.bsmListItemRemove-custom').click();
-            return false;
-
-        })).after($("<a href='#' rel='" + $(this).attr('id') + "'>Select All</a><span> | </span>").click(function() {
-            var id = '#' + $(this).attr('rel');
-             $(id).parent().find('.bsmList-custom a.bsmListItemRemove-custom').click()
-             $(id).parent().find('.bsmSelect option').attr('selected', 'selected').trigger('change');
-            return false;
-
-         })).after($("<div class='clear'></div>"));
-    });
-
-    //  if($("#fields").length) {
-    //      var type = $("#fields").attr('class').split(' ')[1];
-    //      $('#bsmContainer0').append($('<span> | </span><a href="?controller=AdminModules&configure=advancedexport&editfields=1&cleanpage&type=' + type + '&token=' + getUrlParam('token') + '" id="field">Edit Fields</a>'));
-    //  }
-     $('#bsmSelectbsmContainer0').attr("multiple", "multiple");
-     $('#bsmSelectbsmContainer0 option:first').remove();
 
 	$('#entities .list-group-item').click(function(){
 		var id = $(this).attr('id');

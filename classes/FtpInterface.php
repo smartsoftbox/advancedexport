@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport;
-
 interface FtpInterface
 {
     public function __construct($host, $username, $password, $port = false);

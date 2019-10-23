@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-namespace PrestaShop\Module\AdvancedExport\Group;
-
 class SupplierGroup
 {
     const INFORMATION = "Information";
