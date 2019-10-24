@@ -57,7 +57,7 @@ class UpgradeHelper
             return true;
         }
 
-        $array = array_map(function ($value){
+        $array = array_map(function ($value) {
             return pSQL($value);
         }, $array);
 
@@ -73,7 +73,7 @@ class UpgradeHelper
             return true;
         }
 
-        $array = array_map(function ($value){
+        $array = array_map(function ($value) {
             return pSQL($value);
         }, $array);
 

@@ -14,7 +14,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once dirname(__FILE__) . '/UpgradeHelper.php';
 
-function upgrade_module_4_3_7($module)
+function upgrade_module_4_3_7()
 {
     return true;
 

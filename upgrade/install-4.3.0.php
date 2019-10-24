@@ -87,7 +87,8 @@ function upgrade_module_4_3_0($module)
             foreach ($models as $model) {
                 $namesFields = changeIdsToFieldNames($model, $allFields);
 
-                DB::getInstance()->execute('UPDATE `'._DB_PREFIX_.'advancedexport` SET fields = "' . pSQL($namesFields) .
+                DB::getInstance()->execute('UPDATE `'._DB_PREFIX_.'advancedexport` 
+                    SET fields = "' . pSQL($namesFields) .
                     '" WHERE id_advancedexport = ' . $model['id_advancedexport']);
             }
         }
