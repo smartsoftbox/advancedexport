@@ -75,6 +75,7 @@
     <span style="float:left;"><img width="85px;" style="margin-right:15px;border-radius: 5px;"
                                    src="../modules/advancedexport/views/img/cron.png"></span>
     0 * * * * curl "{$cron_url|escape:'html':'UTF-8'}"
+    <div style="clear: both;width:100%;"></div>
   </div>
   <div class="panel col-lg-12">
     <div class="panel-heading">Support Contact</div>

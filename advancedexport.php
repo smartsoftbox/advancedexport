@@ -12,24 +12,21 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-if (file_exists(_MODULE_DIR_ . '/vendor/autoload.php')) {
-    include_once dirname(__DIR__) . '/vendor/autoload.php';
-}
-require_once _MODULE_DIR_ . '/classes/Group/AddressGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/CategoryGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/CustomerGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/ManufacturerGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/NewsletterGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/OrderGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/ProductGroup.php';
-require_once _MODULE_DIR_ . '/classes/Group/SupplierGroup.php';
-require_once _MODULE_DIR_ . '/classes/SFTP.php';
-require_once _MODULE_DIR_ . '/classes/FTP.php';
+require_once 'classes/Group/AddressGroup.php';
+require_once 'classes/Group/CategoryGroup.php';
+require_once 'classes/Group/CustomerGroup.php';
+require_once 'classes/Group/ManufacturerGroup.php';
+require_once 'classes/Group/NewsletterGroup.php';
+require_once 'classes/Group/OrderGroup.php';
+require_once 'classes/Group/ProductGroup.php';
+require_once 'classes/Group/SupplierGroup.php';
+require_once 'classes/SFTP.php';
+require_once 'classes/FTP.php';
 
 
-require_once _MODULE_DIR_ . '/classes/Model/AdvancedExportClass.php';
-require_once _MODULE_DIR_ . '/classes/Model/AdvancedExportCronClass.php';
-require_once _MODULE_DIR_ . '/classes/Model/AdvancedExportFieldClass.php';
+require_once 'classes/Model/AdvancedExportClass.php';
+require_once 'classes/Model/AdvancedExportCronClass.php';
+require_once 'classes/Model/AdvancedExportFieldClass.php';
 
 class Advancedexport extends Module
 {
@@ -4033,7 +4030,6 @@ class Advancedexport extends Module
             'date_to',
             'start_id',
             'end_id',
-            'orderPerFile'
         );
         $fields_specific = null;
         $fields_value = null;
@@ -4069,6 +4065,23 @@ class Advancedexport extends Module
             }
         }
 
+        $fields_value['test_connection'] = $this->display(
+            __FILE__,
+            'views/templates/admin/test_connection_button.tpl'
+        );
+        $fields_value['id'] = $this->createFromToField(
+            'start_id',
+            $fields_value['start_id'],
+            'end_id',
+            $fields_value['end_id']
+        );
+        $fields_value['date'] = $this->createFromToField(
+            'date_from',
+            $fields_value['date_from'],
+            'date_to',
+            $fields_value['date_to'],
+            (_PS_VERSION_ >= 1.6 ? 'datetimepicker' : 'datepicker')
+        );
         if (isset($fields_specific['categories'])) {
             $this->selected_cat = $fields_specific['categories'];
         }
@@ -4309,15 +4322,9 @@ class Advancedexport extends Module
                     'class' => 'process1 other-border',
                 ),
                 array(
-                    'type' => 'html',
-                    'name' => 'html_data',
-                    'class' => 'process1',
-                    'html_content' => '<div class="process1">
-                        <button type="button" id="checkConnection" 
-                              class="btn btn-default">Test Connection</button>
-                        <span id="ftp_errors" class="hide" style="color:red;"></span> 
-                        <span id="ftp_success" class="hide" style="color:green;">Connected!</span><hr>
-                    </div>'
+                    'type' => 'free',
+                    'name' => 'test_connection',
+
                 ),
                 array(
                     'type' => $this->switch,
@@ -4378,30 +4385,17 @@ class Advancedexport extends Module
                     ),
                 ),
                 array(
-                    'type' => 'html',
+                    'type' => 'free',
                     'name' => 'id',
                     'label' => $this->l('Id'),
-                    'desc' => $this->l('You can specyify start id number.'),
-                    'html_content' => $this->createFromToField(
-                        'start_id',
-                        $fields_value['start_id'],
-                        'end_id',
-                        $fields_value['end_id']
-                    )
+                    'desc' => $this->l('You can specyify start id number.')
                 ),
                 array(
-                    'type' => 'html',
+                    'type' => 'free',
                     'name' => 'date',
                     'label' => $this->l('Date add'),
-                    'desc' => $this->l('Format: 2012-12-31 HH-MM-SS(inclusive).'),
-                    'html_content' => $this->createFromToField(
-                        'date_from',
-                        $fields_value['date_from'],
-                        'date_to',
-                        $fields_value['date_to'],
-                        (_PS_VERSION_ >= 1.6 ? 'datetimepicker' : 'datepicker')
-                    )
-                ),
+                    'desc' => $this->l('Format: 2012-12-31 HH-MM-SS(inclusive).')
+                )
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
@@ -4736,6 +4730,12 @@ class Advancedexport extends Module
                 'orderby' => false,
                 'search' => false,
             ),
+            'cron_url' => array(
+                'title' => $this->l('Cron url'),
+                'type' => 'html',
+                'orderby' => false,
+                'search' => false,
+            ),
             'save_type' => array(
                 'title' => $this->l('Save Type'),
                 'width' => 30,
@@ -4885,7 +4885,13 @@ class Advancedexport extends Module
     public function getLinks($type)
     {
         $links = $this->dbExecuteS('select * from '._DB_PREFIX_."advancedexport where type = '$type'");
+
         for ($i = 0; $i < count($links); ++$i) {
+            $url = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.
+                'modules/advancedexport/cron.php?secure_key='.
+                Configuration::get('ADVANCEDEXPORT_SECURE_KEY').
+                '&id='.$links[$i]['id_advancedexport'];
+            $links[$i]['cron_url'] = $url;
             $type = $this->getSaveTypes();
             $links[$i]['save_type'] = $type[$links[$i]['save_type']]['short_name'];
         }
