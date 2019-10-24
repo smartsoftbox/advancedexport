@@ -55,12 +55,12 @@ function upgrade_module_4_4_0($module)
     }
 
     //delete moved model class
-    $advancedExportClass = dirname(__FILE__) . 'classes/AdvancedExportClass.php';
-    if(fileExists()) {
+    $advancedExportClass = dirname(__FILE__) . '/classes/AdvancedExportClass.php';
+    if (fileExists()) {
         unlink($advancedExportClass);
     }
-    $advancedExportFieldClass = dirname(__FILE__) . 'classes/AdvancedExportFieldClass.php';
-    if(fileExists()) {
+    $advancedExportFieldClass = dirname(__FILE__) . '/classes/AdvancedExportFieldClass.php';
+    if (fileExists()) {
         unlink($advancedExportFieldClass);
     }
 
