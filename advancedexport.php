@@ -809,8 +809,15 @@ class Advancedexport extends Module
             'group15' => ProductGroup::COMBINATIONS
         ),
         array(
-            'name' => 'Combination Impact on Price',
+            'name' => 'Combination Price',
             'field' => 'combination_price',
+            'database' => '',
+            'attribute' => true,
+            'group15' => ProductGroup::COMBINATIONS
+        ),
+        array(
+            'name' => 'Combination Impact on Price',
+            'field' => 'combination_impact_price',
             'import_combination' => 11,
             'import_combination_name' => 'Impact on price',
             'database' => '',
@@ -5864,7 +5871,13 @@ class Advancedexport extends Module
 
     public function combinationAvailableDate($obj, $product_attribute)
     {
-        return $product_attribute['available_date'];
+        return Product::getPriceStatic((int)$obj->id, false, (int)$product_attribute['id_product_attribute']);
+    }
+
+    public function combinationImpactPrice($obj, $product_attribute)
+    {
+//        return Product::getPriceStatic((int) $obj->id, false, (int) $product_attribute['id_product_attribute']);
+        return $product_attribute['price'];
     }
 
     public function combinationPrice($obj, $product_attribute)
