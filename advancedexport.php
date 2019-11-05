@@ -5871,19 +5871,17 @@ class Advancedexport extends Module
 
     public function combinationAvailableDate($obj, $product_attribute)
     {
-        return Product::getPriceStatic((int)$obj->id, false, (int)$product_attribute['id_product_attribute']);
+        return $product_attribute['available_date'];
     }
 
     public function combinationImpactPrice($obj, $product_attribute)
     {
-//        return Product::getPriceStatic((int) $obj->id, false, (int) $product_attribute['id_product_attribute']);
         return $product_attribute['price'];
     }
 
     public function combinationPrice($obj, $product_attribute)
     {
-//        return Product::getPriceStatic((int) $obj->id, false, (int) $product_attribute['id_product_attribute']);
-        return $product_attribute['price'];
+        return Product::getPriceStatic((int)$obj->id, false, (int)$product_attribute['id_product_attribute']);
     }
 
     public function combinationWeight($obj, $product_attribute)
