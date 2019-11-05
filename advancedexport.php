@@ -2654,7 +2654,7 @@ class Advancedexport extends Module
         $this->tab = 'administration';
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
-        $this->version = '4.3.8';
+        $this->version = '4.4.0';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
