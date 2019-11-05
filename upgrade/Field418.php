@@ -1568,45 +1568,6 @@ class Field418
             'import_name' => 'Passowrd *'
         ),
         array(
-            'name' => 'active',
-            'field' => 'active',
-            'database' => 'customer',
-            'alias' => 'c',
-            'import' => 2,
-            'import_name' => 'Active (0/1)'
-        ),
-        array(
-            'name' => 'optin',
-            'field' => 'optin',
-            'database' => 'customer',
-            'alias' => 'c',
-            'import' => 10,
-            'import_name' => 'Opt-in (0/1)'
-        ),
-        array(
-            'name' => 'date add',
-            'field' => 'date_add',
-            'database' => 'customer',
-            'alias' => 'c',
-            'import' => 11,
-            'import_name' => 'Registration date (yyyy-mm-dd)'
-        ),
-        array(
-            'name' => 'default group id',
-            'field' => 'id_default_group',
-            'database' => 'customer',
-            'alias' => 'c',
-            'import' => 12,
-            'import_name' => 'Default group ID'
-        ),
-        array(
-            'name' => 'groups',
-            'field' => 'groups',
-            'database' => 'other',
-            'import' => 13,
-            'import_name' => 'Groups (x,y,z...)'
-        ),
-        array(
             'name' => 'address company',
             'field' => 'address_company',
             'database' => 'address',
@@ -1687,6 +1648,46 @@ class Field418
             'database' => 'address',
             'alias' => 'a',
             'as' => true
+        ),
+        // 4.3 field
+        array(
+            'name' => 'active',
+            'field' => 'active',
+            'database' => 'customer',
+            'alias' => 'c',
+            'import' => 2,
+            'import_name' => 'Active (0/1)'
+        ),
+        array(
+            'name' => 'optin',
+            'field' => 'optin',
+            'database' => 'customer',
+            'alias' => 'c',
+            'import' => 10,
+            'import_name' => 'Opt-in (0/1)'
+        ),
+        array(
+            'name' => 'date add',
+            'field' => 'date_add',
+            'database' => 'customer',
+            'alias' => 'c',
+            'import' => 11,
+            'import_name' => 'Registration date (yyyy-mm-dd)'
+        ),
+        array(
+            'name' => 'default group id',
+            'field' => 'id_default_group',
+            'database' => 'customer',
+            'alias' => 'c',
+            'import' => 12,
+            'import_name' => 'Default group ID'
+        ),
+        array(
+            'name' => 'groups',
+            'field' => 'groups',
+            'database' => 'other',
+            'import' => 13,
+            'import_name' => 'Groups (x,y,z...)'
         ),
         array(
             'name' => 'address state',

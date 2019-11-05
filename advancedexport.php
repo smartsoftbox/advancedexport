@@ -2292,7 +2292,7 @@ class Advancedexport extends Module
         ),
         array(
             'name' => 'address active',
-            'field' => 'active',
+            'field' => 'address_active',
             'database' => 'address',
             'alias' => 'a',
             'as' => true,
