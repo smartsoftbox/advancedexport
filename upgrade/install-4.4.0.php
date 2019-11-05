@@ -56,18 +56,43 @@ function upgrade_module_4_4_0($module)
 
     //delete moved model class
     $advancedExportClass = dirname(__FILE__) . '/classes/AdvancedExportClass.php';
-    if (fileExists()) {
+    if (file_exists($advancedExportClass)) {
         unlink($advancedExportClass);
     }
     $advancedExportFieldClass = dirname(__FILE__) . '/classes/AdvancedExportFieldClass.php';
-    if (fileExists()) {
+    if (file_exists($advancedExportClass)) {
         unlink($advancedExportFieldClass);
     }
+
+    // remove export attributes option
+    $models = DB::getInstance()->executeS('select * from '._DB_PREFIX_.'advancedexport');
+
+    foreach ($models as $model) {
+        $fields = Tools::jsonDecode($model['fields'], true);
+        foreach ($fields['fields[]'] as $key => $field) {
+            $advancedexportfield = DB::getInstance()->getRow(
+                'select * from ' . _DB_PREFIX_ . 'advancedexportfield
+                    WHERE field = "' . $field . '" 
+                    AND tab = "' . $model['type'] . '"'
+            );
+
+            if (isset($advancedexportfield['attribute']) && $advancedexportfield['attribute'] == 1 &&
+                $model['type'] == 'products') {
+                $field = 'combination_' . $field;
+            }
+            $fields['fields[]'][$field] = array($advancedexportfield['name']);
+            unset($fields['fields[]'][$key]);
+        }
+        DB::getInstance()->execute(
+            'UPDATE ' . _DB_PREFIX_ . 'advancedexport SET fields = \'' . json_encode($fields) . '\''
+        );
+    }
+
 
     // clean advancedexportfield
     $table_name = _DB_PREFIX_.'advancedexportfield';
 
-    $query = 'DELETE FROM `'.$table_name.'` WHERE isCustom = 0';
+   $query = 'DELETE FROM `'.$table_name.'` WHERE isCustom = 0';
 
 
     if (!Db::getInstance()->execute($query)) {
@@ -103,6 +128,8 @@ function upgrade_module_4_4_0($module)
             `active` BOOL NOT NULL DEFAULT 0,
 			PRIMARY KEY  (`id_advancedexportcron`)
 			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+
+
 
 
     if (!Db::getInstance()->execute($query)) {

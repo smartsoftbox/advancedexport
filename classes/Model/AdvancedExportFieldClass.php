@@ -44,7 +44,7 @@ class AdvancedExportFieldClass extends ObjectModel
         $result = array();
 
         foreach ($fields as $field) {
-            $result[] = $field['field'];
+            $result[$field['field']] = array($field['import_combination_name']);
         }
 
         return $result;
@@ -61,7 +61,7 @@ class AdvancedExportFieldClass extends ObjectModel
         $result = array();
 
         foreach ($fields as $field) {
-            $result[] = $field['field'];
+            $result[$field['field']] = array($field['import_name']);
         }
 
         return $result;
@@ -77,7 +77,7 @@ class AdvancedExportFieldClass extends ObjectModel
         $result = array();
 
         foreach ($fields as $field) {
-            $result[] = $field['field'];
+            $result[$field['field']] = array($field['field']);
         }
 
         return $result;
@@ -145,11 +145,10 @@ class AdvancedExportFieldClass extends ObjectModel
         $fields['return'] = (string) ($this->return);
         $fields['as'] = (string) ($this->as);
         $fields['attribute'] = (bool) ($this->attribute);
-        $fields['import'] = (bool) ($this->import);
-        $fields['import_combination'] = (bool) ($this->import_combination);
+        $fields['import'] = (int) ($this->import);
+        $fields['import_name'] = (string) ($this->import_name);
+        $fields['import_combination'] = (int) ($this->import_combination);
         $fields['import_combination_name'] = (string) ($this->import_combination_name);
-        $fields['import_name'] = (string) ($this->import_name);
-        $fields['import_name'] = (string) ($this->import_name);
         $fields['isCustom'] = (bool) ($this->isCustom);
         $fields['group15'] = (string) ($this->group15);
         $fields['group17'] = (string) ($this->group17);

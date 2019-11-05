@@ -94,6 +94,8 @@ jQuery(function($) {
 		$('.process1').parent().hide();
 		$('.process2').parent().prev().hide();
 		$('.process2').parent().hide();
+    $('.process0').parent().prev().hide();
+    $('.process0').parent().hide();
 	 	var current = 'process' + id;
 	 	$('.' + current ).parent().prev().show();
 		$('.' + current).parent().show();

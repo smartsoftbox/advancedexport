@@ -28,11 +28,12 @@ use AdvancedExportClass;
 require_once dirname(__FILE__) . '/../../advancedexport.php';
 require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
 
-class ProductsTest extends IntegrationTestCase
+class Combination17Test extends IntegrationTestCase
 {
     private static $dump;
     private $ae;
     private $row;
+    private $row7;
 
     public static function setUpBeforeClass()
     {
@@ -43,7 +44,8 @@ class ProductsTest extends IntegrationTestCase
         Context::getContext()->employee = new \Employee(1);
     }
 
-    public static function tearDownAfterClass()
+
+    protected function tearDown()
     {
     }
 
@@ -54,14 +56,18 @@ class ProductsTest extends IntegrationTestCase
     {
         $this->ae = new AdvancedExport();
 
-        $id = $this->createModel('products');
+        $id = $this->createModelWithAllFieldsAndDefaultSettings('products');
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/products/test_products.csv';
+        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/products/test_products_combination.csv';
         $rows = array_map('str_getcsv', file($url));;
         foreach($rows[0] as $key => $fieldname) {
-            $this->row[$fieldname] = $rows['1'][$key];
+            $this->row[$fieldname] = $rows[1][$key];
+        }
+
+        foreach($rows[0] as $key => $fieldname) {
+            $this->row7[$fieldname] = $rows[22][$key];
         }
     }
 
@@ -72,49 +78,58 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Product Reference', 'field' => 'reference', 'database' => 'products', 'import' => 13,  'import_combination' => 5, 'import_combination_name' => 'Reference', 'import_name' => 'Reference #', 'alias' => 'p', 'attribute' => true),
         $this->assertSame($this->row['Product Reference'], 'demo_1');
         //array('name' => 'Name', 'field' => 'name', 'database' => 'products_lang', 'import' => 2, 'import_name' => 'Name *', 'alias' => 'pl'),
-        $this->assertSame($this->row['Name'], 'Faded Short Sleeves T-shirt');
+        $this->assertSame($this->row['Name'], 'Hummingbird printed t-shirt');
         //array('name' => 'Short Description', 'field' => 'description_short', 'database' => 'products_lang', 'import' => 30, 'import_name' => 'Description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Short Description'], '<p>Faded short sleeves t-shirt with high neckline. Soft and stretchy material for a comfortable fit. Accessorize with a straw hat and you\'re ready for summer!</p>');
+        $this->assertSame($this->row['Short Description'], '<p><span style="font-size:10pt;font-style:normal;">Regular fit, round neckline, short sleeves. Made of extra long staple pima cotton. </span></p>');
         //array('name' => 'Long Description', 'field' => 'description', 'database' => 'products_lang', 'import' => 31, 'import_name' => 'Short description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Long Description'], '<p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman\'s wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>');
+        $this->assertSame($this->row['Long Description'], '<p><span style="font-size:10pt;font-style:normal;"><span style="font-size:10pt;font-style:normal;">Symbol of lightness and delicacy, the hummingbird evokes curiosity and joy.</span><span style="font-size:10pt;font-style:normal;"> Studio Design\' PolyFaune collection features classic products with colorful patterns, inspired by the traditional japanese origamis. To wear with a chino or jeans. The sublimation textile printing process provides an exceptional color rendering and a color, guaranteed overtime.</span></span></p>');
         //array('name' => 'Quantity', 'field' => 'quantity', 'database' => 'other', 'import' => 24, 'import_name' => 'Quantity', 'import_combination' => 10, 'import_combination_name' => 'Quantity', 'attribute' => true),
-        $this->assertSame($this->row['Quantity'], '1799');
+        $this->assertSame($this->row['Quantity'], '2400');
         //array('name' => 'Price', 'field' => 'price', 'database' => 'products', 'alias' => 'p', 'import_combination' => 9, 'import_combination_name' => 'Impact on Price', 'attribute' => true),
-        $this->assertSame($this->row['Price'], '16.510000');
+        //should be 16.51000 but if id currency is 0 default
+        //function automatically convert
+        //todo-change that for proper value
+        $this->assertSame($this->row['Price'], '23.900000');
         //array('name' => 'Price Catalogue TTC', 'field' => 'price_tax_nodiscount', 'database' => 'other', 'attribute' => true),
-        $this->assertSame($this->row['Price Catalogue TTC'], '19.812');
+        //should be 19.812 but if id currency is 0 default
+        //function automatically convert
+        //todo-change that for proper value
+        $this->assertSame($this->row['Price Catalogue TTC'], '28.68');
         //array('name' => 'Price Tax', 'field' => 'price_tax', 'database' => 'other', 'import' => 5, 'import_name' => 'Price tax included',  'attribute' => true),
-        $this->assertSame($this->row['Price Tax'], '19.812');
+        $this->assertSame($this->row['Price Tax'], '22.944');
         //array('name' => 'Wholesale Price', 'field' => 'wholesale_price', 'database' => 'products', 'import' => 7,  'import_combination' => 8, 'import_name' => 'Wholesale price', 'alias' => 'p', 'attribute' => true),
-        $this->assertSame($this->row['Wholesale Price'], '4.950000');
+        //impact
+        $this->assertSame($this->row['Wholesale Price'], '0.000000');
         //array('name' => 'Supplier Id (default)', 'field' => 'id_supplier', 'database' => 'products', 'alias' => 'p'),
-        $this->assertSame($this->row['Supplier Id (default)'], '1');
+        $this->assertSame($this->row['Supplier Id (default)'], '0');
         //array('name' => 'Suppliers Ids', 'field' => 'id_supplier_all', 'database' => 'other', 'attribute' => true),
-        $this->assertSame($this->row['Suppliers Ids'], '1');
+        //specific supplier for
+        //this attribute
+        $this->assertSame($this->row['Suppliers Ids'], '');
         //array('name' => 'Supplier Name (default)', 'field' => 'supplier_name', 'as' => true, 'database' => 'supplier', 'import' => 15, 'import_name' => 'Supplier', 'alias' => 's'),
-        $this->assertSame($this->row['Supplier Name (default)'], 'Fashion Supplier');
+        $this->assertSame($this->row['Supplier Name (default)'], '');
         //array('name' => 'Supplier Names', 'field' => 'supplier_name_all', 'database' => 'other', 'attribute' => true),
-        $this->assertSame($this->row['Supplier Names'], 'Fashion Supplier');
+        $this->assertSame($this->row['Supplier Names'], '');
         //array('name' => 'Manufacturer Id', 'field' => 'id_manufacturer', 'database' => 'products', 'alias' => 'p'),
         $this->assertSame($this->row['Manufacturer Id'], '1');
         //array('name' => 'Manufacturer Name', 'field' => 'manufacturer_name', 'database' => 'other', 'import' => 16, 'import_name' => 'Manufacturer'),
-        $this->assertSame($this->row['Manufacturer Name'], 'Fashion Manufacturer');
+        $this->assertSame($this->row['Manufacturer Name'], 'Studio Design');
         //array('name' => 'Tax Id Rules Group', 'field' => 'id_tax_rules_group', 'database' => 'products', 'import' => 6, 'import_name' => 'Tax rules ID', 'alias' => 'p'),
         $this->assertSame($this->row['Tax Id Rules Group'], '1');
         //array('name' => 'Tax Rate', 'field' => 'tax_rate', 'database' => 'other'),
         $this->assertSame($this->row['Tax Rate'], '20');
         //array('name' => 'Default Category Id', 'field' => 'id_category_default', 'database' => 'products', 'alias' => 'p'),
-        $this->assertSame($this->row['Default Category Id'], '5');
+        $this->assertSame($this->row['Default Category Id'], '4');
         //array('name' => 'Default Category Name', 'field' => 'nameCategoryDefault', 'database' => 'other'),
-        $this->assertSame($this->row['Default Category Name'], 'T-shirts');
+        $this->assertSame($this->row['Default Category Name'], 'Men');
         //array('name' => 'Categories Names', 'field' => 'categories_names', 'database' => 'other'),
-        $this->assertSame($this->row['Categories Names'], 'Home,Women,Tops,T-shirts');
+        $this->assertSame($this->row['Categories Names'], 'Home,Clothes,Men');
         //array('name' => 'Categories Ids', 'field' => 'categories_ids', 'database' => 'other', 'import' => 4, 'import_name' => 'Categories (x,y,z...)'),
-        $this->assertSame($this->row['Categories Ids'], '2,3,4,5');
+        $this->assertSame($this->row['Categories Ids'], '2,3,4');
         //array('name' => 'On Sale', 'field' => 'on_sale', 'database' => 'products', 'import' => 8, 'import_name' => 'On sale (0/1)', 'alias' => 'p'),
         $this->assertSame($this->row['On Sale'], '0');
         //array('name' => 'EAN 13', 'field' => 'ean13', 'database' => 'products', 'alias' => 'p', 'import' => 17,  'import_combination' => 6, 'import_combination_name' => 'EAN 13', 'import_name' => 'EAN13', 'attribute' => true),
-        $this->assertSame($this->row['EAN 13'], '0');
+        $this->assertSame($this->row['EAN 13'], '');
         //array('name' => 'Supplier Reference', 'field' => 'supplier_reference', 'database' => 'other', 'import' => 14,  'import_combination' => 4, 'import_combination_name' => 'Supplier reference', 'import_name' => 'Supplier reference #', 'attribute' => true),
         $this->assertSame($this->row['Supplier Reference'], '');
         //array('name' => 'Date Added', 'field' => 'date_add', 'database' => 'products', 'import' => 40, 'import_name' => 'Product creation date', 'alias' => 'p'),
@@ -130,7 +145,7 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Meta Keywords', 'field' => 'meta_keywords', 'database' => 'products_lang', 'import' => 35, 'import_name' => 'Meta keywords', 'alias' => 'pl'),
         $this->assertSame($this->row['Meta Keywords'], '');
         //array('name' => 'Available Now', 'field' => 'available_now', 'database' => 'products_lang', 'import' => 36, 'import_name' => 'Text when in stock', 'alias' => 'pl'),
-        $this->assertSame($this->row['Available Now'], 'In stock');
+        $this->assertSame($this->row['Available Now'], '');
         //array('name' => 'Available Later', 'field' => 'available_later', 'database' => 'products_lang', 'import' => 37, 'import_name' => 'Text when backorder allowed', 'alias' => 'pl'),
         $this->assertSame($this->row['Available Later'], '');
         //array('name' => 'Tags', 'field' => 'tags', 'database' => 'other', 'import' => 32, 'import_name' => 'Tags (x,y,z...)'),
@@ -138,7 +153,7 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Accessories', 'field' => 'accessories', 'database' => 'other'),
         $this->assertSame($this->row['Accessories'], '');
         //array('name' => 'Images', 'field' => 'images', 'database' => 'other', 'attribute' => true, 'import_combination' => 16, 'import_combination_name' => 'Image URLs (x,y,z...)'),
-        $this->assertSame($this->row['Images'], Tools::getHttpHost(true).__PS_BASE_URI__.'/1-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/2-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/3-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/4-home_default/faded-short-sleeves-tshirt.jpg');
+        $this->assertSame($this->row['Images'], 'http://prestashop-git/img/p/1/1-home_default.jpg,http://prestashop-git/img/p/2/2-home_default.jpg');
         //array('name' => 'Online only', 'field' => 'online_only', 'database' => 'products', 'import' => 47, 'import_name' => 'Available online only (0 = No, 1 = Yes)', 'alias' => 'p'),
         $this->assertSame($this->row['Online only'], '0');
         //array('name' => 'Upc', 'field' => 'upc', 'database' => 'products', 'import' => 18,  'import_combination' => 7, 'import_combination_name' => 'UPC', 'import_name' => 'UPC', 'alias' => 'p', 'attribute' => true),
@@ -188,17 +203,11 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Cache Default Attribute', 'field' => 'cache_default_attribute', 'database' => 'products', 'alias' => 'p'),
         $this->assertSame($this->row['Cache Default Attribute'], '1');
         //array('name' => 'Link Rewrite', 'field' => 'link_rewrite', 'database' => 'products_lang', 'import' => 36, 'import_name' => 'URL rewritten', 'alias' => 'pl'),
-        $this->assertSame($this->row['Link Rewrite'], 'faded-short-sleeves-tshirt');
+        $this->assertSame($this->row['Link Rewrite'], 'hummingbird-printed-t-shirt');
         //array('name' => 'Url Product', 'field' => 'url_product', 'database' => 'other'),
-        $this->assertSame($this->row['Url Product'], 'http://localhost:8888/presta1704t/tshirts/1-faded-short-sleeves-tshirt.html');
+        $this->assertSame($this->row['Url Product'], 'http://prestashop-git/index.php?id_product=1&rewrite=hummingbird-printed-t-shirt&controller=product&id_lang=1');
         //array('name' => 'Features', 'field' => 'features', 'database' => 'other', 'import' => 46, 'import_name' => 'Feature(Name:Value:Position)'),
-        $this->assertSame($this->row['Features'], 'Compositions-Cotton,Styles-Casual,Properties-Short Sleeve');
-        //array('name' => 'Attributes', 'field' => 'attributes', 'database' => 'other', 'attribute' => true),
-        $this->assertSame($this->row['Attributes'], '');
-        //array('name' => 'Attributes Name', 'field' => 'attributes_name', 'database' => 'other', 'attribute' => true, 'import_combination' => 2, 'import_combination_name' => 'Attributes Name'),
-        $this->assertSame($this->row['Attributes Name'], '');
-        //array('name' => 'Attributes Value', 'field' => 'attributes_value', 'database' => 'other', 'attribute' => true, 'import_combination' => 3, 'import_combination_name' => 'Attributes Value'),
-        $this->assertSame($this->row['Attributes Value'], '');
+        $this->assertSame($this->row['Features'], 'Composition-Cotton,Property-Short sleeves');
         //array('name' => 'Visibility', 'field' => 'visibility', 'database' => 'products', 'import' => 26, 'import_name' => 'Visibility', 'alias' => 'p'),
         $this->assertSame($this->row['Visibility'], 'both');
         //array('name' => 'Product available date', 'field' => 'available_date', 'database' => 'products', 'import' => 39, 'import_name' => 'Product available date', 'alias' => 'p'),
@@ -206,13 +215,13 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Discount amount', 'field' => 'discount_amount', 'database' => 'specific_price', 'import' => 9, 'import_name' => 'Discount amount', 'alias' => 'sp_tmp'),
         $this->assertSame($this->row['Discount amount'], '');
         //array('name' => 'Discount percent', 'field' => 'discount_percent', 'database' => 'specific_price', 'import' => 10, 'import_name' => 'Discount percent', 'alias' => 'sp_tmp'),
-        $this->assertSame($this->row['Discount percent'], '');
+        $this->assertSame($this->row['Discount percent'], '0.200000');
         //array('name' => 'Discount from (yyyy-mm-dd)', 'field' => 'from', 'database' => 'specific_price', 'import' => 11, 'import_name' => 'Discount from (yyyy-mm-dd)', 'alias' => 'sp_tmp'),
-        $this->assertSame($this->row['Discount from (yyyy-mm-dd)'], '');
+        $this->assertSame($this->row['Discount from (yyyy-mm-dd)'], '0000-00-00 00:00:00');
         //array('name' => 'Discount to (yyyy-mm-dd)', 'field' => 'to', 'database' => 'specific_price', 'import' => 12, 'import_name' => 'Discount to (yyyy-mm-dd)', 'alias' => 'sp_tmp'),
-        $this->assertSame($this->row['Discount to (yyyy-mm-dd)'], "");
+        $this->assertSame($this->row['Discount to (yyyy-mm-dd)'], "0000-00-00 00:00:00");
         //array('name' => 'Cover', 'field' => 'image', 'database' => 'other', 'import' => 42, 'import_name' => 'Image URLs (x,y,z...)'),
-        $this->assertSame($this->row['Cover'], 'http://localhost:8888/presta1704t/1-home_default/faded-short-sleeves-tshirt.jpg');
+        $this->assertSame($this->row['Cover'], 'http://prestashop-git/img/p/1/1-home_default.jpg');
         //array('name' => 'Id shop default', 'field' => 'id_shop_default', 'database' => 'products', 'import' => 54, 'import_name' => 'ID / Name of shop', 'alias' => 'p', 'import_combination' => 2, 'import_combination_name' => 'ID / Name of shop'),
         $this->assertSame($this->row['Id shop default'], '1');
         //array('name' => 'Advanced stock management', 'field' => 'advanced_stock_management', 'database' => 'products', 'import' => 55, 'import_name' => 'Advanced stock managment', 'import_combination' => 20, 'import_combination_name' => 'Advanced stock managment', 'alias' => 'p'),
@@ -222,20 +231,95 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Warehouse', 'field' => 'warehouse', 'database' => 'other', 'import' => 57, 'import_name' => 'Warehouse', 'import_combination' => 22, 'import_combination_name' => 'Warehouse'),
         $this->assertSame($this->row['Warehouse'], '');
         //array('name' => 'Image alt', 'field' => 'image_alt', 'database' => 'other', 'import' => 17, 'import_name' => 'Image alt', 'import_combination' => 17, 'import_combination_name' => 'Image alt texts (x,y,z...)', 'attribute' => true),
-        $this->assertSame($this->row['Image alt'], '');
+        $this->assertSame($this->row['Image alt'], 'Hummingbird printed t-shirt,Hummingbird printed t-shirt');
         //array('name' => 'Image position', 'field' => 'image_position', 'database' => 'other', 'import' => 15, 'import_name' => 'Image position', 'import_combination' => 16, 'import_combination_name' => 'Image position', 'attribute' => true),
-        $this->assertSame($this->row['Image position'], '1,2,3,4');
+        $this->assertSame($this->row['Image position'], '1,2');
         //array('name' => 'Default (0 = No 1 = Yes)', 'field' => 'default_combination', 'database' => 'other', 'import_combination' => 16, 'import_combination_name' => 'Default (0 = No, 1 = Yes)', 'attribute' => true),
-        $this->assertSame($this->row['Default (0 = No 1 = Yes)'], '');
+        $this->assertSame($this->row['Product attachments url'], '');
+        $this->assertSame($this->row['Is Virtual'], '0');
+        $this->assertSame($this->row['NB Downloadable'], '');
+        $this->assertsame($this->row['Date Expiration'], '');
+        $this->assertSame($this->row['Nb Days Accessible'], '');
+        $this->assertSame($this->row['File URL'], '');
+        $this->assertSame($this->row['Delivery In Stock'], '');
+        $this->assertSame($this->row['Delivery Out Stock'], '');
+        $this->assertSame($this->row['Low Stock Threshold'], '');
+        $this->assertSame($this->row['Low Stock Alert'], '0');
+        $this->assertSame($this->row['Categories Path'], 'Clothes,Clothes > Men');
+
+        // combination fields
+        $this->assertSame($this->row['Combination Attributes'], 'Size: S;Color: White');
+        $this->assertSame($this->row['Combination Attributes Name'], 'Size:select:0,Color:color:1');
+        $this->assertSame($this->row['Combination Default (0 = No 1 = Yes)'], '1');
+        $this->assertSame($this->row['Combination Reference'], 'demo_1');
+        $this->assertSame($this->row['Combination Quantity'], '300');
+        $this->assertSame($this->row['Combination Impact on Price'], '0.000000');
+        $this->assertSame($this->row['Combination Price Catalogue TTC'], '28.68');
+        $this->assertSame($this->row['Combination Price Tax'], '22.944');
+        $this->assertSame($this->row['Combination Wholesale Price'], '0.000000');
+        $this->assertSame($this->row['Combination MPN'], '');
+        $this->assertSame($this->row['Combination Suppliers Ids'], '');
+        $this->assertSame($this->row['Combination Supplier Names'], '');
+        $this->assertSame($this->row['Combination EAN 13'], '');
+        $this->assertSame($this->row['Combination Supplier Reference'], '');
+        $this->assertSame($this->row['Combination Images'], 'http://prestashop-git/img/p/2/2-home_default.jpg');
+        $this->assertSame($this->row['Combination Upc'], '');
+        $this->assertSame($this->row['Combination Ecotax'], '0.000000');
+        $this->assertSame($this->row['Combination Minimal Quantity'], '1');
+        $this->assertSame($this->row['Combination Location'], '');
+        $this->assertSame($this->row['Combination Weight'], '0.000000');
+        $this->assertSame($this->row['Combination available date'], '0000-00-00');
+        $this->assertSame($this->row['Combination Image alt'], 'Hummingbird printed t-shirt');
+        $this->assertSame($this->row['Combination Image position'], '2');
+        $this->assertSame($this->row['Combination Warehouse'], '');
+        $this->assertSame($this->row['Combination Low Stock Threshold'], '');
+        $this->assertSame($this->row['Combination Low Stock Alert'], '0');
+
+        // product with no combination
+        $this->assertSame($this->row7['Combination Attributes'], '');
+        $this->assertSame($this->row7['Combination Attributes Name'], '');
+        $this->assertSame($this->row7['Combination Default (0 = No 1 = Yes)'], '');
+        $this->assertSame($this->row7['Combination Reference'], '');
+        $this->assertSame($this->row7['Combination Quantity'], '');
+        $this->assertSame($this->row7['Combination Impact on Price'], '');
+        $this->assertSame($this->row7['Combination Price Catalogue TTC'], '');
+        $this->assertSame($this->row7['Combination Price Tax'], '');
+        $this->assertSame($this->row7['Combination Wholesale Price'], '');
+        $this->assertSame($this->row7['Combination MPN'], '');
+        $this->assertSame($this->row7['Combination Suppliers Ids'], '');
+        $this->assertSame($this->row7['Combination Supplier Names'], '');
+        $this->assertSame($this->row7['Combination EAN 13'], '');
+        $this->assertSame($this->row7['Combination Supplier Reference'], '');
+        $this->assertSame($this->row7['Combination Images'], '');
+        $this->assertSame($this->row7['Combination Upc'], '');
+        $this->assertSame($this->row7['Combination Ecotax'], '');
+        $this->assertSame($this->row7['Combination Minimal Quantity'], '');
+        $this->assertSame($this->row7['Combination Location'], '');
+        $this->assertSame($this->row7['Combination Weight'], '');
+        $this->assertSame($this->row7['Combination available date'], '');
+        $this->assertSame($this->row7['Combination Image alt'], '');
+        $this->assertSame($this->row7['Combination Image position'], '');
+        $this->assertSame($this->row7['Combination Warehouse'], '');
+        $this->assertSame($this->row7['Combination Low Stock Threshold'], '');
+        $this->assertSame($this->row7['Combination Low Stock Alert'], '');
     }
 
+    public function test_AllFieldsExported()
+    {
+        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "products"';
+        $result = Db::getInstance()->ExecuteS($query);
 
+
+        foreach ($result as $key => $value) {
+            $this->assertSame(true, isset($this->row[$value['name']]));
+        }
+    }
 
     /**
      * @param $type
      * @return AdvancedExportClass
      */
-    public function createModel($type)
+    public function createModelWithAllFieldsAndDefaultSettings($type)
     {
         $aec = new AdvancedExportClass();
         $aec->delimiter = ',';
@@ -253,14 +337,13 @@ class ProductsTest extends IntegrationTestCase
         $aec->image_type = "home_default";
         $aec->type = $type;
         $aec->name = 'test';
-        $aec->filename = 'test_' . $type;
+        $aec->filename = 'test_' . $type . '_combination';
         $aec->fields = Tools::jsonEncode(
             [
                 'fields[]' => $this->getFieldsNames($type),
                 "active" => "0",
                 "out_of_stock" => "0",
-                "ean" => "0",
-                "attributes" => "0"
+                "ean" => "0"
             ]
         );
         $aec->add();
@@ -293,5 +376,3 @@ class ProductsTest extends IntegrationTestCase
         return $return;
     }
 }
-
-

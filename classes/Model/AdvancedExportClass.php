@@ -37,7 +37,6 @@ class AdvancedExportClass extends ObjectModel
     public $ftp_directory;
     public $ftp_port;
     public $filename;
-    public $orderPerFile;
 
     public static $definition = array(
         'table' => 'advancedexport',

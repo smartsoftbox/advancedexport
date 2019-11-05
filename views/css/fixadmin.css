@@ -105,3 +105,6 @@
 .list-right .list-group input {
   background: #a0efff3d;
 }
+.chzn-container-multi {
+  width: 100% !important;
+}

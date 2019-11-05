@@ -87,11 +87,11 @@ jQuery(function($) {
 		if(parseInt(id) === 3) {
 		  id = 1;
     }
-		$('.process1').parent().parent().hide();
-		$('.process2').parent().parent().hide();
-	 	var current = 'process' + id;
-		$('.' + current).parent().parent().show();
-
+		$('.process1').closest('.form-group').hide();
+		$('.process2').closest('.form-group').hide();
+    $('.process0').closest('.form-group').hide();
+    var current = 'process' + id;
+		$('.' + current).closest('.form-group').show();
         return false;
 	});
 
