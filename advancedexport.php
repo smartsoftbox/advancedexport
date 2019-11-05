@@ -1047,7 +1047,6 @@ class Advancedexport extends Module
             'field' => 'reference',
             'database' => 'orders',
             'alias' => 'o',
-            'attribute' => true,
             'group15' => OrderGroup::ORDER
         ),
         array(
@@ -2271,14 +2270,14 @@ class Advancedexport extends Module
             'group15' => CustomerGroup::ADDRESS
         ),
         array(
-            'name' => 'address phone_mobile',
+            'name' => 'address phone mobile',
             'field' => 'phone_mobile',
             'database' => 'address',
             'alias' => 'a',
             'group15' => CustomerGroup::ADDRESS
         ),
         array(
-            'name' => 'address vat_number',
+            'name' => 'address vat number',
             'field' => 'vat_number',
             'database' => 'address',
             'alias' => 'a',
@@ -2293,7 +2292,7 @@ class Advancedexport extends Module
         ),
         array(
             'name' => 'address active',
-            'field' => 'address_active',
+            'field' => 'active',
             'database' => 'address',
             'alias' => 'a',
             'as' => true,
