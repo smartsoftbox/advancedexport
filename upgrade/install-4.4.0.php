@@ -84,7 +84,8 @@ function upgrade_module_4_4_0($module)
             unset($fields['fields[]'][$key]);
         }
         DB::getInstance()->execute(
-            'UPDATE ' . _DB_PREFIX_ . 'advancedexport SET fields = \'' . json_encode($fields) . '\''
+            'UPDATE ' . _DB_PREFIX_ . 'advancedexport SET fields = \'' . json_encode($fields) . '\' 
+            WHERE id_advancedexport = "' . $model['id_advancedexport']  . '"'
         );
     }
 
