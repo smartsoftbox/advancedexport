@@ -3453,7 +3453,7 @@ class Advancedexport extends Module
             }
         } else {
             // add empty array keys for products which don't have attributes
-            foreach ($sorted_fields['attribute_fields'] as $key => $value) {
+            foreach ($sorted_fields['attribute_fields'] as $value) {
                 $element[$value] = '';
             }
         }
@@ -4221,7 +4221,7 @@ class Advancedexport extends Module
         return $fields_value;
     }
 
-    public function modelFormFields($type, $fields_value)
+    public function modelFormFields($type)
     {
         $functionName = ($type ? $type : 'products').'FormFields';
         $result = null;
@@ -5767,7 +5767,7 @@ class Advancedexport extends Module
         return $obj->getPrice(true);
     }
 
-        public function productsUnitPrice($obj)
+    public function productsUnitPrice($obj)
     {
         return $obj->unit_price;
     }

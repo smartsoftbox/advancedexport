@@ -92,8 +92,7 @@ function upgrade_module_4_4_0($module)
     // clean advancedexportfield
     $table_name = _DB_PREFIX_.'advancedexportfield';
 
-   $query = 'DELETE FROM `'.$table_name.'` WHERE isCustom = 0';
-
+    $query = 'DELETE FROM `'.$table_name.'` WHERE isCustom = 0';
 
     if (!Db::getInstance()->execute($query)) {
         $module->upgrade_detail[$upgrade_version][] =
@@ -129,14 +128,10 @@ function upgrade_module_4_4_0($module)
 			PRIMARY KEY  (`id_advancedexportcron`)
 			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
 
-
-
-
     if (!Db::getInstance()->execute($query)) {
         $module->upgrade_detail[$upgrade_version][] =
             $module->l('Can\'t create table advancedexportcron');
     }
-
 
     return (bool) !count($module->upgrade_detail[$upgrade_version]);
 }
