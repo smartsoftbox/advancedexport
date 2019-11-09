@@ -22,6 +22,7 @@ require_once 'classes/Group/ProductGroup.php';
 require_once 'classes/Group/SupplierGroup.php';
 require_once 'classes/SFTP.php';
 require_once 'classes/FTP.php';
+require_once 'classes/CustomFields.php';
 
 
 require_once 'classes/Model/AdvancedExportClass.php';
@@ -3185,7 +3186,8 @@ class Advancedexport extends Module
                 $fields['labels'][] = $name[0];
 
                 if ($allFields[$field]['table'] == 'other' && $allFields[$field]['attribute'] == false) {
-                    $fields['otherfields'][$allFields[$field]['field']] = $allFields[$field]['field'];
+                    $fields['otherfields'][$allFields[$field]['field']]['field'] = $allFields[$field]['field'];
+                    $fields['otherfields'][$allFields[$field]['field']]['isCustom'] = $allFields[$field]['isCustom'];
                 } elseif ($allFields[$field]['table'] == 'static') {
                     $fields['static'][$allFields[$field]['field']] = $allFields[$field]['return'];
                 } elseif ($allFields[$field]['attribute'] == false) {
@@ -3337,8 +3339,12 @@ class Advancedexport extends Module
             foreach ($sorted_fields['otherfields'] as $key => $value) {
                 //convert string to camel case
                 //to meet prestashop validation rools
-                $run = $this->toCamelCase($ae->type.'_'.$value);
-                $element[$value] = $this->$run($obj, $ae, $element);
+                $run = $this->toCamelCase($ae->type.'_'.$value['field']);
+                if ($value['isCustom']) {
+                    $element[$value['field']] = CustomFields::$run($obj, $ae, $element);
+                } else {
+                    $element[$value['field']] = $this->$run($obj, $ae, $element);
+                }
             }
         }
 
@@ -5425,6 +5431,7 @@ class Advancedexport extends Module
             LEFT JOIN `'._DB_PREFIX_.'product_download` pd ON (p.`id_product` = pd.`id_product`)
             LEFT JOIN `'._DB_PREFIX_.'stock_available` sa ON (sa.`id_product` = p.`id_product` AND sa
             .`id_product_attribute` = 0)
+            ' . CustomFields::productsQuery() . '
 			LEFT JOIN ( SELECT s1.`id_product`, s1.`from`, s1.`to`, s1.`id_cart`,
 				IF(s1.`reduction_type` = "percentage", s1.`reduction`, "") as discount_percent,
 				IF(s1.`reduction_type` = "amount", s1.`reduction`, "") as discount_amount
@@ -6178,6 +6185,7 @@ class Advancedexport extends Module
                 LEFT JOIN `'._DB_PREFIX_.'tax` t ON ( odt.`id_tax` = t.`id_tax` )
                 LEFT JOIN `'._DB_PREFIX_.'order_state_lang` osl 
                 ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = '.$ae->id_lang.')
+                ' . CustomFields::ordersQuery() . '
                 WHERE 1'.
                 (isset($ae->only_new) && $ae->only_new ? ' AND o.`id_order` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND o.`id_order` >= '.$ae->start_id : '').
@@ -6258,6 +6266,7 @@ class Advancedexport extends Module
 			'.Shop::addSqlAssociation('category', 'c').'
 			LEFT JOIN `'._DB_PREFIX_.'category_lang` cl 
 			ON c.`id_category` = cl.`id_category`'.Shop::addSqlRestrictionOnLang('cl').'
+			' . CustomFields::categoriesQuery() . '
 			WHERE 1'.($ae->id_lang ? ' AND `id_lang` = '.(int) $ae->id_lang : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_category` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND c.`id_category` >= '.$ae->start_id : '').
@@ -6353,6 +6362,7 @@ class Advancedexport extends Module
             '.Shop::addSqlAssociation('manufacturer', 'm').'
             INNER JOIN `'._DB_PREFIX_.'manufacturer_lang` ml 
             ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = '.(int) $ae->id_lang.')'.'
+            ' . CustomFields::manufacturersQuery() . '
             WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND m.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND m.`id_manufacturer` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND m.`id_manufacturer` >= '.$ae->start_id : '').
@@ -6431,6 +6441,7 @@ class Advancedexport extends Module
             '.Shop::addSqlAssociation('supplier', 's').'
 		    INNER JOIN `'._DB_PREFIX_.'supplier_lang` sl 
 		    ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = '.(int) $ae->id_lang.')'.'
+		    ' . CustomFields::suppliersQuery() . '
             WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND s.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND s.`id_supplier` > '.$ae->last_exported_id : '').
             ($ae->only_new == false && $ae->start_id ? ' AND s.`id_supplier` >= '.$ae->start_id : '').
@@ -6557,6 +6568,7 @@ class Advancedexport extends Module
                 LEFT JOIN `'._DB_PREFIX_.'state` s ON ( a.`id_state` = s.`id_state` )
                 LEFT JOIN `'._DB_PREFIX_.'country_lang` co 
                 ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = '.$ae->id_lang.')
+                ' . CustomFields::customersQuery() . '
 				WHERE 1'.Shop::addSqlRestriction(Shop::SHARE_CUSTOMER).
             (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
             (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_customer` > '.$ae->last_exported_id : '').
@@ -6594,6 +6606,7 @@ class Advancedexport extends Module
         $sql = 'SELECT n.`id` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
                 implode(', ', $sorted_fields['sqlfields'])).'
 				FROM '._DB_PREFIX_.'emailsubscription as n
+				' . CustomFields::newslettersQuery() . '
 				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND n.`active` = 1' : '').
                 (isset($ae->only_new) && $ae->only_new ? ' AND n.`id` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND n.`id` >= '.$ae->start_id : '').
@@ -6667,6 +6680,7 @@ class Advancedexport extends Module
 				LEFT JOIN `'._DB_PREFIX_.'country_lang` cl 
 				ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = '.$ae->id_lang.')
 				LEFT JOIN `'._DB_PREFIX_.'customer` cu ON ( a.`id_customer` = cu.`id_customer`)
+				' . CustomFields::addressesQuery() . '
 				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND a.`active` = 1' : '').
                 (isset($ae->only_new) && $ae->only_new ? ' AND a.`id` > '.$ae->last_exported_id : '').
                 ($ae->only_new == false && $ae->start_id ? ' AND a.`id` >= '.$ae->start_id : '').
