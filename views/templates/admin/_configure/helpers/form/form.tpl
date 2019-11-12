@@ -15,6 +15,14 @@
             {$input.name|escape:'html'}
         {/if}
     {elseif $input.type == 'duallist'}
+      <div class="alert alert-info" role="alert">
+        <p class="alert-text">
+          Do you need new fields or connect to other tables ? Please email us with this link
+          <a href="https://addons.prestashop.com/contact-form.php?id_product=6927" class="_blank" target="_blank">
+            contact link.
+          </a>
+        </p>
+      </div>
         <div class="dual-list list-left col-md-5" style="padding-left: 0px;">
             <div class="well text-right">
                 <div class="row">
