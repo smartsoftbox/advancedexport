@@ -21,7 +21,6 @@ class CustomFields
 
     public static function productsQuery()
     {
-        return;
     }
 
     public static function ordersQuery()
@@ -30,31 +29,25 @@ class CustomFields
 
     public static function categoriesQuery()
     {
-        return;
     }
 
     public static function manufacturersQuery()
     {
-        return;
     }
 
     public static function suppliersQuery()
     {
-        return;
     }
 
     public static function customersQuery()
     {
-        return;
     }
 
     public static function newslettersQuery()
     {
-        return;
     }
 
     public static function addressesQuery()
     {
-        return;
     }
 }
