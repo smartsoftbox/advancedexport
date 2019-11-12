@@ -2764,6 +2764,25 @@ class Advancedexport extends Module
         return Db::getInstance()->Execute($query);
     }
 
+
+    public function installCustomFields()
+    {
+        require_once 'classes/CustomFields.php';
+
+        $customFields = new CustomFields();
+
+        foreach ($this->export_types as $tab) {
+            foreach ($customFields->$tab as $field) {
+                if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
+                    Db::getInstance()->executeS("DELETE  FROM `" . _DB_PREFIX_."advancedexportfield` 
+                    WHERE `field` = '" . pSQL($field['field']) . "'");
+
+                    $this->saveField($tab, $field);
+                }
+            }
+        }
+    }
+
     /**
      * @throws PrestaShopException
      */
@@ -2772,24 +2791,7 @@ class Advancedexport extends Module
         foreach ($this->export_types as $tab) {
             foreach ($this->$tab as $item) {
                 if (!isset($item['version']) || isset($item['version']) && _PS_VERSION_ >= $item['version']) {
-                    $field = new AdvancedExportFieldClass();
-                    $field->tab = $tab;
-                    $field->name = $item['name'];
-                    $field->field = $item['field'];
-                    $field->table = $item['database'];
-                    $field->alias = (isset($item['alias']) ? $item['alias'] : '');
-                    $field->as = (isset($item['as']) ? $item['as'] : false);
-                    $field->attribute = (isset($item['attribute']) ? $item['attribute'] : false);
-                    $field->import = (isset($item['import']) ? $item['import'] : false);
-                    $field->import_name = (isset($item['import_name']) ? $item['import_name'] : '');
-                    $field->import_combination =
-                        (isset($item['import_combination']) ? $item['import_combination'] : false);
-                    $field->import_combination_name =
-                        (isset($item['import_combination_name']) ? $item['import_combination_name'] : '');
-                    $field->group15 = (isset($item['group15']) ? $item['group15'] : '');
-                    $field->group17 = (isset($item['group17']) ? $item['group17'] : '');
-
-                    $field->add();
+                    $this->saveField($tab, $item);
                 }
             }
         }
@@ -6813,5 +6815,35 @@ class Advancedexport extends Module
         ));
 
         return $this->display(__FILE__, 'views/templates/admin/fromto.tpl');
+    }
+
+    /**
+     * @param $tab
+     * @param $item
+     * @return mixed
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function saveField($tab, $item)
+    {
+        $field = new AdvancedExportFieldClass();
+        $field->tab = $tab;
+        $field->name = $item['name'];
+        $field->field = $item['field'];
+        $field->table = $item['database'];
+        $field->alias = (isset($item['alias']) ? $item['alias'] : '');
+        $field->as = (isset($item['as']) ? $item['as'] : false);
+        $field->attribute = (isset($item['attribute']) ? $item['attribute'] : false);
+        $field->import = (isset($item['import']) ? $item['import'] : false);
+        $field->import_name = (isset($item['import_name']) ? $item['import_name'] : '');
+        $field->import_combination =
+            (isset($item['import_combination']) ? $item['import_combination'] : false);
+        $field->import_combination_name =
+            (isset($item['import_combination_name']) ? $item['import_combination_name'] : '');
+        $field->group15 = (isset($item['group15']) ? $item['group15'] : '');
+        $field->group17 = (isset($item['group17']) ? $item['group17'] : '');
+
+        $field->add();
+        return $item;
     }
 }
