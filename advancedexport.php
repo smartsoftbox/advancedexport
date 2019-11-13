@@ -2,9 +2,9 @@
 /**
  * 2016 Smart Soft.
  *
- *  @author    Marcin Kubiak
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 
@@ -2677,12 +2677,12 @@ class Advancedexport extends Module
     public function install()
     {
         if (!$this->createFieldTable()
-             || !$this->createSettingsTables()
-             || !$this->createCronTable()
-             || !Configuration::updateGlobalValue(
-                 'ADVANCEDEXPORT_SECURE_KEY',
-                 Tools::strtoupper(Tools::passwdGen(16))
-             )
+            || !$this->createSettingsTables()
+            || !$this->createCronTable()
+            || !Configuration::updateGlobalValue(
+                'ADVANCEDEXPORT_SECURE_KEY',
+                Tools::strtoupper(Tools::passwdGen(16))
+            )
         ) {
             return false;
         }
@@ -2699,9 +2699,9 @@ class Advancedexport extends Module
      */
     public function createFieldTable()
     {
-        $table_name = _DB_PREFIX_.'advancedexportfield';
+        $table_name = _DB_PREFIX_ . 'advancedexportfield';
 
-        $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+        $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
 			`id_advancedexportfield` int(10) unsigned NOT NULL auto_increment,
 			`tab` varchar(255) NOT NULL,
 			`name` varchar(255) NOT NULL,
@@ -2720,7 +2720,7 @@ class Advancedexport extends Module
 			`group17` varchar(255) NOT NULL,
 			`version` varchar(255) NOT NULL, 
 			PRIMARY KEY  (`id_advancedexportfield`)
-			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+			) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         if (!$this->dbExecute($query)) {
             return false;
@@ -2736,9 +2736,9 @@ class Advancedexport extends Module
      */
     public function createCronTable()
     {
-        $table_name = _DB_PREFIX_.'advancedexportcron';
+        $table_name = _DB_PREFIX_ . 'advancedexportcron';
 
-        $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+        $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
 			`id_advancedexportcron` int(10) unsigned NOT NULL auto_increment,
 			`id_advancedexport` int(10) NOT NULL,
 			`type` varchar(255) NOT NULL,
@@ -2750,7 +2750,7 @@ class Advancedexport extends Module
 			`last_export` varchar(255) NOT NULL,
             `active` BOOL NOT NULL DEFAULT 0,
 			PRIMARY KEY  (`id_advancedexportcron`)
-			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+			) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         if (!$this->dbExecute($query)) {
             return false;
@@ -2774,7 +2774,7 @@ class Advancedexport extends Module
         foreach ($this->export_types as $tab) {
             foreach ($customFields->$tab as $field) {
                 if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
-                    Db::getInstance()->executeS("DELETE  FROM `" . _DB_PREFIX_."advancedexportfield` 
+                    Db::getInstance()->executeS("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield` 
                     WHERE `field` = '" . pSQL($field['field']) . "'");
 
                     $this->saveField($tab, $field);
@@ -2800,9 +2800,9 @@ class Advancedexport extends Module
     public function createSettingsTables()
     {
         //for test create tmp table
-        $table_name = _DB_PREFIX_.'advancedexport';
+        $table_name = _DB_PREFIX_ . 'advancedexport';
 
-        $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+        $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
 			`id_advancedexport` int(10) unsigned NOT NULL auto_increment,
 			`type` varchar(200) NOT NULL,
 			`name` varchar(200) NOT NULL,
@@ -2831,7 +2831,7 @@ class Advancedexport extends Module
 			`ftp_port` varchar(255) NOT NULL,
 			`fields` text  NOT NULL,
 			PRIMARY KEY  (`id_advancedexport`)
-			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+			) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
         if (!$this->dbExecute($query)) {
             return false;
@@ -2856,9 +2856,9 @@ class Advancedexport extends Module
     public function removeTables()
     {
         //remove main table
-        if (!$this->dbExecute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'advancedexport`') ||
-            !$this->dbExecute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'advancedexportfield`') ||
-            !$this->dbExecute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'advancedexportcron`')) {
+        if (!$this->dbExecute('DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'advancedexport`') ||
+            !$this->dbExecute('DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'advancedexportfield`') ||
+            !$this->dbExecute('DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'advancedexportcron`')) {
             return false;
         }
 
@@ -2908,8 +2908,12 @@ class Advancedexport extends Module
             if ($this->saveCron()) {
                 $this->redirect('saveCronConfirmation');
             }
+        } elseif (Tools::isSubmit('deleteadvancedexportcron')) {
+            if ($this->deleteCron()) {
+                $this->redirect('deleteCronConfirmation');
+            }
         } elseif (Tools::isSubmit('deleteadvancedexport')) {
-            if (!$this->deleteModel()) {
+            if ($this->deleteModel()) {
                 $this->redirect('deleteModelConfirmation');
             }
         } elseif ($this->isSubmit('duplicateadvancedexport') && $this->getValue('id_advancedexport')) {
@@ -2933,18 +2937,18 @@ class Advancedexport extends Module
         } elseif ($this->isSubmit('submitSaveFields')) {
             $fields = AdvancedExportFieldClass::getAllFields(Tools::getValue('type'));
             foreach ($fields as $field) {
-                $name = Tools::getValue('name_'.$field['id_advancedexportfield']);
+                $name = Tools::getValue('name_' . $field['id_advancedexportfield']);
                 if ($name != false && $name != '') {
                     $f = new AdvancedExportFieldClass($field['id_advancedexportfield']);
                     $f->name = $name;
-                    $return = Tools::getValue('return_'.$field['id_advancedexportfield']);
+                    $return = Tools::getValue('return_' . $field['id_advancedexportfield']);
                     if ($return != false && $f->table = 'static') {
                         $f->return = $return;
                     }
                     $f->save();
                 }
             }
-            $this->redirect('editfields&updateFieldsConfirmation&type='.Tools::getValue('type'));
+            $this->redirect('editfields&updateFieldsConfirmation&type=' . Tools::getValue('type'));
         } elseif ($this->isSubmit('deleteadvancedexportfield')) {
             $id = Tools::getValue('id_advancedexportfield');
             $field = new AdvancedExportFieldClass($id);
@@ -2952,13 +2956,13 @@ class Advancedexport extends Module
                 $field->delete();
 
                 $this->redirect(
-                    'editfields&deleteFieldConfirmation&type='.Tools::getValue('type').
-                    '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield')
+                    'editfields&deleteFieldConfirmation&type=' . Tools::getValue('type') .
+                    '&submitFilteradvancedexportfield=' . (int)Tools::getValue('submitFilteradvancedexportfield')
                 );
             } else {
                 $this->redirect(
-                    'editfields&deleteFieldError&type='.Tools::getValue('type').
-                    '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield')
+                    'editfields&deleteFieldError&type=' . Tools::getValue('type') .
+                    '&submitFilteradvancedexportfield=' . (int)Tools::getValue('submitFilteradvancedexportfield')
                 );
             }
         } elseif ($this->isSubmit('submitAddField')) {
@@ -2970,18 +2974,18 @@ class Advancedexport extends Module
             $field->table = 'static';
             $field->isCustom = 1;
             if ($id) {
-                $field->field = 'field_'.$field->id;
+                $field->field = 'field_' . $field->id;
                 $field->save();
             } else {
                 $field->save();
-                $field->field = 'field_'.$field->id;
+                $field->field = 'field_' . $field->id;
                 $field->save();
             }
 
             $this->redirect(
-                'editfields&saveFieldConfirmation&type='.
-                Tools::getValue('type').'&submitFilteradvancedexportfield='.
-                (int) Tools::getValue('submitFilteradvancedexportfield')
+                'editfields&saveFieldConfirmation&type=' .
+                Tools::getValue('type') . '&submitFilteradvancedexportfield=' .
+                (int)Tools::getValue('submitFilteradvancedexportfield')
             );
         } elseif (Tools::isSubmit('saveModelConfirmation')) {
             $this->_html .= $this->displayConfirmation($this->l('Model save successfully.'));
@@ -2989,6 +2993,8 @@ class Advancedexport extends Module
             $this->_html .= $this->displayConfirmation($this->l('Cron task save successfully.'));
         } elseif (Tools::isSubmit('deleteModelConfirmation')) {
             $this->_html .= $this->displayConfirmation($this->l('Model deleted successfully.'));
+        } elseif (Tools::isSubmit('deleteCronConfirmation')) {
+            $this->_html .= $this->displayConfirmation($this->l('Cron task deleted successfully.'));
         } elseif (Tools::isSubmit('deleteFileConfirmation')) {
             $this->_html .= $this->displayConfirmation($this->l('File deleted successfully.'));
         } elseif (Tools::isSubmit('exportConfirmation')) {
@@ -3094,7 +3100,7 @@ class Advancedexport extends Module
 
         if (count($this->_errors)) {
             foreach ($this->_errors as $err) {
-                $this->_html .= '<div class="alert alert-danger">'.$err.'</div>';
+                $this->_html .= '<div class="alert alert-danger">' . $err . '</div>';
             }
 
             return false;
@@ -3105,7 +3111,7 @@ class Advancedexport extends Module
 
     public function saveModel()
     {
-        $functionName = ($this->getValue('type') ? $this->getValue('type') : '').'FormFields';
+        $functionName = ($this->getValue('type') ? $this->getValue('type') : '') . 'FormFields';
         $specific = $this->$functionName();
 
         $to_serialize = null;
@@ -3133,14 +3139,22 @@ class Advancedexport extends Module
     public function redirect($action)
     {
         Tools::redirectAdmin(
-            AdminController::$currentIndex.'&configure='.$this->name.'&token='.
-            Tools::getAdminTokenLite('AdminModules').'&'.$action
+            AdminController::$currentIndex . '&configure=' . $this->name . '&token=' .
+            Tools::getAdminTokenLite('AdminModules') . '&' . $action
         );
     }
 
     public function deleteModel()
     {
         $AdvancedExport = new AdvancedExportClass($this->getValue('id_advancedexport'));
+        $AdvancedExport->delete();
+
+        return true;
+    }
+
+    public function deleteCron()
+    {
+        $AdvancedExport = new AdvancedExportCronClass($this->getValue('id_advancedexportcron'));
         $AdvancedExport->delete();
 
         return true;
@@ -3163,7 +3177,7 @@ class Advancedexport extends Module
         $ae->fields = Tools::jsonDecode($ae->fields, true);
         $sorted_fields = $this->getLabelsAndFields($ae->type, $ae->fields);
 
-        $functionName = $ae->type.'Query';
+        $functionName = $ae->type . 'Query';
         $elements = $this->$functionName($ae, $sorted_fields);
         //total number for progress bar
 //        $total_number = DB::getInstance()->numRows(); // forr debu
@@ -3197,18 +3211,18 @@ class Advancedexport extends Module
                     //to użyj ten alias jako prefix w nazwie tabeli
                     //wraz z kropką.
                     $alias = (isset($allFields[$field]['alias']) &&
-                    $allFields[$field]['alias'] ? $allFields[$field]['alias'].'.' : '');
+                    $allFields[$field]['alias'] ? $allFields[$field]['alias'] . '.' : '');
 
                     //jeśli wartość as jest false
                     //to utwórz polecenie as
                     //wymagane przy nazwach pól które się powtarzają
                     if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
-                        $fields['sqlfields'][] = $alias.'`'.Tools::substr(
-                            strstr($allFields[$field]['field'], '_'),
-                            Tools::strlen('_')
-                        ).'` as '.$allFields[$field]['field'].'';
+                        $fields['sqlfields'][] = $alias . '`' . Tools::substr(
+                                strstr($allFields[$field]['field'], '_'),
+                                Tools::strlen('_')
+                            ) . '` as ' . $allFields[$field]['field'] . '';
                     } else {
-                        $fields['sqlfields'][] = $alias.'`'.$allFields[$field]['field'].'`';
+                        $fields['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
                     }
                 }
 
@@ -3290,8 +3304,8 @@ class Advancedexport extends Module
     public function saveProgressToFile($current_row, $clean = false)
     {
         $response = array(
-            'total' => ($clean ? 1 : (int) $this->rowsNumber),
-            'current' => ($clean ? 0 : (int) $current_row),
+            'total' => ($clean ? 1 : (int)$this->rowsNumber),
+            'current' => ($clean ? 0 : (int)$current_row),
         );
 
         $file = dirname(__FILE__) . '/progress.txt';
@@ -3302,17 +3316,17 @@ class Advancedexport extends Module
     {
         //open file for write
         if ($filename == null || $filename == '') {
-            $filename = $type.date('Y-m-d_His').'.csv';
+            $filename = $type . date('Y-m-d_His') . '.csv';
         } else {
-            $filename = $filename.'.csv';
+            $filename = $filename . '.csv';
         }
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/'.$type;
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' . $type;
         if (!is_dir($url)) {
             mkdir($url);
         }
 
-        return $url.'/'.$filename;
+        return $url . '/' . $filename;
     }
 
     /**
@@ -3322,7 +3336,7 @@ class Advancedexport extends Module
      */
     public function filewrite($ae, $sorted_fields, $file)
     {
-        fwrite($file, implode($ae->delimiter, $sorted_fields['labels'])."\r\n");
+        fwrite($file, implode($ae->delimiter, $sorted_fields['labels']) . "\r\n");
     }
 
     public function nextRow($elements)
@@ -3341,7 +3355,7 @@ class Advancedexport extends Module
             foreach ($sorted_fields['otherfields'] as $key => $value) {
                 //convert string to camel case
                 //to meet prestashop validation rools
-                $run = $this->toCamelCase($ae->type.'_'.$value['field']);
+                $run = $this->toCamelCase($ae->type . '_' . $value['field']);
                 if ($value['isCustom']) {
                     $element[$value['field']] = CustomFields::$run($obj, $ae, $element);
                 } else {
@@ -3443,7 +3457,9 @@ class Advancedexport extends Module
         if ($capitalise_first_char) {
             $str[0] = Tools::strtoupper($str[0]);
         }
-        $func = create_function('$c', 'return Tools::strtoupper($c[1]);');
+        $func = function($c) {
+            return Tools::strtoupper($c[1]);
+        };
         return preg_replace_callback('/_([a-z])/', $func, $str);
     }
 
@@ -3480,9 +3496,9 @@ class Advancedexport extends Module
         $combArray = null;
         $groups = null;
 
-        $combinaisons = $obj->getAttributeCombinations((int) ($ae->id_lang));
+        $combinaisons = $obj->getAttributeCombinations((int)($ae->id_lang));
         if (is_array($combinaisons)) {
-            $combinationImages = $obj->getCombinationImages((int) ($ae->id_lang));
+            $combinationImages = $obj->getCombinationImages((int)($ae->id_lang));
 
             foreach ($combinaisons as $combinaison) {
                 $combArray[$combinaison['id_product_attribute']]['wholesale_price'] = $combinaison['wholesale_price'];
@@ -3541,7 +3557,7 @@ class Advancedexport extends Module
 
             //write into csv line by line
             if ($ae->separator == '') {
-                fputs($file, implode($readyForExport, $ae->delimiter)."\n");
+                fputs($file, implode($readyForExport, $ae->delimiter) . "\n");
             } else {
                 fputcsv($file, $readyForExport, $ae->delimiter, $ae->separator);
             }
@@ -3561,7 +3577,7 @@ class Advancedexport extends Module
             //this have to be first becasue if we change separator
             //the value is not recognise
             if ($ae->decimal_round != -1 && $ae->decimal_round != '-1') {
-                $object[$value] = Tools::ps_round((float) $object[$value], $ae->decimal_round);
+                $object[$value] = Tools::ps_round((float)$object[$value], $ae->decimal_round);
             }
 
             if ($ae->decimal_separator != -1 && $ae->decimal_separator != '-1') {
@@ -3668,7 +3684,7 @@ class Advancedexport extends Module
 
     public function getConfiguration($value)
     {
-        return (int) Configuration::get($value);
+        return (int)Configuration::get($value);
     }
 
     public function showTimeAndMemoryUsage($time_start)
@@ -3690,16 +3706,16 @@ class Advancedexport extends Module
 
     public function getFile($url)
     {
-        $dir = (string) realpath(dirname(__FILE__).'/csv/'.$url);
+        $dir = (string)realpath(dirname(__FILE__) . '/csv/' . $url);
         if (file_exists($dir)) {
             header('Content-Description: File Transfer');
             header('Content-Type: application/csv');
-            header('Content-Disposition: attachment; filename='.basename($dir));
+            header('Content-Disposition: attachment; filename=' . basename($dir));
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
-            header('Content-Length: '.filesize($dir));
+            header('Content-Length: ' . filesize($dir));
             //ob_clean();
             flush();
             readfile($dir);
@@ -3783,8 +3799,8 @@ class Advancedexport extends Module
         $ae->start_id = 0;
         $ae->end_id = 0;
         $ae->type = $type;
-        $ae->name = $type.'_import';
-        $ae->filename = $type.'_import';
+        $ae->name = $type . '_import';
+        $ae->filename = $type . '_import';
         $ae->fields = Tools::jsonEncode(array('fields[]' => $fields));
         $ae->add();
 
@@ -3793,7 +3809,7 @@ class Advancedexport extends Module
 
     public function deleteFile($url)
     {
-        $dir = (string) realpath(dirname(__FILE__).'/csv/'.$url);
+        $dir = (string)realpath(dirname(__FILE__) . '/csv/' . $url);
         if (file_exists($dir)) {
             unlink($dir);
         }
@@ -3814,14 +3830,14 @@ class Advancedexport extends Module
         $helper->module = $this;
         $helper->show_toolbar = true;
         $helper->table = 'advancedexportfield';
-        $helper->id = (int) $id;
-        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
-        $helper->allow_employee_form_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $helper->id = (int)$id;
+        $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
+        $helper->allow_employee_form_lang = (int)Configuration::get('PS_LANG_DEFAULT');
         $helper->submit_action = 'submitAddField';
         $helper->token = $this->getValue('token');
-        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&addfield=1&tab_module='.
-            $this->tab.'&module_name='.$this->name.'&submitFilteradvancedexportfield='.
-            (int) Tools::getValue('submitFilteradvancedexportfield');
+        $helper->currentIndex = $this->getAdminLink() . '&configure=' . $this->name . '&addfield=1&tab_module=' .
+            $this->tab . '&module_name=' . $this->name . '&submitFilteradvancedexportfield=' .
+            (int)Tools::getValue('submitFilteradvancedexportfield');
         $helper->fields_value = $this->getAddFieldFieldsValues($type);
 
         return $helper->generateForm($this->addFieldFormFields($type));
@@ -3922,8 +3938,8 @@ class Advancedexport extends Module
                 'buttons' => array(
                     'cancelBlock' => array(
                         'title' => $this->l('Cancel'),
-                        'href' => $this->getAdminUrl().'&editfields&type='.$type.'&submitFilteradvancedexportfield='.
-                            (int) Tools::getValue('submitFilteradvancedexportfield'),
+                        'href' => $this->getAdminUrl() . '&editfields&type=' . $type . '&submitFilteradvancedexportfield=' .
+                            (int)Tools::getValue('submitFilteradvancedexportfield'),
                         'icon' => 'process-icon-cancel',
                     ),
                 ),
@@ -3935,8 +3951,8 @@ class Advancedexport extends Module
 
     public function getAdminUrl()
     {
-        return AdminController::$currentIndex.'&configure='.
-            $this->name.'&token='.Tools::getAdminTokenLite('AdminModules');
+        return AdminController::$currentIndex . '&configure=' .
+            $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules');
     }
 
     public function displayAddCronForm($helper)
@@ -3954,13 +3970,13 @@ class Advancedexport extends Module
         $helper->module = $this;
         $helper->show_toolbar = true;
         $helper->table = 'advancedexportcron';
-        $helper->id = (int) $id;
-        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
-        $helper->allow_employee_form_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $helper->id = (int)$id;
+        $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
+        $helper->allow_employee_form_lang = (int)Configuration::get('PS_LANG_DEFAULT');
         $helper->submit_action = 'btnSubmitAddCron';
         $helper->token = $this->getValue('token');
-        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.
-            '&module_name='.$this->name;
+        $helper->currentIndex = $this->getAdminLink() . '&configure=' . $this->name . '&tab_module=' . $this->tab .
+            '&module_name=' . $this->name;
         $helper->fields_value = $this->getCronFieldsValues();
 
         return $helper->generateForm($this->cronFormFields($type));
@@ -4003,100 +4019,100 @@ class Advancedexport extends Module
                     'icon' => 'icon-envelope',
                 ),
                 'input' => array(
-                array(
-                    'type' => 'hidden',
-                    'name' => 'id',
-                ),
-                array(
-                    'type' => 'hidden',
-                    'name' => 'type',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Name'),
-                    'name' => 'name',
-                    'required' => true,
-                    'desc' => $this->l('Cron task name'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Model'),
-                    'name' => 'id_advancedexport',
-                    'options' => array(
-                        'query' => AdvancedExport::getLinks($type),
-                        'id' => 'id_advancedexport',
-                        'name' => 'name',
+                    array(
+                        'type' => 'hidden',
+                        'name' => 'id',
                     ),
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Hour'),
-                    'name' => 'cron_hour',
-                    'options' => array(
-                        'query' => $this->cron_hour,
-                        'id' => 'value',
-                        'name' => 'name',
+                    array(
+                        'type' => 'hidden',
+                        'name' => 'type',
                     ),
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Day'),
-                    'name' => 'cron_day',
-                    'options' => array(
-                        'query' => $this->cron_day,
-                        'id' => 'value',
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Name'),
                         'name' => 'name',
+                        'required' => true,
+                        'desc' => $this->l('Cron task name'),
                     ),
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Week'),
-                    'name' => 'cron_week',
-                    'options' => array(
-                        'query' => $this->cron_week,
-                        'id' => 'value',
-                        'name' => 'name',
-                    ),
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Month'),
-                    'name' => 'cron_month',
-                    'options' => array(
-                        'query' => $this->cron_month,
-                        'id' => 'value',
-                        'name' => 'name',
-                    ),
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => $this->switch,
-                    'label' => $this->l('Active'),
-                    'name' => 'active',
-                    'class' => 't',
-                    'is_bool' => true,
-                    'values' => array(
-                        array(
-                            'id' => 'active_on',
-                            'value' => 1,
-                            'label' => $this->l('Yes'),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Model'),
+                        'name' => 'id_advancedexport',
+                        'options' => array(
+                            'query' => AdvancedExport::getLinks($type),
+                            'id' => 'id_advancedexport',
+                            'name' => 'name',
                         ),
-                        array(
-                            'id' => 'active_off',
-                            'value' => 0,
-                            'label' => $this->l('No'),
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Hour'),
+                        'name' => 'cron_hour',
+                        'options' => array(
+                            'query' => $this->cron_hour,
+                            'id' => 'value',
+                            'name' => 'name',
                         ),
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Day'),
+                        'name' => 'cron_day',
+                        'options' => array(
+                            'query' => $this->cron_day,
+                            'id' => 'value',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Week'),
+                        'name' => 'cron_week',
+                        'options' => array(
+                            'query' => $this->cron_week,
+                            'id' => 'value',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Month'),
+                        'name' => 'cron_month',
+                        'options' => array(
+                            'query' => $this->cron_month,
+                            'id' => 'value',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => $this->switch,
+                        'label' => $this->l('Active'),
+                        'name' => 'active',
+                        'class' => 't',
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('Yes'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('No'),
+                            ),
+                        )
                     )
-                )
-            ),
-            'submit' => array(
-                'title' => $this->l('Save'),
-             ),
-            'buttons' => array(
+                ),
+                'submit' => array(
+                    'title' => $this->l('Save'),
+                ),
+                'buttons' => array(
                     'cancelBlock' => array(
                         'title' => $this->l('Cancel'),
                         'href' => $this->getAdminUrl(),
@@ -4104,15 +4120,16 @@ class Advancedexport extends Module
                     ),
                 ),
             ),
-         );
+        );
 
         return $result;
     }
+
     public function displayAddModelForm($helper)
     {
         $html = '<script type="text/javascript">
             var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='
-            .Tools::getAdminTokenLite('AdminModules').'";
+            . Tools::getAdminTokenLite('AdminModules') . '";
         </script>';
 
         $type = null;
@@ -4128,17 +4145,17 @@ class Advancedexport extends Module
         $helper->module = $this;
         $helper->show_toolbar = true;
         $helper->table = 'advancedexport';
-        $helper->id = (int) $id;
-        $helper->default_form_language = (int) Configuration::get('PS_LANG_DEFAULT');
-        $helper->allow_employee_form_lang = (int) Configuration::get('PS_LANG_DEFAULT');
+        $helper->id = (int)$id;
+        $helper->default_form_language = (int)Configuration::get('PS_LANG_DEFAULT');
+        $helper->allow_employee_form_lang = (int)Configuration::get('PS_LANG_DEFAULT');
         $helper->submit_action = 'btnSubmit';
         $helper->token = $this->getValue('token');
-        $helper->currentIndex = $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.
-            '&module_name='.$this->name;
+        $helper->currentIndex = $this->getAdminLink() . '&configure=' . $this->name . '&tab_module=' . $this->tab .
+            '&module_name=' . $this->name;
         $helper->fields_value = $this->getModelFieldsValues($type);
         $helper->tpl_vars = array(
-            'link' => $this->getAdminLink().'&configure='.$this->name.'&tab_module='.$this->tab.
-                '&module_name='.$this->name.'&token='.$this->getValue('token').'&type='.$type
+            'link' => $this->getAdminLink() . '&configure=' . $this->name . '&tab_module=' . $this->tab .
+                '&module_name=' . $this->name . '&token=' . $this->getValue('token') . '&type=' . $type
         );
 
         $html .= $helper->generateForm($this->modelFormFields($type, $helper->fields_value));
@@ -4194,7 +4211,7 @@ class Advancedexport extends Module
             }
         }
 
-        $functionName = ($type ? $type : 'products').'FormFields';
+        $functionName = ($type ? $type : 'products') . 'FormFields';
         $specific = $this->$functionName();
 
         foreach ($specific as $value) {
@@ -4237,7 +4254,7 @@ class Advancedexport extends Module
 
     public function modelFormFields($type)
     {
-        $functionName = ($type ? $type : 'products').'FormFields';
+        $functionName = ($type ? $type : 'products') . 'FormFields';
         $result = null;
 
         $result[0] = array(
@@ -4247,306 +4264,306 @@ class Advancedexport extends Module
                     'icon' => 'icon-envelope',
                 ),
                 'input' => array(
-                array(
-                    'type' => 'hidden',
-                    'name' => 'id_advancedexport',
-                ),
-                array(
-                    'type' => 'hidden',
-                    'name' => 'type',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Name'),
-                    'name' => 'name',
-                    'required' => true,
-                    'desc' => $this->l('Settings insternal name'),
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('File name'),
-                    'name' => 'filename',
-                    'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Delimiter'),
-                    'name' => 'delimiter',
-                    'options' => array(
-                        'query' => array(
-                            array(
-                                'value' => ',',
-                                'name' => '[,] '.$this->l('comma'),
+                    array(
+                        'type' => 'hidden',
+                        'name' => 'id_advancedexport',
+                    ),
+                    array(
+                        'type' => 'hidden',
+                        'name' => 'type',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Name'),
+                        'name' => 'name',
+                        'required' => true,
+                        'desc' => $this->l('Settings insternal name'),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('File name'),
+                        'name' => 'filename',
+                        'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Delimiter'),
+                        'name' => 'delimiter',
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'value' => ',',
+                                    'name' => '[,] ' . $this->l('comma'),
+                                ),
+                                array(
+                                    'value' => ';',
+                                    'name' => '[;] ' . $this->l('semi-colons'),
+                                ),
+                                array(
+                                    'value' => ':',
+                                    'name' => '[:] ' . $this->l('colons'),
+                                ),
+                                array(
+                                    'value' => '|',
+                                    'name' => '[|] ' . $this->l('pipes'),
+                                ),
+                                array(
+                                    'value' => '~',
+                                    'name' => '[~] ' . $this->l('tilde'),
+                                ),
                             ),
-                            array(
-                                'value' => ';',
-                                'name' => '[;] '.$this->l('semi-colons'),
-                            ),
-                            array(
-                                'value' => ':',
-                                'name' => '[:] '.$this->l('colons'),
-                            ),
-                            array(
-                                'value' => '|',
-                                'name' => '[|] '.$this->l('pipes'),
-                            ),
-                            array(
-                                'value' => '~',
-                                'name' => '[~] '.$this->l('tilde'),
-                            ),
+                            'id' => 'value',
+                            'name' => 'name',
                         ),
-                        'id' => 'value',
-                        'name' => 'name',
+                        'desc' => $this->l('Separrator for each line in csv file'),
                     ),
-                    'desc' => $this->l('Separrator for each line in csv file'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Separator'),
-                    'name' => 'separator',
-                    'options' => array(
-                        'query' => array(
-                            array(
-                                'value' => '&#34;',
-                                'name' => '["] '.$this->l('quotation marks'),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Separator'),
+                        'name' => 'separator',
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'value' => '&#34;',
+                                    'name' => '["] ' . $this->l('quotation marks'),
+                                ),
+                                array(
+                                    'value' => "'",
+                                    'name' => "['] " . $this->l('single quotation marks'),
+                                ),
+                                // array(
+                                //  'value' => '',
+                                //     'name' => $this->l('no separator'),
+                                // )
                             ),
-                            array(
-                                'value' => "'",
-                                'name' => "['] ".$this->l('single quotation marks'),
-                            ),
-                            // array(
-                            //  'value' => '',
-                            //     'name' => $this->l('no separator'),
-                            // )
+                            'id' => 'value',
+                            'name' => 'name',
                         ),
-                        'id' => 'value',
-                        'name' => 'name',
+                        'desc' => $this->l('Separrator for each value in csv file'),
                     ),
-                    'desc' => $this->l('Separrator for each value in csv file'),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Language'),
-                    'name' => 'id_lang',
-                    'col' => '4',
-                    'options' => array(
-                        'query' => Language::getLanguages(),
-                        'id' => 'id_lang',
-                        'name' => 'name',
-                    ),
-                    'desc' => $this->l('Default utf-8.'),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Language'),
+                        'name' => 'id_lang',
+                        'col' => '4',
+                        'options' => array(
+                            'query' => Language::getLanguages(),
+                            'id' => 'id_lang',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('Default utf-8.'),
 
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Encoding type'),
-                    'name' => 'charset',
-                    'col' => '4',
-                    'options' => array(
-                        'query' => $this->getCharsets(),
-                        'id' => 'name',
-                        'name' => 'name',
                     ),
-                    'desc' => $this->l('Default utf-8.'),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Encoding type'),
+                        'name' => 'charset',
+                        'col' => '4',
+                        'options' => array(
+                            'query' => $this->getCharsets(),
+                            'id' => 'name',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('Default utf-8.'),
 
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Decimal separator'),
-                    'name' => 'decimal_separator',
-                    'options' => array(
-                        'query' => array(
-                            array(
-                                'value' => ',',
-                                'name' => '[,] '.$this->l('comma'),
-                            ),
-                            array(
-                                'value' => '.',
-                                'name' => '[.] '.$this->l('dot'),
-                            ),
-                        ),
-                        'default' => array(
-                            'label' => $this->l('default'),
-                            'value' => -1,
-                        ),
-                        'id' => 'value',
-                        'name' => 'name',
                     ),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Round values'),
-                    'name' => 'decimal_round',
-                    'options' => array(
-                        'default' => array(
-                            'label' => $this->l('default'),
-                            'value' => '-1',
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Decimal separator'),
+                        'name' => 'decimal_separator',
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'value' => ',',
+                                    'name' => '[,] ' . $this->l('comma'),
+                                ),
+                                array(
+                                    'value' => '.',
+                                    'name' => '[.] ' . $this->l('dot'),
+                                ),
+                            ),
+                            'default' => array(
+                                'label' => $this->l('default'),
+                                'value' => -1,
+                            ),
+                            'id' => 'value',
+                            'name' => 'name',
                         ),
-                        'query' => array(
-                            array(
-                                'value' => '0',
-                                'label' => '0',
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Round values'),
+                        'name' => 'decimal_round',
+                        'options' => array(
+                            'default' => array(
+                                'label' => $this->l('default'),
+                                'value' => '-1',
                             ),
-                            array(
-                                'value' => '1',
-                                'label' => '1',
+                            'query' => array(
+                                array(
+                                    'value' => '0',
+                                    'label' => '0',
+                                ),
+                                array(
+                                    'value' => '1',
+                                    'label' => '1',
+                                ),
+                                array(
+                                    'value' => '2',
+                                    'label' => '2',
+                                ),
+                                array(
+                                    'value' => '3',
+                                    'label' => '3',
+                                ),
+                                array(
+                                    'value' => '4',
+                                    'label' => '4',
+                                ),
+                                array(
+                                    'value' => '5',
+                                    'label' => '5',
+                                ),
+                                array(
+                                    'value' => '6',
+                                    'label' => '6',
+                                ),
                             ),
-                            array(
-                                'value' => '2',
-                                'label' => '2',
-                            ),
-                            array(
-                                'value' => '3',
-                                'label' => '3',
-                            ),
-                            array(
-                                'value' => '4',
-                                'label' => '4',
-                            ),
-                            array(
-                                'value' => '5',
-                                'label' => '5',
-                            ),
-                            array(
-                                'value' => '6',
-                                'label' => '6',
-                            ),
+                            'id' => 'value',
+                            'name' => 'label',
                         ),
-                        'id' => 'value',
-                        'name' => 'label',
                     ),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('Save type'),
-                    'name' => 'save_type',
-                    'default' => '0',
-                    'options' => array(
-                        'query' => $this->getSaveTypes(),
-                        'id' => 'id',
-                        'name' => 'name',
-                    ),
-                    'desc' => $this->l('Save your file, sent to server or email.'),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Save type'),
+                        'name' => 'save_type',
+                        'default' => '0',
+                        'options' => array(
+                            'query' => $this->getSaveTypes(),
+                            'id' => 'id',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('Save your file, sent to server or email.'),
 
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Email'),
-                    'name' => 'email',
-                    'class' => 'process2 input fixed-width-xxl other-border',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Hostname'),
-                    'name' => 'ftp_hostname',
-                    'class' => 'process1 input fixed-width-xxl other-border',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Port'),
-                    'placeholder' => 21,
-                    'name' => 'ftp_port',
-                    'class' => 'process1 input fixed-width-xs other-border',
-                    'desc' => $this->l('Leave blank then default will be used (ftp:21 / sftp:22).'),
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Username'),
-                    'name' => 'ftp_user_name',
-                    'class' => 'process1 input fixed-width-xxl other-border',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Password'),
-                    'name' => 'ftp_user_pass',
-                    'class' => 'process1 input fixed-width-xxl other-border',
-                ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Path'),
-                    'name' => 'ftp_directory',
-                    'class' => 'process1 other-border',
-                ),
-                array(
-                    'type' => 'free',
-                    'name' => 'test_connection',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Email'),
+                        'name' => 'email',
+                        'class' => 'process2 input fixed-width-xxl other-border',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Hostname'),
+                        'name' => 'ftp_hostname',
+                        'class' => 'process1 input fixed-width-xxl other-border',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Port'),
+                        'placeholder' => 21,
+                        'name' => 'ftp_port',
+                        'class' => 'process1 input fixed-width-xs other-border',
+                        'desc' => $this->l('Leave blank then default will be used (ftp:21 / sftp:22).'),
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Username'),
+                        'name' => 'ftp_user_name',
+                        'class' => 'process1 input fixed-width-xxl other-border',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Password'),
+                        'name' => 'ftp_user_pass',
+                        'class' => 'process1 input fixed-width-xxl other-border',
+                    ),
+                    array(
+                        'type' => 'text',
+                        'label' => $this->l('Path'),
+                        'name' => 'ftp_directory',
+                        'class' => 'process1 other-border',
+                    ),
+                    array(
+                        'type' => 'free',
+                        'name' => 'test_connection',
 
-                ),
-                array(
-                    'type' => $this->switch,
-                    'label' => $this->l('Display labels'),
-                    'name' => 'add_header',
-                    'class' => 't',
-                    'is_bool' => true,
-                    'values' => array(
-                        array(
-                            'id' => 'active_on',
-                            'value' => 1,
-                            'label' => $this->l('Yes'),
-                        ),
-                        array(
-                            'id' => 'active_off',
-                            'value' => 0,
-                            'label' => $this->l('No'),
+                    ),
+                    array(
+                        'type' => $this->switch,
+                        'label' => $this->l('Display labels'),
+                        'name' => 'add_header',
+                        'class' => 't',
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('Yes'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('No'),
+                            ),
                         ),
                     ),
-                ),
-                array(
-                    'type' => $this->switch,
-                    'label' => $this->l('Strip tags'),
-                    'name' => 'strip_tags',
-                    'class' => 't',
-                    'is_bool' => true,
-                    'values' => array(
-                        array(
-                            'id' => 'active_on',
-                            'value' => 1,
-                            'label' => $this->l('Yes'),
-                        ),
-                        array(
-                            'id' => 'active_off',
-                            'value' => 0,
-                            'label' => $this->l('No'),
+                    array(
+                        'type' => $this->switch,
+                        'label' => $this->l('Strip tags'),
+                        'name' => 'strip_tags',
+                        'class' => 't',
+                        'is_bool' => true,
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('Yes'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('No'),
+                            ),
                         ),
                     ),
-                ),
-                array(
-                    'type' => $this->switch,
-                    'label' => $this->l('Export not exported'),
-                    'name' => 'only_new',
-                    'class' => 't',
-                    'is_bool' => true,
-                    'desc' => $this->l('Export not exported yet.'),
-                    'values' => array(
-                        array(
-                            'id' => 'active_on',
-                            'value' => 1,
-                            'label' => $this->l('Yes'),
-                         ),
-                        array(
-                            'id' => 'active_off',
-                            'value' => 0,
-                            'label' => $this->l('No'),
-                         ),
+                    array(
+                        'type' => $this->switch,
+                        'label' => $this->l('Export not exported'),
+                        'name' => 'only_new',
+                        'class' => 't',
+                        'is_bool' => true,
+                        'desc' => $this->l('Export not exported yet.'),
+                        'values' => array(
+                            array(
+                                'id' => 'active_on',
+                                'value' => 1,
+                                'label' => $this->l('Yes'),
+                            ),
+                            array(
+                                'id' => 'active_off',
+                                'value' => 0,
+                                'label' => $this->l('No'),
+                            ),
+                        ),
                     ),
+                    array(
+                        'type' => 'free',
+                        'name' => 'id',
+                        'label' => $this->l('Id'),
+                        'desc' => $this->l('You can specyify start id number.')
+                    ),
+                    array(
+                        'type' => 'free',
+                        'name' => 'date',
+                        'label' => $this->l('Date add'),
+                        'desc' => $this->l('Format: 2012-12-31 HH-MM-SS(inclusive).')
+                    )
                 ),
-                array(
-                    'type' => 'free',
-                    'name' => 'id',
-                    'label' => $this->l('Id'),
-                    'desc' => $this->l('You can specyify start id number.')
+                'submit' => array(
+                    'title' => $this->l('Save'),
                 ),
-                array(
-                    'type' => 'free',
-                    'name' => 'date',
-                    'label' => $this->l('Date add'),
-                    'desc' => $this->l('Format: 2012-12-31 HH-MM-SS(inclusive).')
-                )
-            ),
-            'submit' => array(
-                'title' => $this->l('Save'),
-             ),
-            'buttons' => array(
+                'buttons' => array(
                     'cancelBlock' => array(
                         'title' => $this->l('Cancel'),
                         'href' => $this->getAdminUrl(),
@@ -4554,7 +4571,7 @@ class Advancedexport extends Module
                     ),
                 ),
             ),
-         );
+        );
 
         if ($type != 'orders' && $type != 'newsletters' && $type != 'customers' && $type != 'addresses') {
             $result[0]['form']['input'][] = array(
@@ -4707,13 +4724,13 @@ class Advancedexport extends Module
         $helper->title = 'This list of fields avabile under tab';
         $helper->table = 'advancedexportfield';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        if (!(int) Tools::getValue('submitFilteradvancedexportfield')) {
-            $page = (int) Tools::getValue('submitFilteradvancedexportfield');
+        if (!(int)Tools::getValue('submitFilteradvancedexportfield')) {
+            $page = (int)Tools::getValue('submitFilteradvancedexportfield');
         } else {
             $page = 1;
         }
-        $helper->currentIndex = AdminController::$currentIndex.'&editfields=1&type='.$type.'&configure='.
-            $this->name.'&submitFilteradvancedexportfield='.$page;
+        $helper->currentIndex = AdminController::$currentIndex . '&editfields=1&type=' . $type . '&configure=' .
+            $this->name . '&submitFilteradvancedexportfield=' . $page;
 
         $return = $helper->generateList($fields, $fields_list);
 
@@ -4728,7 +4745,7 @@ class Advancedexport extends Module
         $back = Tools::safeOutput(Tools::getValue('back', ''));
 
         if (!isset($back) || empty($back)) {
-            $back = $current_index.'&configure='.$this->name.'&token='.$token;
+            $back = $current_index . '&configure=' . $this->name . '&token=' . $token;
         }
         $this->toolbar_btn = array();
         switch ($display) {
@@ -4746,36 +4763,36 @@ class Advancedexport extends Module
                 break;
             case 'index':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&add_model=1&type='.$type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&add_model=1&type=' . $type,
                     'desc' => $this->l('Add new'),
                 );
                 if ($type != 'orders' && $type != 'newsletters') {
                     $this->toolbar_btn['import'] = array(
-                        'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&generate=1&type='.$type,
+                        'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&generate=1&type=' . $type,
                         'desc' => $this->l('Generate import models'),
                     );
                 } else {
                     unset($this->toolbar_btn['import']);
                 }
                 $this->toolbar_btn['edit'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&editfields=1&type='.$type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&editfields=1&type=' . $type,
                     'desc' => $this->l('Global Field Name Edit'),
                 );
                 break;
             case 'cron':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&add_cron=1&type='.$type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&add_cron=1&type=' . $type,
                     'desc' => $this->l('Add new'),
                 );
                 break;
             case 'editfields':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&addfield=1&type='.$type.
-                        '&submitFilteradvancedexportfield='.(int) Tools::getValue('submitFilteradvancedexportfield'),
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&addfield=1&type=' . $type .
+                        '&submitFilteradvancedexportfield=' . (int)Tools::getValue('submitFilteradvancedexportfield'),
                     'desc' => $this->l('Add new'),
                 );
                 $this->toolbar_btn['cancel'] = array(
-                    'href' => $current_index.'&configure='.$this->name.'&token='.$token.'&type='.$type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&type=' . $type,
                     'desc' => $this->l('Cancel'),
                 );
                 $this->toolbar_btn['save'] = array(
@@ -4792,7 +4809,7 @@ class Advancedexport extends Module
     {
         $html = '<script type="text/javascript">
             var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='
-            .Tools::getAdminTokenLite('AdminModules').'";
+            . Tools::getAdminTokenLite('AdminModules') . '";
         </script>';
 
         $this->smarty->assign(array(
@@ -4852,10 +4869,10 @@ class Advancedexport extends Module
         $helper->list_id = 'list-' . $type;
         $helper->listTotal = count($links);
         $helper->toolbar_btn = $this->initToolbar($display, $type);
-        $helper->title = $type.' models';
+        $helper->title = $type . ' models';
         $helper->table = 'advancedexport';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         $helper->tpl_vars['version'] = false;
 
         return $helper->generateList($links, $fields_list);
@@ -4918,7 +4935,7 @@ class Advancedexport extends Module
         $helper->title = 'Cron tasks';
         $helper->table = 'advancedexportcron';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
         $helper->tpl_vars['version'] = false;
 
         return $helper->generateList($cron, $fields_list);
@@ -4926,26 +4943,18 @@ class Advancedexport extends Module
 
     public function getAllCron($type)
     {
-        $query = 'SELECT * FROM `'._DB_PREFIX_.'advancedexportcron`
-                  WHERE type = "' .$type.'"';
+        $query = 'SELECT * FROM `' . _DB_PREFIX_ . 'advancedexportcron`
+                  WHERE type = "' . $type . '"';
 
         $result = Db::getInstance()->ExecuteS($query);
 
         foreach ($result as $key => $cron) {
             $ae = new AdvancedExportCronClass($cron['id_advancedexportcron']);
             $cron['advancedexport_name'] = $ae->name;
-            $cron['cron_hour'] = $this->cron_hour[
-                $this->searchForValue($ae->cron_hour, $this->cron_hour)
-            ]['name'];
-            $cron['cron_day'] = $this->cron_day[
-                $this->searchForValue($ae->cron_day, $this->cron_day)
-            ]['name'];
-            $cron['cron_week'] = $this->cron_week[
-                $this->searchForValue($ae->cron_week, $this->cron_week)
-            ]['name'];
-            $cron['cron_month'] = $this->cron_month[
-                $this->searchForValue($ae->cron_month, $this->cron_month)
-            ]['name'];
+            $cron['cron_hour'] = $this->cron_hour[$this->searchForValue($ae->cron_hour, $this->cron_hour)]['name'];
+            $cron['cron_day'] = $this->cron_day[$this->searchForValue($ae->cron_day, $this->cron_day)]['name'];
+            $cron['cron_week'] = $this->cron_week[$this->searchForValue($ae->cron_week, $this->cron_week)]['name'];
+            $cron['cron_month'] = $this->cron_month[$this->searchForValue($ae->cron_month, $this->cron_month)]['name'];
             $result[$key] = $cron;
         }
 
@@ -5023,6 +5032,7 @@ class Advancedexport extends Module
             ),
         );
     }
+
     /**
      * @param $type
      *
@@ -5030,13 +5040,13 @@ class Advancedexport extends Module
      */
     public function getLinks($type)
     {
-        $links = $this->dbExecuteS('select * from '._DB_PREFIX_."advancedexport where type = '$type'");
+        $links = $this->dbExecuteS('select * from ' . _DB_PREFIX_ . "advancedexport where type = '$type'");
 
         for ($i = 0; $i < count($links); ++$i) {
-            $url = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.
-                'modules/advancedexport/cron.php?secure_key='.
-                Configuration::get('ADVANCEDEXPORT_SECURE_KEY').
-                '&id='.$links[$i]['id_advancedexport'];
+            $url = 'http://' . $_SERVER['HTTP_HOST'] . __PS_BASE_URI__ .
+                'modules/advancedexport/cron.php?secure_key=' .
+                Configuration::get('ADVANCEDEXPORT_SECURE_KEY') .
+                '&id=' . $links[$i]['id_advancedexport'];
             $links[$i]['cron_url'] = $url;
             $type = $this->getSaveTypes();
             $links[$i]['save_type'] = $type[$links[$i]['save_type']]['short_name'];
@@ -5062,10 +5072,10 @@ class Advancedexport extends Module
         $helper->list_id = 'files-' . $type;
         $helper->shopLinkType = '';
         $helper->listTotal = count($files);
-        $helper->title = $type.' files ';
+        $helper->title = $type . ' files ';
         $helper->table = 'files';
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->currentIndex = AdminController::$currentIndex.'&configure='.$this->name;
+        $helper->currentIndex = AdminController::$currentIndex . '&configure=' . $this->name;
 
         return $helper->generateList($files, $this->filesFieldsForm());
     }
@@ -5090,8 +5100,8 @@ class Advancedexport extends Module
 
     public function getFiles($type)
     {
-        $dirname = _PS_ROOT_DIR_.'/modules/advancedexport/csv/'.$type.'/';
-        $files = glob($dirname.'*.{csv}', GLOB_BRACE);
+        $dirname = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' . $type . '/';
+        $files = glob($dirname . '*.{csv}', GLOB_BRACE);
 
         $result = array();
         $lp = 1;
@@ -5102,7 +5112,7 @@ class Advancedexport extends Module
                     'id_files' => $lp,
                     'name' => basename($value),
                     'filesize' => $this->formatSize(filesize($value)),
-                    'url' => $type.'/'.basename($value),
+                    'url' => $type . '/' . basename($value),
                 );
                 ++$lp;
             }
@@ -5117,7 +5127,7 @@ class Advancedexport extends Module
         if ($size == 0) {
             return 'n/a';
         } else {
-            return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2).$sizes[$i];
+            return round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . $sizes[$i];
         }
     }
 
@@ -5134,7 +5144,7 @@ class Advancedexport extends Module
      */
     private function displayStartForm()
     {
-        $cron_url =  $this->context->link->getModuleLink(
+        $cron_url = $this->context->link->getModuleLink(
             $this->name,
             'cron',
             array('secure_key' => (string)Configuration::get('ADVANCEDEXPORT_SECURE_KEY'))
@@ -5157,29 +5167,29 @@ class Advancedexport extends Module
 
     public function addHeader()
     {
-        $this->addCSS($this->_path.'views/css/admin.css');
-        $this->addCSS($this->_path.'views/css/duallist.css');
-        $this->addCSS($this->_path.'views/css/bootstrap-editable.css');
-        $this->addCSS($this->_path.'views/css/jquery.percentageloader-0.1.css');
+        $this->addCSS($this->_path . 'views/css/admin.css');
+        $this->addCSS($this->_path . 'views/css/duallist.css');
+        $this->addCSS($this->_path . 'views/css/bootstrap-editable.css');
+        $this->addCSS($this->_path . 'views/css/jquery.percentageloader-0.1.css');
 
         if (_PS_VERSION_ >= 1.6) {
-            $this->addJS(_PS_JS_DIR_.'jquery/ui/jquery.ui.sortable.min.js');
-            $this->addJS($this->_path.'views/js/admin.js');
+            $this->addJS(_PS_JS_DIR_ . 'jquery/ui/jquery.ui.sortable.min.js');
+            $this->addJS($this->_path . 'views/js/admin.js');
         } else {
-            $this->addJS($this->_path.'views/js/jquery-ui-1.10.4.custom.min.js');
-            $this->addJS($this->_path.'views/js/fixadmin.js');
-            $this->addCSS($this->_path.'views/css/fixadmin.css');
-            $this->addJS(_PS_JS_DIR_.'jquery/ui/jquery.ui.datepicker.min.js');
-            $this->addCSS(_PS_JS_DIR_.'jquery/ui/themes/base/jquery.ui.datepicker.css');
-            $this->addCSS(_PS_JS_DIR_.'jquery/ui/themes/base/jquery.ui.theme.css');
+            $this->addJS($this->_path . 'views/js/jquery-ui-1.10.4.custom.min.js');
+            $this->addJS($this->_path . 'views/js/fixadmin.js');
+            $this->addCSS($this->_path . 'views/css/fixadmin.css');
+            $this->addJS(_PS_JS_DIR_ . 'jquery/ui/jquery.ui.datepicker.min.js');
+            $this->addCSS(_PS_JS_DIR_ . 'jquery/ui/themes/base/jquery.ui.datepicker.css');
+            $this->addCSS(_PS_JS_DIR_ . 'jquery/ui/themes/base/jquery.ui.theme.css');
         }
 
-        $this->addJS($this->_path.'views/js/duallist.js');
-        $this->addJS($this->_path.'views/js/selectall.chosen.js');
-        $this->addJS($this->_path.'views/js/jquery.percentageloader-0.1.min.js');
+        $this->addJS($this->_path . 'views/js/duallist.js');
+        $this->addJS($this->_path . 'views/js/selectall.chosen.js');
+        $this->addJS($this->_path . 'views/js/jquery.percentageloader-0.1.min.js');
 
-        $this->addJS($this->_path.'views/js/jquery.cooki-plugin.js');
-        $this->addJS($this->_path.'views/js/clipboard.min.js');
+        $this->addJS($this->_path . 'views/js/jquery.cooki-plugin.js');
+        $this->addJS($this->_path . 'views/js/clipboard.min.js');
     }
 
     public function addCSS($path)
@@ -5244,12 +5254,12 @@ class Advancedexport extends Module
                         'id' => 'active_on',
                         'value' => 1,
                         'label' => $this->l('Yes'),
-                     ),
+                    ),
                     array(
                         'id' => 'active_off',
                         'value' => 0,
                         'label' => $this->l('No'),
-                     ),
+                    ),
                 ),
             ),
             array(
@@ -5263,12 +5273,12 @@ class Advancedexport extends Module
                         'id' => 'active_on',
                         'value' => 1,
                         'label' => $this->l('Yes'),
-                     ),
+                    ),
                     array(
                         'id' => 'active_off',
                         'value' => 0,
                         'label' => $this->l('No'),
-                     ),
+                    ),
                 ),
             ),
             array(
@@ -5282,12 +5292,12 @@ class Advancedexport extends Module
                         'id' => 'active_on',
                         'value' => 1,
                         'label' => $this->l('Yes'),
-                     ),
+                    ),
                     array(
                         'id' => 'active_off',
                         'value' => 0,
                         'label' => $this->l('No'),
-                     ),
+                    ),
                 ),
             ),
             // removed you don't need this it is good when
@@ -5423,45 +5433,45 @@ class Advancedexport extends Module
 
     public function productsQuery($ae, $set)
     {
-        $sql = 'SELECT p.`id_product` '.(empty($set['sqlfields']) ? '' : ', '.implode(', ', $set['sqlfields'])).
-            ' FROM '._DB_PREFIX_.'product as p'.
-            Shop::addSqlAssociation('product', 'p').'
-            LEFT JOIN `'._DB_PREFIX_.'product_lang` pl 
-            ON (p.`id_product` = pl.`id_product` '.Shop::addSqlRestrictionOnLang('pl').')
-            LEFT JOIN `'._DB_PREFIX_.'supplier` s ON (p.`id_supplier` = s.`id_supplier`)
-            LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON (m.`id_manufacturer` = p.`id_manufacturer`)
-            LEFT JOIN `'._DB_PREFIX_.'product_download` pd ON (p.`id_product` = pd.`id_product`)
-            LEFT JOIN `'._DB_PREFIX_.'stock_available` sa ON (sa.`id_product` = p.`id_product` AND sa
+        $sql = 'SELECT p.`id_product` ' . (empty($set['sqlfields']) ? '' : ', ' . implode(', ', $set['sqlfields'])) .
+            ' FROM ' . _DB_PREFIX_ . 'product as p' .
+            Shop::addSqlAssociation('product', 'p') . '
+            LEFT JOIN `' . _DB_PREFIX_ . 'product_lang` pl 
+            ON (p.`id_product` = pl.`id_product` ' . Shop::addSqlRestrictionOnLang('pl') . ')
+            LEFT JOIN `' . _DB_PREFIX_ . 'supplier` s ON (p.`id_supplier` = s.`id_supplier`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m ON (m.`id_manufacturer` = p.`id_manufacturer`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'product_download` pd ON (p.`id_product` = pd.`id_product`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'stock_available` sa ON (sa.`id_product` = p.`id_product` AND sa
             .`id_product_attribute` = 0)
             ' . CustomFields::productsQuery() . '
 			LEFT JOIN ( SELECT s1.`id_product`, s1.`from`, s1.`to`, s1.`id_cart`,
 				IF(s1.`reduction_type` = "percentage", s1.`reduction`, "") as discount_percent,
 				IF(s1.`reduction_type` = "amount", s1.`reduction`, "") as discount_amount
-				FROM `'._DB_PREFIX_.'specific_price` as s1
-				LEFT JOIN `'._DB_PREFIX_.'specific_price` AS s2
+				FROM `' . _DB_PREFIX_ . 'specific_price` as s1
+				LEFT JOIN `' . _DB_PREFIX_ . 'specific_price` AS s2
 					 ON s1.id_product = s2.id_product AND s1.id_specific_price < s2.id_specific_price
 				WHERE s2.id_specific_price IS NULL ) as sp_tmp
-			ON (p.`id_product` = sp_tmp.`id_product`  && sp_tmp.`id_cart` = 0)'.
-            (isset($set['categories']) && $set['categories'] ? ' LEFT JOIN `'._DB_PREFIX_.'category_product` c 
-            ON (c.`id_product` = p.`id_product`)' : '').'
-			WHERE pl.`id_lang` = '.(int) $ae->id_lang.
+			ON (p.`id_product` = sp_tmp.`id_product`  && sp_tmp.`id_cart` = 0)' .
+            (isset($set['categories']) && $set['categories'] ? ' LEFT JOIN `' . _DB_PREFIX_ . 'category_product` c 
+            ON (c.`id_product` = p.`id_product`)' : '') . '
+			WHERE pl.`id_lang` = ' . (int)$ae->id_lang .
             (isset($ae->only_new) && $ae->only_new && $ae->last_exported_id ? ' 
-            AND p.`id_product` > '.$ae->last_exported_id : '').
-            ($ae->only_new == false && $ae->start_id ? ' AND p.`id_product` >= '.$ae->start_id : '').
-            ($ae->only_new == false && $ae->end_id ? ' AND p.`id_product` <= '.$ae->end_id : '').
+            AND p.`id_product` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND p.`id_product` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND p.`id_product` <= ' . $ae->end_id : '') .
             (isset($set['categories']) && $set['categories'] ?
-                ' AND c.`id_category` IN ('.implode(',', $set['categories']).')' : '').
+                ' AND c.`id_category` IN (' . implode(',', $set['categories']) . ')' : '') .
             (isset($set['suppliers[]']) && $set['suppliers[]'] ?
-                ' AND p.`id_supplier` IN ('.implode(',', $set['suppliers[]']).')' : '').
+                ' AND p.`id_supplier` IN (' . implode(',', $set['suppliers[]']) . ')' : '') .
             (isset($set['manufacturers[]']) && $set['manufacturers[]'] ?
-                ' AND p.`id_manufacturer` IN ('.implode(',', $set['manufacturers[]']).')' : '').
-            (isset($set['active']) && $set['active'] ? ' AND product_shop.`active` = 1' : '').
-            (isset($set['out_of_stock']) && $set['out_of_stock'] ? ' AND sa.`quantity` <= 0' : '').
-            (isset($set['ean13']) && $set['ean13'] ? ' AND p.`ean13` != ""' : '').
+                ' AND p.`id_manufacturer` IN (' . implode(',', $set['manufacturers[]']) . ')' : '') .
+            (isset($set['active']) && $set['active'] ? ' AND product_shop.`active` = 1' : '') .
+            (isset($set['out_of_stock']) && $set['out_of_stock'] ? ' AND sa.`quantity` <= 0' : '') .
+            (isset($set['ean13']) && $set['ean13'] ? ' AND p.`ean13` != ""' : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                ' AND p.`date_add` >= "'.($ae->date_from).'"' : '').
+                ' AND p.`date_add` >= "' . ($ae->date_from) . '"' : '') .
             (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
-                ' AND p.`date_add` <= "'.($ae->date_to).'"' : '').
+                ' AND p.`date_add` <= "' . ($ae->date_to) . '"' : '') .
             ' GROUP BY p.`id_product`';
 
         $result = $this->query($sql);
@@ -5504,10 +5514,10 @@ class Advancedexport extends Module
     {
         $sups = $this->executeS('
 		SELECT DISTINCT(s.`name`)
-		FROM `'._DB_PREFIX_.'product_supplier` ps
-		LEFT JOIN `'._DB_PREFIX_.'supplier` s ON (ps.`id_supplier`= s.`id_supplier`)
-		LEFT JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-		WHERE ps.`id_product` = '.$obj->id);
+		FROM `' . _DB_PREFIX_ . 'product_supplier` ps
+		LEFT JOIN `' . _DB_PREFIX_ . 'supplier` s ON (ps.`id_supplier`= s.`id_supplier`)
+		LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (ps.`id_product`= p.`id_product`)
+		WHERE ps.`id_product` = ' . $obj->id);
         $suppliers = array();
         foreach ($sups as $sup) {
             $suppliers[] = $sup['name'];
@@ -5525,9 +5535,9 @@ class Advancedexport extends Module
     {
         $sups = $this->executeS('
 		SELECT DISTINCT(ps.`id_supplier`)
-		FROM `'._DB_PREFIX_.'product_supplier` ps
-		JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-		WHERE ps.`id_product` = '.$obj->id);
+		FROM `' . _DB_PREFIX_ . 'product_supplier` ps
+		JOIN `' . _DB_PREFIX_ . 'product` p ON (ps.`id_product`= p.`id_product`)
+		WHERE ps.`id_product` = ' . $obj->id);
         $suppliers = array();
         foreach ($sups as $sup) {
             $suppliers[] = $sup['id_supplier'];
@@ -5541,7 +5551,7 @@ class Advancedexport extends Module
         $features = $obj->getFrontFeaturesStatic($ae->id_lang, $obj->id);
         $feats = array();
         foreach ($features as $feature) {
-            $feats[] = $feature['name'].'-'.$feature['value'];
+            $feats[] = $feature['name'] . '-' . $feature['value'];
         }
 
         return implode(',', $feats);
@@ -5553,7 +5563,7 @@ class Advancedexport extends Module
         $attachments = $obj->getAttachments($ae->id_lang);
 
         foreach ($attachments as $attachment) {
-            $attachments_url[] = 'http://'.$_SERVER['HTTP_HOST'].__PS_BASE_URI__.'download/'.$attachment['file'];
+            $attachments_url[] = 'http://' . $_SERVER['HTTP_HOST'] . __PS_BASE_URI__ . 'download/' . $attachment['file'];
         }
 
         return implode(",", $attachments_url);
@@ -5563,8 +5573,8 @@ class Advancedexport extends Module
     {
         $warehouse = $this->executeS('
 		SELECT `id_warehouse`
-		FROM `'._DB_PREFIX_.'warehouse_product_location`
-		WHERE `id_product` = '.$obj->id.' AND `id_product_attribute` = 0');
+		FROM `' . _DB_PREFIX_ . 'warehouse_product_location`
+		WHERE `id_product` = ' . $obj->id . ' AND `id_product_attribute` = 0');
 
         if (isset($warehouse[0])) {
             return $warehouse[0]['id_warehouse'];
@@ -5589,13 +5599,13 @@ class Advancedexport extends Module
         $filename = Db::getInstance(_PS_USE_SQL_SLAVE_)->getValue(
             '
 			SELECT `filename`
-			FROM `'._DB_PREFIX_.'product_download`
-			WHERE `id_product` = '.(int) $obj->id
+			FROM `' . _DB_PREFIX_ . 'product_download`
+			WHERE `id_product` = ' . (int)$obj->id
         );
 
         if ($filename) {
-            $link .= _PS_BASE_URL_.__PS_BASE_URI__.'index.php?controller=get-file&';
-            $link .= 'key='.$filename.'-orderdetail';
+            $link .= _PS_BASE_URL_ . __PS_BASE_URI__ . 'index.php?controller=get-file&';
+            $link .= 'key=' . $filename . '-orderdetail';
         }
 
         return $link;
@@ -5608,7 +5618,7 @@ class Advancedexport extends Module
 
     public function productsQuantity($obj)
     {
-        return Product::getQuantity((int) $obj->id);
+        return Product::getQuantity((int)$obj->id);
     }
 
     public function productsPriceTaxNodiscount($obj)
@@ -5618,9 +5628,9 @@ class Advancedexport extends Module
 
     public function productsUrlProduct($obj, $ae)
     {
-        $category = Category::getLinkRewrite((int) $obj->id_category_default, (int) $ae->id_lang);
+        $category = Category::getLinkRewrite((int)$obj->id_category_default, (int)$ae->id_lang);
 
-        return $this->context->link->getProductLink((int) $obj->id, $obj->link_rewrite[$ae->id_lang], $category);
+        return $this->context->link->getProductLink((int)$obj->id, $obj->link_rewrite[$ae->id_lang], $category);
     }
 
     public function productsManufacturerName($obj)
@@ -5670,7 +5680,7 @@ class Advancedexport extends Module
         $query->select('ps.product_supplier_reference');
         $query->from('product_supplier', 'ps');
         $query->where(
-            'ps.id_product = '.(int) $obj->id.' AND ps.id_product_attribute = 0'
+            'ps.id_product = ' . (int)$obj->id . ' AND ps.id_product_attribute = 0'
         );
         $suppliers = null;
         $result = null;
@@ -5709,11 +5719,11 @@ class Advancedexport extends Module
         $imagelinks = array();
         $images = $obj->getImages($obj->id);
         foreach ($images as $image) {
-            $imagelinks[] = 'http://'.$this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id.'-'.$image['id_image'],
-                $ae->image_type
-            );
+            $imagelinks[] = 'http://' . $this->link->getImageLink(
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $image['id_image'],
+                    $ae->image_type
+                );
         }
 
         return implode(',', $imagelinks);
@@ -5722,11 +5732,11 @@ class Advancedexport extends Module
     public function productsImage($obj, $ae)
     {
         $image = Product::getCover($obj->id);
-        $imageLink = 'http://'.$this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id.'-'.$image['id_image'],
-            $ae->image_type
-        );
+        $imageLink = 'http://' . $this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $image['id_image'],
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -5777,6 +5787,7 @@ class Advancedexport extends Module
             return '';
         }
     }
+
     public function productsPriceTex($obj)
     {
         return $obj->getPrice(true);
@@ -5791,11 +5802,11 @@ class Advancedexport extends Module
     {
         $sups = $this->executeS('
             SELECT DISTINCT(s.`name`)
-            FROM `'._DB_PREFIX_.'product_supplier` ps
-            LEFT JOIN `'._DB_PREFIX_.'supplier` s ON (ps.`id_supplier`= s.`id_supplier`)
-            LEFT JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-            WHERE ps.`id_product` = '.$obj->id.' 
-            AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
+            FROM `' . _DB_PREFIX_ . 'product_supplier` ps
+            LEFT JOIN `' . _DB_PREFIX_ . 'supplier` s ON (ps.`id_supplier`= s.`id_supplier`)
+            LEFT JOIN `' . _DB_PREFIX_ . 'product` p ON (ps.`id_product`= p.`id_product`)
+            WHERE ps.`id_product` = ' . $obj->id . ' 
+            AND ps.id_product_attribute = ' . (int)$product_attribute['id_product_attribute']);
         $suppliers = array();
         foreach ($sups as $sup) {
             $suppliers[] = $sup['name'];
@@ -5808,10 +5819,10 @@ class Advancedexport extends Module
     {
         $sups = $this->executeS('
 			SELECT DISTINCT(ps.`id_supplier`)
-			FROM `'._DB_PREFIX_.'product_supplier` ps
-			JOIN `'._DB_PREFIX_.'product` p ON (ps.`id_product`= p.`id_product`)
-			WHERE ps.`id_product` = '.$obj->id.' 
-			AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']);
+			FROM `' . _DB_PREFIX_ . 'product_supplier` ps
+			JOIN `' . _DB_PREFIX_ . 'product` p ON (ps.`id_product`= p.`id_product`)
+			WHERE ps.`id_product` = ' . $obj->id . ' 
+			AND ps.id_product_attribute = ' . (int)$product_attribute['id_product_attribute']);
 
         $suppliers = array();
         if (is_array($suppliers)) {
@@ -5826,9 +5837,9 @@ class Advancedexport extends Module
     {
         $warehouse = $this->executeS('
 		SELECT `id_warehouse`
-		FROM `'._DB_PREFIX_.'warehouse_product_location`
-		WHERE `id_product` = '.$obj->id.' 
-		AND `id_product_attribute` = '.$products_attribute['id_product_attribute']);
+		FROM `' . _DB_PREFIX_ . 'warehouse_product_location`
+		WHERE `id_product` = ' . $obj->id . ' 
+		AND `id_product_attribute` = ' . $products_attribute['id_product_attribute']);
 
         return $warehouse[0]['id_warehouse'];
     }
@@ -5837,7 +5848,7 @@ class Advancedexport extends Module
     {
         $name = null;
         foreach ($products_attribute['attributes'] as $attribute) {
-            $name .= addslashes(htmlspecialchars($attribute[0])).': '.addslashes(htmlspecialchars($attribute[1])).';';
+            $name .= addslashes(htmlspecialchars($attribute[0])) . ': ' . addslashes(htmlspecialchars($attribute[1])) . ';';
         }
         $name = rtrim($name, ';');
         return Tools::stripslashes($name);
@@ -5848,8 +5859,8 @@ class Advancedexport extends Module
         $name = array();
         foreach ($products_attribute['attributes_name'] as $attribute) {
             $attributeGroup = new AttributeGroup($attribute[1]);
-            $name[] = addslashes(htmlspecialchars($attribute[0])).':'.
-                addslashes(htmlspecialchars($attributeGroup->group_type)).':'.
+            $name[] = addslashes(htmlspecialchars($attribute[0])) . ':' .
+                addslashes(htmlspecialchars($attributeGroup->group_type)) . ':' .
                 addslashes(htmlspecialchars($attributeGroup->position));
         }
 
@@ -5861,7 +5872,7 @@ class Advancedexport extends Module
         $value = array();
         foreach ($products_attribute['attributes_value'] as $attribute) {
             $attr = new Attribute($attribute[1]);
-            $value[] = addslashes(htmlspecialchars($attribute[0])).':'.addslashes(htmlspecialchars($attr->position));
+            $value[] = addslashes(htmlspecialchars($attribute[0])) . ':' . addslashes(htmlspecialchars($attr->position));
         }
 
         return implode(',', $value);
@@ -5899,12 +5910,12 @@ class Advancedexport extends Module
 
     public function combinationPriceTax($obj, $product_attribute)
     {
-        return $obj->getPrice(true, (int) $product_attribute['id_product_attribute']);
+        return $obj->getPrice(true, (int)$product_attribute['id_product_attribute']);
     }
 
     public function combinationPriceTaxNodiscount($obj, $product_attribute)
     {
-        return $obj->getPrice(true, (int) $product_attribute['id_product_attribute'], 2, null, false, false);
+        return $obj->getPrice(true, (int)$product_attribute['id_product_attribute'], 2, null, false, false);
     }
 
     public function combinationUnitImpact($obj, $product_attribute)
@@ -5924,8 +5935,8 @@ class Advancedexport extends Module
         $query->select('ps.product_supplier_reference');
         $query->from('product_supplier', 'ps');
         $query->where(
-            'ps.id_product = '.(int) $obj->id.
-            ' AND ps.id_product_attribute = '.(int) $product_attribute['id_product_attribute']
+            'ps.id_product = ' . (int)$obj->id .
+            ' AND ps.id_product_attribute = ' . (int)$product_attribute['id_product_attribute']
         );
         $suppliers = null;
         $result = null;
@@ -5981,11 +5992,11 @@ class Advancedexport extends Module
         if (isset($product_attribute['images']) and is_array($product_attribute['images'])) {
             foreach ($product_attribute['images'] as $image) {
                 $attrImage = ($image['id_image'] ? new Image($image['id_image']) : null);
-                $images[] = 'http://'.$this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $attrImage->id,
-                    $ae->image_type
-                );
+                $images[] = 'http://' . $this->link->getImageLink(
+                        $obj->link_rewrite[$ae->id_lang],
+                        $obj->id . '-' . $attrImage->id,
+                        $ae->image_type
+                    );
             }
         }
 
@@ -6015,9 +6026,9 @@ class Advancedexport extends Module
                 return $entry['id_image'];
             }, $product_attribute['images']));
             $images = $this->executeS('SELECT legend
-			FROM '._DB_PREFIX_.'image_lang
-			WHERE id_image IN ('.$ids.')
-			AND id_lang = '. $ae->id_lang);
+			FROM ' . _DB_PREFIX_ . 'image_lang
+			WHERE id_image IN (' . $ids . ')
+			AND id_lang = ' . $ae->id_lang);
         }
 
         return (is_array($images) ? implode(', ', array_map(function ($entry) {
@@ -6029,11 +6040,11 @@ class Advancedexport extends Module
     {
         $attrImage = ($product_attribute['id_image'] ? new Image($product_attribute['id_image']) : null);
         if ($attrImage) {
-            return 'http://'. $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id.'-'.$attrImage->id,
-                $ae->image_type
-            );
+            return 'http://' . $this->link->getImageLink(
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $attrImage->id,
+                    $ae->image_type
+                );
         } else {
             return '';
         }
@@ -6159,53 +6170,53 @@ class Advancedexport extends Module
 
     public function ordersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT o.`id_order` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-                FROM '._DB_PREFIX_.'orders o
-                LEFT JOIN `'._DB_PREFIX_.'order_detail` od ON ( od.`id_order` = o.`id_order` )
-                LEFT JOIN `'._DB_PREFIX_.'shop` sh ON ( o.`id_shop` = sh.`id_shop` )
-                LEFT JOIN `'._DB_PREFIX_.'customer` cu ON ( o.`id_customer` = cu.`id_customer` )
-                LEFT JOIN `'._DB_PREFIX_.'gender_lang` gl 
-                ON ( cu.`id_gender` = gl.`id_gender` AND gl.`id_lang` = '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'gender_lang` inv_gl 
-                ON ( cu.`id_gender` = inv_gl.`id_gender` AND inv_gl.`id_lang` = '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'address` a ON ( a.`id_address` = o.`id_address_delivery` )
-                LEFT JOIN `'._DB_PREFIX_.'address` inv_a ON ( inv_a.`id_address` = o.`id_address_invoice` )
-                LEFT JOIN `'._DB_PREFIX_.'state` s ON ( s.`id_state` = a.`id_state` )
-                LEFT JOIN `'._DB_PREFIX_.'state` inv_s ON ( inv_s.`id_state` = inv_a.`id_state` )
-                LEFT JOIN `'._DB_PREFIX_.'country` co ON ( co.`id_country` = a.`id_country` )
-                LEFT JOIN `'._DB_PREFIX_.'country` inv_co ON ( inv_co.`id_country` = inv_a.`id_country` )
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` cl 
-                ON ( cl.`id_country` = co.`id_country` AND cl.`id_lang`= '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` inv_cl 
-                ON ( inv_cl.`id_country` = inv_co.`id_country` AND inv_cl.`id_lang`= '.$ae->id_lang.')
-                LEFT JOIN `'._DB_PREFIX_.'carrier` ca ON ( ca.`id_carrier` = o.`id_carrier` )
-                LEFT JOIN `'._DB_PREFIX_.'order_payment` op ON ( op.`order_reference` = o.`reference` )
-                LEFT JOIN `'._DB_PREFIX_.'message` m ON ( m.`id_order` = o.`id_order` )
-                LEFT JOIN `'._DB_PREFIX_.'currency` cur ON ( o.`id_currency` = cur.`id_currency` )
-                LEFT JOIN `'._DB_PREFIX_.'order_detail_tax` odt ON ( od.`id_order_detail` = odt.`id_order_detail` )
-                LEFT JOIN `'._DB_PREFIX_.'tax` t ON ( odt.`id_tax` = t.`id_tax` )
-                LEFT JOIN `'._DB_PREFIX_.'order_state_lang` osl 
-                ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = '.$ae->id_lang.')
+        $sql = 'SELECT o.`id_order` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+                FROM ' . _DB_PREFIX_ . 'orders o
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_detail` od ON ( od.`id_order` = o.`id_order` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'shop` sh ON ( o.`id_shop` = sh.`id_shop` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'customer` cu ON ( o.`id_customer` = cu.`id_customer` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'gender_lang` gl 
+                ON ( cu.`id_gender` = gl.`id_gender` AND gl.`id_lang` = ' . $ae->id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'gender_lang` inv_gl 
+                ON ( cu.`id_gender` = inv_gl.`id_gender` AND inv_gl.`id_lang` = ' . $ae->id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON ( a.`id_address` = o.`id_address_delivery` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'address` inv_a ON ( inv_a.`id_address` = o.`id_address_invoice` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON ( s.`id_state` = a.`id_state` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'state` inv_s ON ( inv_s.`id_state` = inv_a.`id_state` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'country` co ON ( co.`id_country` = a.`id_country` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'country` inv_co ON ( inv_co.`id_country` = inv_a.`id_country` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl 
+                ON ( cl.`id_country` = co.`id_country` AND cl.`id_lang`= ' . $ae->id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` inv_cl 
+                ON ( inv_cl.`id_country` = inv_co.`id_country` AND inv_cl.`id_lang`= ' . $ae->id_lang . ')
+                LEFT JOIN `' . _DB_PREFIX_ . 'carrier` ca ON ( ca.`id_carrier` = o.`id_carrier` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_payment` op ON ( op.`order_reference` = o.`reference` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'message` m ON ( m.`id_order` = o.`id_order` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'currency` cur ON ( o.`id_currency` = cur.`id_currency` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_detail_tax` odt ON ( od.`id_order_detail` = odt.`id_order_detail` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON ( odt.`id_tax` = t.`id_tax` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl 
+                ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = ' . $ae->id_lang . ')
                 ' . CustomFields::ordersQuery() . '
-                WHERE 1'.
-                (isset($ae->only_new) && $ae->only_new ? ' AND o.`id_order` > '.$ae->last_exported_id : '').
-                ($ae->only_new == false && $ae->start_id ? ' AND o.`id_order` >= '.$ae->start_id : '').
-                ($ae->only_new == false && $ae->end_id ? ' AND o.`id_order` <= '.$ae->end_id : '').
-                (isset($sorted_fields['groups[]']) && $sorted_fields['groups[]'] ?
-                    ' AND cu.`id_default_group` IN ('.implode(', ', $sorted_fields['groups[]']).')' : '').
-                (isset($sorted_fields['payments[]']) && $sorted_fields['payments[]'] ?
-                    ' AND o.`module` IN ("'.implode('", "', $sorted_fields['payments[]']).'")' : '').
-                (isset($sorted_fields['carriers[]']) && $sorted_fields['carriers[]'] ?
-                    ' AND o.`id_carrier` IN ('.implode(', ', $sorted_fields['carriers[]']).')' : '').
-                (isset($sorted_fields['state[]']) && $sorted_fields['state[]'] ?
-                    ' AND o.`current_state` IN ('.implode(', ', $sorted_fields['state[]']).')' : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                    ' AND o.`date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
-                    ' AND o.`date_add` <= "'.($ae->date_to).'"' : '') .
-                Shop::addSqlRestriction(false, 'o').
-                ' GROUP BY '.(isset($sorted_fields['order_detail']) && $sorted_fields['order_detail'] ?
+                WHERE 1' .
+            (isset($ae->only_new) && $ae->only_new ? ' AND o.`id_order` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND o.`id_order` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND o.`id_order` <= ' . $ae->end_id : '') .
+            (isset($sorted_fields['groups[]']) && $sorted_fields['groups[]'] ?
+                ' AND cu.`id_default_group` IN (' . implode(', ', $sorted_fields['groups[]']) . ')' : '') .
+            (isset($sorted_fields['payments[]']) && $sorted_fields['payments[]'] ?
+                ' AND o.`module` IN ("' . implode('", "', $sorted_fields['payments[]']) . '")' : '') .
+            (isset($sorted_fields['carriers[]']) && $sorted_fields['carriers[]'] ?
+                ' AND o.`id_carrier` IN (' . implode(', ', $sorted_fields['carriers[]']) . ')' : '') .
+            (isset($sorted_fields['state[]']) && $sorted_fields['state[]'] ?
+                ' AND o.`current_state` IN (' . implode(', ', $sorted_fields['state[]']) . ')' : '') .
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND o.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND o.`date_add` <= "' . ($ae->date_to) . '"' : '') .
+            Shop::addSqlRestriction(false, 'o') .
+            ' GROUP BY ' . (isset($sorted_fields['order_detail']) && $sorted_fields['order_detail'] ?
                 'od.`id_order_detail`' : 'o.`id_order`');
 
         $result = $this->query($sql);
@@ -6229,27 +6240,27 @@ class Advancedexport extends Module
     {
         $employee = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 		SELECT `firstname`, `lastname`
-		FROM `'._DB_PREFIX_.'employee` e
-		LEFT JOIN `'._DB_PREFIX_.'order_history` oh ON ( oh.`id_employee` = e.`id_employee` )
-		WHERE `id_order` = '.(int) $obj->id.'
+		FROM `' . _DB_PREFIX_ . 'employee` e
+		LEFT JOIN `' . _DB_PREFIX_ . 'order_history` oh ON ( oh.`id_employee` = e.`id_employee` )
+		WHERE `id_order` = ' . (int)$obj->id . '
 		ORDER BY `date_add` DESC, `id_order_history` DESC LIMIT 1');
 
-        return (isset($employee[0]) ? $employee[0]['firstname'].' '.$employee[0]['lastname'] : '');
+        return (isset($employee[0]) ? $employee[0]['firstname'] . ' ' . $employee[0]['lastname'] : '');
     }
 
     public function ordersCustomization($obj, $ae, $element)
     {
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 				SELECT cud.`value`, cu.`quantity`
-				FROM `'._DB_PREFIX_.'customization` cu
-				INNER JOIN `'._DB_PREFIX_.'customized_data` cud ON (cud.`id_customization` = cu.`id_customization`)
-				WHERE cu.`id_product` = '.(int) ($element['product_id']).' 
-				AND cu.`id_product_attribute` = '.(int) ($element['product_attribute_id']).'  
-				AND cu.`id_cart` = '.(int) ($element['id_cart']));
+				FROM `' . _DB_PREFIX_ . 'customization` cu
+				INNER JOIN `' . _DB_PREFIX_ . 'customized_data` cud ON (cud.`id_customization` = cu.`id_customization`)
+				WHERE cu.`id_product` = ' . (int)($element['product_id']) . ' 
+				AND cu.`id_product_attribute` = ' . (int)($element['product_attribute_id']) . '  
+				AND cu.`id_cart` = ' . (int)($element['id_cart']));
 
         $cud = array();
         foreach ($result as $res) {
-            $cud[] = 'value:'.$res['value'].' '.'quantity:'.$res['quantity'];
+            $cud[] = 'value:' . $res['value'] . ' ' . 'quantity:' . $res['quantity'];
         }
 
         return implode(',', $cud);
@@ -6262,21 +6273,21 @@ class Advancedexport extends Module
 
     public function categoriesQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT c.`id_category` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-            FROM `'._DB_PREFIX_.'category` c
-			'.Shop::addSqlAssociation('category', 'c').'
-			LEFT JOIN `'._DB_PREFIX_.'category_lang` cl 
-			ON c.`id_category` = cl.`id_category`'.Shop::addSqlRestrictionOnLang('cl').'
+        $sql = 'SELECT c.`id_category` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+            FROM `' . _DB_PREFIX_ . 'category` c
+			' . Shop::addSqlAssociation('category', 'c') . '
+			LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl 
+			ON c.`id_category` = cl.`id_category`' . Shop::addSqlRestrictionOnLang('cl') . '
 			' . CustomFields::categoriesQuery() . '
-			WHERE 1'.($ae->id_lang ? ' AND `id_lang` = '.(int) $ae->id_lang : '').
-            (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_category` > '.$ae->last_exported_id : '').
-            ($ae->only_new == false && $ae->start_id ? ' AND c.`id_category` >= '.$ae->start_id : '').
-            ($ae->only_new == false && $ae->end_id ? ' AND c.`id_category` <= '.$ae->end_id : '').
-            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
+			WHERE 1' . ($ae->id_lang ? ' AND `id_lang` = ' . (int)$ae->id_lang : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_category` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND c.`id_category` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND c.`id_category` <= ' . $ae->end_id : '') .
+            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' 
-            AND c.`date_add` >= "'.($ae->date_from).'"' : '').
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND c.`date_add` <= "'.($ae->date_to).'"' : '').'
+            AND c.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND c.`date_add` <= "' . ($ae->date_to) . '"' : '') . '
 			GROUP BY c.id_category
 			ORDER BY c.`level_depth` ASC, category_shop.`position` ASC';
         $result = $this->query($sql);
@@ -6289,8 +6300,8 @@ class Advancedexport extends Module
     {
         $result = $this->executeS('
 			SELECT cg.`id_group`
-			FROM '._DB_PREFIX_.'category_group cg
-			WHERE cg.`id_category` = '.(int) $obj->id);
+			FROM ' . _DB_PREFIX_ . 'category_group cg
+			WHERE cg.`id_category` = ' . (int)$obj->id);
         $groups = null;
         foreach ($result as $group) {
             $groups = $group['id_group'];
@@ -6301,11 +6312,11 @@ class Advancedexport extends Module
 
     public function categoriesImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id.'-'.$obj->id_image,
-            $ae->image_type
-        );
+        $imageLink = 'http://' . $this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6358,20 +6369,20 @@ class Advancedexport extends Module
 
     public function manufacturersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT m.`id_manufacturer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-            FROM `'._DB_PREFIX_.'manufacturer` m
-            '.Shop::addSqlAssociation('manufacturer', 'm').'
-            INNER JOIN `'._DB_PREFIX_.'manufacturer_lang` ml 
-            ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = '.(int) $ae->id_lang.')'.'
+        $sql = 'SELECT m.`id_manufacturer` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+            FROM `' . _DB_PREFIX_ . 'manufacturer` m
+            ' . Shop::addSqlAssociation('manufacturer', 'm') . '
+            INNER JOIN `' . _DB_PREFIX_ . 'manufacturer_lang` ml 
+            ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = ' . (int)$ae->id_lang . ')' . '
             ' . CustomFields::manufacturersQuery() . '
-            WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND m.`active` = 1' : '').
-            (isset($ae->only_new) && $ae->only_new ? ' AND m.`id_manufacturer` > '.$ae->last_exported_id : '').
-            ($ae->only_new == false && $ae->start_id ? ' AND m.`id_manufacturer` >= '.$ae->start_id : '').
-            ($ae->only_new == false && $ae->end_id ? ' AND m.`id_manufacturer` <= '.$ae->end_id : '').
+            WHERE 1' . (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND m.`active` = 1' : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND m.`id_manufacturer` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND m.`id_manufacturer` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND m.`id_manufacturer` <= ' . $ae->end_id : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                ' AND m.`date_add` >= "'.($ae->date_from).'"' : '').
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND m.`date_add` <= "'.($ae->date_to).'"' : '');
+                ' AND m.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND m.`date_add` <= "' . ($ae->date_to) . '"' : '');
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
 
@@ -6380,11 +6391,11 @@ class Advancedexport extends Module
 
     public function manufacturersImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id.'-'.$obj->id_image,
-            $ae->image_type
-        );
+        $imageLink = 'http://' . $this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6437,20 +6448,20 @@ class Advancedexport extends Module
 
     public function suppliersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT s.`id_supplier` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-            FROM `'._DB_PREFIX_.'supplier` s
-            '.Shop::addSqlAssociation('supplier', 's').'
-		    INNER JOIN `'._DB_PREFIX_.'supplier_lang` sl 
-		    ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = '.(int) $ae->id_lang.')'.'
+        $sql = 'SELECT s.`id_supplier` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+            FROM `' . _DB_PREFIX_ . 'supplier` s
+            ' . Shop::addSqlAssociation('supplier', 's') . '
+		    INNER JOIN `' . _DB_PREFIX_ . 'supplier_lang` sl 
+		    ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = ' . (int)$ae->id_lang . ')' . '
 		    ' . CustomFields::suppliersQuery() . '
-            WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND s.`active` = 1' : '').
-            (isset($ae->only_new) && $ae->only_new ? ' AND s.`id_supplier` > '.$ae->last_exported_id : '').
-            ($ae->only_new == false && $ae->start_id ? ' AND s.`id_supplier` >= '.$ae->start_id : '').
-            ($ae->only_new == false && $ae->end_id ? ' AND s.`id_supplier` <= '.$ae->end_id : '').
+            WHERE 1' . (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND s.`active` = 1' : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND s.`id_supplier` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND s.`id_supplier` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND s.`id_supplier` <= ' . $ae->end_id : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                ' AND s.`date_add` >= "'.($ae->date_from).'"' : '').
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND s.`date_add` <= "'.($ae->date_to).'"' : '');
+                ' AND s.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND s.`date_add` <= "' . ($ae->date_to) . '"' : '');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -6460,11 +6471,11 @@ class Advancedexport extends Module
 
     public function suppliersImage($obj, $ae)
     {
-        $imageLink = 'http://'.$this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id.'-'.$obj->id_image,
-            $ae->image_type
-        );
+        $imageLink = 'http://' . $this->link->getImageLink(
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6563,24 +6574,24 @@ class Advancedexport extends Module
 
     public function customersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT c.`id_customer` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-				FROM '._DB_PREFIX_.'customer c
-                LEFT JOIN `'._DB_PREFIX_.'address` a ON ( a.`id_customer` = c.`id_customer` )
-                LEFT JOIN `'._DB_PREFIX_.'state` s ON ( a.`id_state` = s.`id_state` )
-                LEFT JOIN `'._DB_PREFIX_.'country_lang` co 
-                ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = '.$ae->id_lang.')
+        $sql = 'SELECT c.`id_customer` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+				FROM ' . _DB_PREFIX_ . 'customer c
+                LEFT JOIN `' . _DB_PREFIX_ . 'address` a ON ( a.`id_customer` = c.`id_customer` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON ( a.`id_state` = s.`id_state` )
+                LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` co 
+                ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = ' . $ae->id_lang . ')
                 ' . CustomFields::customersQuery() . '
-				WHERE 1'.Shop::addSqlRestriction(Shop::SHARE_CUSTOMER).
-            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
-            (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_customer` > '.$ae->last_exported_id : '').
-            ($ae->only_new == false && $ae->start_id ? ' AND c.`id_customer` >= '.$ae->start_id : '').
-            ($ae->only_new == false && $ae->end_id ? ' AND c.`id_customer` <= '.$ae->end_id : '').
-            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '').
+				WHERE 1' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) .
+            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND c.`id_customer` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND c.`id_customer` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND c.`id_customer` <= ' . $ae->end_id : '') .
+            (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                ' AND c.`date_add` >= "'.($ae->date_from).'"' : '').
+                ' AND c.`date_add` >= "' . ($ae->date_from) . '"' : '') .
             (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
-                ' AND c.`date_add` <= "'.($ae->date_to).'"' : '');
+                ' AND c.`date_add` <= "' . ($ae->date_to) . '"' : '');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -6590,7 +6601,7 @@ class Advancedexport extends Module
 
     public function customersGroups($obj, $ae)
     {
-        $groupsIds = Customer::getGroupsStatic((int) $obj->id);
+        $groupsIds = Customer::getGroupsStatic((int)$obj->id);
         $groupeNames = array();
         if (is_array($groupsIds)) {
             foreach ($groupsIds as $id) {
@@ -6605,19 +6616,19 @@ class Advancedexport extends Module
 
     public function newslettersQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT n.`id` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-				FROM '._DB_PREFIX_.'emailsubscription as n
+        $sql = 'SELECT n.`id` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+				FROM ' . _DB_PREFIX_ . 'emailsubscription as n
 				' . CustomFields::newslettersQuery() . '
-				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND n.`active` = 1' : '').
-                (isset($ae->only_new) && $ae->only_new ? ' AND n.`id` > '.$ae->last_exported_id : '').
-                ($ae->only_new == false && $ae->start_id ? ' AND n.`id` >= '.$ae->start_id : '').
-                ($ae->only_new == false && $ae->end_id ? ' AND n.`id` <= '.$ae->end_id : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                    ' AND n.`newsletter_date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
-                    ' AND n.`newsletter_date_add` <= "'.($ae->date_to).'"' : '').'
-				AND n.`id_shop` = '.$this->context->shop->id;
+				WHERE 1' . (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND n.`active` = 1' : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND n.`id` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND n.`id` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND n.`id` <= ' . $ae->end_id : '') .
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND n.`newsletter_date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND n.`newsletter_date_add` <= "' . ($ae->date_to) . '"' : '') . '
+				AND n.`id_shop` = ' . $this->context->shop->id;
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -6673,24 +6684,24 @@ class Advancedexport extends Module
 
     public function addressesQuery($ae, $sorted_fields)
     {
-        $sql = 'SELECT a.`id_address` '.(empty($sorted_fields['sqlfields']) ? '' : ', '.
-                implode(', ', $sorted_fields['sqlfields'])).'
-				FROM '._DB_PREFIX_.'address as a
-				LEFT JOIN `'._DB_PREFIX_.'manufacturer` m ON ( a.`id_manufacturer` = m.`id_manufacturer` )
-				LEFT JOIN `'._DB_PREFIX_.'supplier` s ON ( a.`id_supplier` = s.`id_supplier` )
-				LEFT JOIN `'._DB_PREFIX_.'state` st ON ( a.`id_state` = st.`id_state`)
-				LEFT JOIN `'._DB_PREFIX_.'country_lang` cl 
-				ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = '.$ae->id_lang.')
-				LEFT JOIN `'._DB_PREFIX_.'customer` cu ON ( a.`id_customer` = cu.`id_customer`)
+        $sql = 'SELECT a.`id_address` ' . (empty($sorted_fields['sqlfields']) ? '' : ', ' .
+                implode(', ', $sorted_fields['sqlfields'])) . '
+				FROM ' . _DB_PREFIX_ . 'address as a
+				LEFT JOIN `' . _DB_PREFIX_ . 'manufacturer` m ON ( a.`id_manufacturer` = m.`id_manufacturer` )
+				LEFT JOIN `' . _DB_PREFIX_ . 'supplier` s ON ( a.`id_supplier` = s.`id_supplier` )
+				LEFT JOIN `' . _DB_PREFIX_ . 'state` st ON ( a.`id_state` = st.`id_state`)
+				LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl 
+				ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = ' . $ae->id_lang . ')
+				LEFT JOIN `' . _DB_PREFIX_ . 'customer` cu ON ( a.`id_customer` = cu.`id_customer`)
 				' . CustomFields::addressesQuery() . '
-				WHERE 1'.(isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND a.`active` = 1' : '').
-                (isset($ae->only_new) && $ae->only_new ? ' AND a.`id` > '.$ae->last_exported_id : '').
-                ($ae->only_new == false && $ae->start_id ? ' AND a.`id` >= '.$ae->start_id : '').
-                ($ae->only_new == false && $ae->end_id ? ' AND a.`id` <= '.$ae->end_id : '').
-                (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
-                    ' AND a.`date_add` >= "'.($ae->date_from).'"' : '').
-                (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
-                    ' AND a.`date_add` <= "'.($ae->date_to).'"' : '');
+				WHERE 1' . (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND a.`active` = 1' : '') .
+            (isset($ae->only_new) && $ae->only_new ? ' AND a.`id` > ' . $ae->last_exported_id : '') .
+            ($ae->only_new == false && $ae->start_id ? ' AND a.`id` >= ' . $ae->start_id : '') .
+            ($ae->only_new == false && $ae->end_id ? ' AND a.`id` <= ' . $ae->end_id : '') .
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND a.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND a.`date_add` <= "' . ($ae->date_to) . '"' : '');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -6768,7 +6779,7 @@ class Advancedexport extends Module
 
     public function getAllLinks()
     {
-        $links = $this->dbExecuteS('select * from '._DB_PREFIX_.'advancedexport');
+        $links = $this->dbExecuteS('select * from ' . _DB_PREFIX_ . 'advancedexport');
 
         return $links;
     }
