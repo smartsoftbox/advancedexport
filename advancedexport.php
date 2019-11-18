@@ -3215,9 +3215,9 @@ class Advancedexport extends Module
                     //wymagane przy nazwach pól które się powtarzają
                     if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
                         $fields['sqlfields'][] = $alias . '`' . Tools::substr(
-                                strstr($allFields[$field]['field'], '_'),
-                                Tools::strlen('_')
-                            ) . '` as ' . $allFields[$field]['field'] . '';
+                            strstr($allFields[$field]['field'], '_'),
+                            Tools::strlen('_')
+                        ) . '` as ' . $allFields[$field]['field'] . '';
                     } else {
                         $fields['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
                     }
@@ -3454,7 +3454,7 @@ class Advancedexport extends Module
         if ($capitalise_first_char) {
             $str[0] = Tools::strtoupper($str[0]);
         }
-        $func = function($c) {
+        $func = function ($c) {
             return Tools::strtoupper($c[1]);
         };
         return preg_replace_callback('/_([a-z])/', $func, $str);
@@ -3934,7 +3934,8 @@ class Advancedexport extends Module
                 'buttons' => array(
                     'cancelBlock' => array(
                         'title' => $this->l('Cancel'),
-                        'href' => $this->getAdminUrl() . '&editfields&type=' . $type . '&submitFilteradvancedexportfield=' .
+                        'href' => $this->getAdminUrl() . '&editfields&type=' . $type .
+                            '&submitFilteradvancedexportfield=' .
                             (int)Tools::getValue('submitFilteradvancedexportfield'),
                         'icon' => 'process-icon-cancel',
                     ),
@@ -4768,25 +4769,29 @@ class Advancedexport extends Module
                 break;
             case 'index':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&add_model=1&type=' . $type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token .
+                        '&add_model=1&type=' . $type,
                     'desc' => $this->l('Add new'),
                 );
                 if ($type != 'orders' && $type != 'newsletters') {
                     $this->toolbar_btn['import'] = array(
-                        'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&generate=1&type=' . $type,
+                        'href' => $current_index . '&configure=' . $this->name . '&token=' . $token .
+                            '&generate=1&type=' . $type,
                         'desc' => $this->l('Generate import models'),
                     );
                 } else {
                     unset($this->toolbar_btn['import']);
                 }
                 $this->toolbar_btn['edit'] = array(
-                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&editfields=1&type=' . $type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token .
+                        '&editfields=1&type=' . $type,
                     'desc' => $this->l('Global Field Name Edit'),
                 );
                 break;
             case 'cron':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&add_cron=1&type=' . $type,
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token .
+                        '&add_cron=1&type=' . $type,
                     'desc' => $this->l('Add new'),
                 );
                 break;
@@ -5565,7 +5570,8 @@ class Advancedexport extends Module
         $attachments = $obj->getAttachments($ae->id_lang);
 
         foreach ($attachments as $attachment) {
-            $attachments_url[] = 'http://' . $_SERVER['HTTP_HOST'] . __PS_BASE_URI__ . 'download/' . $attachment['file'];
+            $attachments_url[] = 'http://' . $_SERVER['HTTP_HOST'] .
+                __PS_BASE_URI__ . 'download/' . $attachment['file'];
         }
 
         return implode(",", $attachments_url);
@@ -5722,10 +5728,10 @@ class Advancedexport extends Module
         $images = $obj->getImages($obj->id);
         foreach ($images as $image) {
             $imagelinks[] = 'http://' . $this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $image['id_image'],
-                    $ae->image_type
-                );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $image['id_image'],
+                $ae->image_type
+            );
         }
 
         return implode(',', $imagelinks);
@@ -5735,10 +5741,10 @@ class Advancedexport extends Module
     {
         $image = Product::getCover($obj->id);
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $image['id_image'],
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $image['id_image'],
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -5850,7 +5856,8 @@ class Advancedexport extends Module
     {
         $name = null;
         foreach ($products_attribute['attributes'] as $attribute) {
-            $name .= addslashes(htmlspecialchars($attribute[0])) . ': ' . addslashes(htmlspecialchars($attribute[1])) . ';';
+            $name .= addslashes(htmlspecialchars($attribute[0])) . ': ' .
+                addslashes(htmlspecialchars($attribute[1])) . ';';
         }
         $name = rtrim($name, ';');
         return Tools::stripslashes($name);
@@ -5874,7 +5881,8 @@ class Advancedexport extends Module
         $value = array();
         foreach ($products_attribute['attributes_value'] as $attribute) {
             $attr = new Attribute($attribute[1]);
-            $value[] = addslashes(htmlspecialchars($attribute[0])) . ':' . addslashes(htmlspecialchars($attr->position));
+            $value[] = addslashes(htmlspecialchars($attribute[0])) . ':' .
+                addslashes(htmlspecialchars($attr->position));
         }
 
         return implode(',', $value);
@@ -5995,10 +6003,10 @@ class Advancedexport extends Module
             foreach ($product_attribute['images'] as $image) {
                 $attrImage = ($image['id_image'] ? new Image($image['id_image']) : null);
                 $images[] = 'http://' . $this->link->getImageLink(
-                        $obj->link_rewrite[$ae->id_lang],
-                        $obj->id . '-' . $attrImage->id,
-                        $ae->image_type
-                    );
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $attrImage->id,
+                    $ae->image_type
+                );
             }
         }
 
@@ -6287,9 +6295,10 @@ class Advancedexport extends Module
             ($ae->only_new == false && $ae->start_id ? ' AND c.`id_category` >= ' . $ae->start_id : '') .
             ($ae->only_new == false && $ae->end_id ? ' AND c.`id_category` <= ' . $ae->end_id : '') .
             (isset($sorted_fields['active']) && $sorted_fields['active'] ? ' AND c.`active` = 1' : '') .
-            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ? ' 
-            AND c.`date_add` >= "' . ($ae->date_from) . '"' : '') .
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND c.`date_add` <= "' . ($ae->date_to) . '"' : '') . '
+            (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
+                ' AND c.`date_add` >= "' . ($ae->date_from) . '"' : '') .
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND c.`date_add` <= "' . ($ae->date_to) . '"' : '') . '
 			GROUP BY c.id_category
 			ORDER BY c.`level_depth` ASC, category_shop.`position` ASC';
         $result = $this->query($sql);
@@ -6315,10 +6324,10 @@ class Advancedexport extends Module
     public function categoriesImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -6384,7 +6393,8 @@ class Advancedexport extends Module
             ($ae->only_new == false && $ae->end_id ? ' AND m.`id_manufacturer` <= ' . $ae->end_id : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
                 ' AND m.`date_add` >= "' . ($ae->date_from) . '"' : '') .
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND m.`date_add` <= "' . ($ae->date_to) . '"' : '');
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' 
+            AND m.`date_add` <= "' . ($ae->date_to) . '"' : '');
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
 
@@ -6394,10 +6404,10 @@ class Advancedexport extends Module
     public function manufacturersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -6463,7 +6473,8 @@ class Advancedexport extends Module
             ($ae->only_new == false && $ae->end_id ? ' AND s.`id_supplier` <= ' . $ae->end_id : '') .
             (isset($ae->date_from) && $ae->date_from && !$ae->only_new ?
                 ' AND s.`date_add` >= "' . ($ae->date_from) . '"' : '') .
-            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ? ' AND s.`date_add` <= "' . ($ae->date_to) . '"' : '');
+            (isset($ae->date_to) && $ae->date_to && !$ae->only_new ?
+                ' AND s.`date_add` <= "' . ($ae->date_to) . '"' : '');
 
         $result = $this->query($sql);
         $this->rowsNumber = $this->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -6474,10 +6485,10 @@ class Advancedexport extends Module
     public function suppliersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
