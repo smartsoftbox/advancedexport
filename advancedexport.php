@@ -4797,8 +4797,9 @@ class Advancedexport extends Module
                 break;
             case 'editfields':
                 $this->toolbar_btn['new'] = array(
-                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&addfield=1&type=' . $type .
-                        '&submitFilteradvancedexportfield=' . (int)Tools::getValue('submitFilteradvancedexportfield'),
+                    'href' => $current_index . '&configure=' . $this->name . '&token=' . $token . '&addfield=1&type=' .
+                        $type . '&submitFilteradvancedexportfield=' .
+                        (int)Tools::getValue('submitFilteradvancedexportfield'),
                     'desc' => $this->l('Add new'),
                 );
                 $this->toolbar_btn['cancel'] = array(
@@ -6051,10 +6052,10 @@ class Advancedexport extends Module
         $attrImage = ($product_attribute['id_image'] ? new Image($product_attribute['id_image']) : null);
         if ($attrImage) {
             return 'http://' . $this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $attrImage->id,
-                    $ae->image_type
-                );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $attrImage->id,
+                $ae->image_type
+            );
         } else {
             return '';
         }
