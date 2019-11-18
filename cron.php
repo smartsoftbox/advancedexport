@@ -17,6 +17,6 @@ if (Tools::getIsset('secure_key')) {
         include dirname(__FILE__).'/../../init.php';
 
         $ae = new AdvancedExport();
-        $ae->cronTask();
+        $ae->cronTask((int)Tools::getValue('id'));
     }
 }

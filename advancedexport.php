@@ -3099,10 +3099,7 @@ class Advancedexport extends Module
         }
 
         if (count($this->_errors)) {
-            foreach ($this->_errors as $err) {
-                $this->_html .= '<div class="alert alert-danger">' . $err . '</div>';
-            }
-
+            $this->_html .= $this->displayError($this->_errors);
             return false;
         }
 
@@ -3641,7 +3638,6 @@ class Advancedexport extends Module
             $this->displayErrors($protocol->getErrors());
             return false;
         }
-
         $protocol->changeDir($directory);
         $protocol->put('', $export_file);
         if (count($protocol->getErrors())) {
@@ -3654,7 +3650,7 @@ class Advancedexport extends Module
     {
         if (count($errors)) {
             foreach ($errors as $error) {
-                echo $error . '</br>';
+                echo $error . ' ';
             }
         }
     }
@@ -4125,12 +4121,21 @@ class Advancedexport extends Module
         return $result;
     }
 
+    public function addJavaScriptVariable()
+    {
+        $this->context->smarty->assign(array(
+            'base' => $this->context->link->getAdminLink('AdminModules', false),
+            'token' => Tools::getAdminTokenLite('AdminModules')
+        ));
+
+        return $this->context->smarty->fetch(
+            $this->local_path.'views/templates/admin/variable.tpl'
+        );
+    }
+
     public function displayAddModelForm($helper)
     {
-        $html = '<script type="text/javascript">
-            var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='
-            . Tools::getAdminTokenLite('AdminModules') . '";
-        </script>';
+        $html = $this->addJavaScriptVariable();
 
         $type = null;
         if ($id = Tools::getValue('id_advancedexport')) {
@@ -4807,10 +4812,7 @@ class Advancedexport extends Module
 
     public function displayIndexForm()
     {
-        $html = '<script type="text/javascript">
-            var urlJson = "index.php?controller=AdminModules&configure=advancedexport&module_name=advancedexport&token='
-            . Tools::getAdminTokenLite('AdminModules') . '";
-        </script>';
+        $html = $this->addJavaScriptVariable();
 
         $this->smarty->assign(array(
             'export_types' => $this->export_types

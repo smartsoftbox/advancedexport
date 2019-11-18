@@ -68,7 +68,10 @@ class SFTP implements FtpInterface
 
     public function changeDir($directory)
     {
-        $this->connection->chdir($directory);
+        if (!$this->connection->chdir($directory)) {
+            $this->errors[] = 'Can not change directory.';
+            return false;
+        }
     }
 
     public function put($target, $local)
