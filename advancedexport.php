@@ -35,7 +35,6 @@ class Advancedexport extends Module
     public $lastElement;
     public $rowsNumber;
     public $link;
-    public $tabs;
 
     public $products = array(
         array(
@@ -771,6 +770,7 @@ class Advancedexport extends Module
             'import' => 20,
             'import_name' => 'MPN',
             'alias' => 'p',
+            'version' => 1.77,
             'group15' => ProductGroup::INFORMATION
         ),
         array(
@@ -2661,7 +2661,8 @@ class Advancedexport extends Module
         $this->tab = 'administration';
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
-        $this->version = '4.4.0';
+        $this->need_instance = 0;
+        $this->version = '4.4.1';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
