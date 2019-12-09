@@ -3221,9 +3221,9 @@ class Advancedexport extends Module
                     //wymagane przy nazwach pól które się powtarzają
                     if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
                         $fields['sqlfields'][] = $alias . '`' . Tools::substr(
-                                strstr($allFields[$field]['field'], '_'),
-                                Tools::strlen('_')
-                            ) . '` as ' . $allFields[$field]['field'] . '';
+                            strstr($allFields[$field]['field'], '_'),
+                            Tools::strlen('_')
+                        ) . '` as ' . $allFields[$field]['field'] . '';
                     } else {
                         $fields['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
                     }
@@ -3345,7 +3345,11 @@ class Advancedexport extends Module
                     );
                 }
                 $file = $this->openFileAndWriteHeader(
-                    $url[$element['id_order']], $ae, $sorted_fields, $style, $isUrlExists
+                    $url[$element['id_order']],
+                    $ae,
+                    $sorted_fields,
+                    $style,
+                    $isUrlExists
                 );
             }
 
@@ -3541,7 +3545,7 @@ class Advancedexport extends Module
         $elementCopy = null;
         if (isset($combArray)) {
             $this->hasAttr = 1;
-            foreach ($combArray as $key => $products_attribute) {
+            foreach ($combArray as $products_attribute) {
                 $elementCopy = null;
                 $elementCopy = $element;
                 foreach ($sorted_fields['attribute_fields'] as $value) {
@@ -3549,7 +3553,6 @@ class Advancedexport extends Module
                     $elementCopy[$value] = $this->$run($obj, $products_attribute, $ae);
                 }
                 $this->fputToFile($file, $sorted_fields['allexportfields'], $elementCopy, $ae);
-
             }
         } else {
             // add empty array keys for products which don't have attributes
@@ -3604,14 +3607,15 @@ class Advancedexport extends Module
                 }
                 // 4.10.2019
                 $combArray[$combinaison['id_product_attribute']]['available_date'] = $combinaison['available_date'];
-                if(isset($combinaison['low_stock_threshold'])) {
+                if (isset($combinaison['low_stock_threshold'])) {
                     $combArray[$combinaison['id_product_attribute']]['low_stock_threshold'] =
                         $combinaison['low_stock_threshold'];
                 }
-                if(isset($combinaison['low_stock_alert'])) {
-                    $combArray[$combinaison['id_product_attribute']]['low_stock_alert'] = $combinaison['low_stock_alert'];
+                if (isset($combinaison['low_stock_alert'])) {
+                    $combArray[$combinaison['id_product_attribute']]['low_stock_alert'] =
+                        $combinaison['low_stock_alert'];
                 }
-                if(isset($combinaison['mpn'])) {
+                if (isset($combinaison['mpn'])) {
                     $combArray[$combinaison['id_product_attribute']]['mpn'] = $combinaison['mpn'];
                 }
             }
@@ -3804,7 +3808,6 @@ class Advancedexport extends Module
                     header('Content-Length: ' . filesize($dir));
                     break;
                 case 'xlsx':
-
                     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                     header('Content-Disposition: attachment;filename=' . basename($dir));
                     header('Cache-Control: max-age=0');
@@ -5858,10 +5861,10 @@ class Advancedexport extends Module
         $images = $obj->getImages($obj->id);
         foreach ($images as $image) {
             $imagelinks[] = 'http://' . $this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $image['id_image'],
-                    $ae->image_type
-                );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $image['id_image'],
+                $ae->image_type
+            );
         }
 
         return implode(',', $imagelinks);
@@ -5871,10 +5874,10 @@ class Advancedexport extends Module
     {
         $image = Product::getCover($obj->id);
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $image['id_image'],
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $image['id_image'],
+            $ae->image_type
+        );
 
         return $imageLink;
     }
