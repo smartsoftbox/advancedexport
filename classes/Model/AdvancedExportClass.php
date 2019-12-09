@@ -37,6 +37,7 @@ class AdvancedExportClass extends ObjectModel
     public $ftp_directory;
     public $ftp_port;
     public $filename;
+    public $file_format;
 
     public static $definition = array(
         'table' => 'advancedexport',
@@ -92,6 +93,7 @@ class AdvancedExportClass extends ObjectModel
         $fields['ftp_directory'] = (string) ($this->ftp_directory);
         $fields['ftp_port'] = (string) ($this->ftp_port);
         $fields['filename'] = (string) ($this->filename);
+        $fields['file_format'] = (string) ($this->file_format);
 
         return $fields;
     }

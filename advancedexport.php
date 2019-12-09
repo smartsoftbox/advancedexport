@@ -12,6 +12,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+require_once 'vendor/Box/Spout/Autoloader/autoload.php';
+
 require_once 'classes/Group/AddressGroup.php';
 require_once 'classes/Group/CategoryGroup.php';
 require_once 'classes/Group/CustomerGroup.php';
@@ -24,10 +26,11 @@ require_once 'classes/SFTP.php';
 require_once 'classes/FTP.php';
 require_once 'classes/CustomFields.php';
 
-
 require_once 'classes/Model/AdvancedExportClass.php';
 require_once 'classes/Model/AdvancedExportCronClass.php';
 require_once 'classes/Model/AdvancedExportFieldClass.php';
+
+
 
 class Advancedexport extends Module
 {
@@ -35,6 +38,7 @@ class Advancedexport extends Module
     public $lastElement;
     public $rowsNumber;
     public $link;
+    public $currentColor = 'white';
 
     public $products = array(
         array(
@@ -2823,6 +2827,7 @@ class Advancedexport extends Module
 			`end_id` int(10) NOT NULL DEFAULT 0,
 			`save_type` int(10) NOT NULL DEFAULT 0,
 			`filename` varchar(255) NOT NULL,
+			`file_format` varchar(255) NOT NULL,
 			`image_type` varchar(255) NOT NULL,
 			`email` varchar(255) NOT NULL,
 			`ftp_hostname` varchar(255) NOT NULL,
@@ -3216,9 +3221,9 @@ class Advancedexport extends Module
                     //wymagane przy nazwach pól które się powtarzają
                     if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
                         $fields['sqlfields'][] = $alias . '`' . Tools::substr(
-                            strstr($allFields[$field]['field'], '_'),
-                            Tools::strlen('_')
-                        ) . '` as ' . $allFields[$field]['field'] . '';
+                                strstr($allFields[$field]['field'], '_'),
+                                Tools::strlen('_')
+                            ) . '` as ' . $allFields[$field]['field'] . '';
                     } else {
                         $fields['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
                     }
@@ -3240,60 +3245,122 @@ class Advancedexport extends Module
         return $fields;
     }
 
-    public function writeToFile($ae, $sorted_fields, $elements)
+    public function getHeaderStyle()
     {
-        $url = null;
+        return (new Box\Spout\Writer\Style\StyleBuilder())->setfontbold()
+            ->setfontcolor(Box\Spout\Writer\Style\Color::BLACK)
+            ->setShouldWrapText()
+            ->setBackgroundColor(Box\Spout\Writer\Style\Color::rgb(198, 240, 202))
+            ->build();
+    }
+
+    public function getRowStyle()
+    {
+        $style = (new Box\Spout\Writer\Style\StyleBuilder())
+            ->setFontColor(Box\Spout\Writer\Style\Color::BLACK)
+            ->setShouldWrapText()
+            ->setBackgroundColor(
+                ($this->currentColor == 'white' ? Box\Spout\Writer\Style\Color::rgb(219, 240, 255) :
+                    Box\Spout\Writer\Style\Color::WHITE)
+            )->build();
+        $this->currentColor = ($this->currentColor == 'white' ? 'blue' : 'white');
+        return $style;
+    }
+
+    public function getSpoutWriter($file_format)
+    {
         $file = null;
+        switch ($file_format) {
+            case 'xlsx':
+                $file = Box\Spout\Writer\WriterFactory::create(Box\Spout\Common\Type::XLSX);
+                break;
+            case 'ods':
+                $file = Box\Spout\Writer\WriterFactory::create(Box\Spout\Common\Type::ODS);
+                break;
+            case 'csv':
+                $file = Box\Spout\Writer\WriterFactory::create(Box\Spout\Common\Type::CSV);
+                break;
+        }
+        return $file;
+    }
 
-        if (!isset($sorted_fields['orderPerFile']) || !$sorted_fields['orderPerFile']) {
-            $url = $this->getFileUrl($ae->filename, $ae->type);
+    public function closeFile($file, $file_format)
+    {
+        if ($file_format === 'csv') {
+            fclose($file);
+        } else {
+            $file->close();
+        }
+    }
 
-            $file = @fopen($url, 'w');
+    public function openFileAndWriteHeader($url, $ae, $sorted_fields, $style, $isUrlExists = null)
+    {
+        if ($ae->file_format === 'csv') {
+            $file = @fopen($url, ($isUrlExists ? 'a' : 'w'));
             //add labels for export data
             if ($ae->add_header) {
                 $this->filewrite($ae, $sorted_fields, $file);
             }
+        } else {
+            $file = $this->getSpoutWriter($ae->file_format);
+            $file->openToFile($url);
+
+            if ($ae->add_header) {
+                $file->addRowWithStyle($sorted_fields['labels'], $style);
+            }
+        }
+        return $file;
+    }
+
+    public function isOrderPerFileEnable($sorted_fields, $ae)
+    {
+        return (isset($sorted_fields['orderPerFile']) && $sorted_fields['orderPerFile'] &&
+        $ae->save_type == 0 ? true : false);
+    }
+
+    public function writeToFile($ae, $sorted_fields, $elements)
+    {
+        $url = null;
+        $file = null;
+        $style = $this->getHeaderStyle();
+
+        if (!$this->isOrderPerFileEnable($sorted_fields, $ae)) {
+            $url = $this->getFileUrl($ae->filename, $ae->type, $ae->file_format);
+            $file = $this->openFileAndWriteHeader($url, $ae, $sorted_fields, $style);
         }
 
-        $i = 0;
+        $i = 1;
         while ($element = $this->nextRow($elements)) {
             if ($i == $this->rowsNumber - 1) {
                 $this->lastElement = $element;
             }
 
-            if (isset($sorted_fields['orderPerFile']) && $sorted_fields['orderPerFile'] && $ae->save_type == 0) {
+            if ($this->isOrderPerFileEnable($sorted_fields, $ae)) {
                 $isUrlExists = isset($url[$element['id_order']]);
                 if (!$isUrlExists) {
                     $url[$element['id_order']] = $this->getFileUrl(
                         ($ae->filename ? $ae->filename : 'orders') . '_' . $element['id_order'],
-                        $ae->type
+                        $ae->type,
+                        $ae->file_format
                     );
                 }
-                $file = @fopen($url[$element['id_order']], ($isUrlExists ? 'a' : 'w'));
-                //add labels for export data
-                if ($ae->add_header && !$isUrlExists) {
-                    $this->filewrite($ae, $sorted_fields, $file);
-                }
+                $file = $this->openFileAndWriteHeader(
+                    $url[$element['id_order']], $ae, $sorted_fields, $style, $isUrlExists
+                );
             }
-            //progress bar
+
             $this->getDataObjectFromAndStaticFields($element, $file, $sorted_fields, $ae);
             $this->saveProgressToFile($i);
 
-            //close file
-            if (isset($sorted_fields['orderPerFile']) && $sorted_fields['orderPerFile'] && $ae->save_type == 0) {
-                if (isset($file) && $file) {
-                    fclose($file);
-                }
+            if ($this->isOrderPerFileEnable($sorted_fields, $ae)) {
+                $this->closeFile($file, $ae->file_format);
             }
 
             ++$i; //progress bar
         }
 
-        //close file
-        if (!isset($sorted_fields['orderPerFile']) || !$sorted_fields['orderPerFile']) {
-            if ($file) {
-                fclose($file);
-            }
+        if (!$this->isOrderPerFileEnable($sorted_fields, $ae)) {
+            $this->closeFile($file, $ae->file_format);
         }
 
         return $url;
@@ -3310,13 +3377,19 @@ class Advancedexport extends Module
         file_put_contents($file, json_encode($response));
     }
 
-    public function getFileUrl($filename, $type)
+    public function getFileUrl($filename, $type, $file_format)
     {
         //open file for write
         if ($filename == null || $filename == '') {
-            $filename = $type . date('Y-m-d_His') . '.csv';
+            $filename = $type . date('Y-m-d_His');
         } else {
+            $filename = $filename;
+        }
+
+        if ($file_format === 'csv') {
             $filename = $filename . '.csv';
+        } else {
+            $filename = $filename . '.' . $file_format;
         }
 
         $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' . $type;
@@ -3468,16 +3541,15 @@ class Advancedexport extends Module
         $elementCopy = null;
         if (isset($combArray)) {
             $this->hasAttr = 1;
-            foreach ($combArray as $products_attribute) {
+            foreach ($combArray as $key => $products_attribute) {
                 $elementCopy = null;
                 $elementCopy = $element;
-
                 foreach ($sorted_fields['attribute_fields'] as $value) {
                     $run = $this->toCamelCase($value);
                     $elementCopy[$value] = $this->$run($obj, $products_attribute, $ae);
                 }
-
                 $this->fputToFile($file, $sorted_fields['allexportfields'], $elementCopy, $ae);
+
             }
         } else {
             // add empty array keys for products which don't have attributes
@@ -3532,10 +3604,16 @@ class Advancedexport extends Module
                 }
                 // 4.10.2019
                 $combArray[$combinaison['id_product_attribute']]['available_date'] = $combinaison['available_date'];
-                $combArray[$combinaison['id_product_attribute']]['low_stock_threshold'] =
-                    $combinaison['low_stock_threshold'];
-                $combArray[$combinaison['id_product_attribute']]['low_stock_alert'] = $combinaison['low_stock_alert'];
-                $combArray[$combinaison['id_product_attribute']]['mpn'] = $combinaison['mpn'];
+                if(isset($combinaison['low_stock_threshold'])) {
+                    $combArray[$combinaison['id_product_attribute']]['low_stock_threshold'] =
+                        $combinaison['low_stock_threshold'];
+                }
+                if(isset($combinaison['low_stock_alert'])) {
+                    $combArray[$combinaison['id_product_attribute']]['low_stock_alert'] = $combinaison['low_stock_alert'];
+                }
+                if(isset($combinaison['mpn'])) {
+                    $combArray[$combinaison['id_product_attribute']]['mpn'] = $combinaison['mpn'];
+                }
             }
         }
 
@@ -3550,14 +3628,21 @@ class Advancedexport extends Module
             //put in correct sort order
             foreach ($allexportfields as $value) {
                 $object = $this->processDecimalSettings($object, $ae, $value);
-                $readyForExport[$value] = iconv('UTF-8', $ae->charset, $object[$value]);
+                $object[$value] = (Validate::isInt($object[$value]) ? (int)$object[$value] : $object[$value]);
+                $object[$value] = (Validate::isFloat($object[$value]) ? (float)$object[$value] : $object[$value]);
+                $readyForExport[$value] = ($ae->file_format === 'csv' ?
+                    iconv('UTF-8', $ae->charset, $object[$value]) : $object[$value]);
             }
 
-            //write into csv line by line
-            if ($ae->separator == '') {
-                fputs($file, implode($readyForExport, $ae->delimiter) . "\n");
+            if ($ae->file_format === 'csv') {
+                //write into csv line by line
+                if ($ae->separator == '') {
+                    fputs($file, implode($readyForExport, $ae->delimiter) . "\n");
+                } else {
+                    fputcsv($file, $readyForExport, $ae->delimiter, $ae->separator);
+                }
             } else {
-                fputcsv($file, $readyForExport, $ae->delimiter, $ae->separator);
+                $file->addRowWithStyle($readyForExport, $this->getRowStyle());
             }
         }
     }
@@ -3705,14 +3790,32 @@ class Advancedexport extends Module
     {
         $dir = (string)realpath(dirname(__FILE__) . '/csv/' . $url);
         if (file_exists($dir)) {
-            header('Content-Description: File Transfer');
-            header('Content-Type: application/csv');
-            header('Content-Disposition: attachment; filename=' . basename($dir));
-            header('Content-Transfer-Encoding: binary');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-            header('Pragma: public');
-            header('Content-Length: ' . filesize($dir));
+            $ext = pathinfo($dir, PATHINFO_EXTENSION);
+
+            switch ($ext) {
+                case 'csv':
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/csv');
+                    header('Content-Disposition: attachment; filename=' . basename($dir));
+                    header('Content-Transfer-Encoding: binary');
+                    header('Expires: 0');
+                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                    header('Pragma: public');
+                    header('Content-Length: ' . filesize($dir));
+                    break;
+                case 'xlsx':
+
+                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    header('Content-Disposition: attachment;filename=' . basename($dir));
+                    header('Cache-Control: max-age=0');
+                    break;
+                case 'ods':
+                    header('Content-Type: application/vnd.oasis.opendocument.spreadsheet');
+                    header('Content-Disposition: attachment;filename=' . basename($dir));
+                    header('Cache-Control: max-age=0');
+                    break;
+            }
+
             //ob_clean();
             flush();
             readfile($dir);
@@ -4131,7 +4234,7 @@ class Advancedexport extends Module
         ));
 
         return $this->context->smarty->fetch(
-            $this->local_path.'views/templates/admin/variable.tpl'
+            $this->local_path . 'views/templates/admin/variable.tpl'
         );
     }
 
@@ -4200,6 +4303,7 @@ class Advancedexport extends Module
             'date_to',
             'start_id',
             'end_id',
+            'file_format'
         );
         $fields_specific = null;
         $fields_value = null;
@@ -4291,6 +4395,30 @@ class Advancedexport extends Module
                         'label' => $this->l('File name'),
                         'name' => 'filename',
                         'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('File format'),
+                        'name' => 'file_format',
+                        'options' => array(
+                            'query' => array(
+                                array(
+                                    'value' => 'csv',
+                                    'name' => $this->l('CSV'),
+                                ),
+                                array(
+                                    'value' => 'xlsx',
+                                    'name' => $this->l('Excel 97 and above (.xlsx)'),
+                                ),
+                                array(
+                                    'value' => 'ods',
+                                    'name' => $this->l('Open Document Format/OASIS (.ods)'),
+                                ),
+                            ),
+                            'id' => 'value',
+                            'name' => 'name',
+                        ),
+                        'desc' => $this->l('This is available for PrestaShop 1.7 and above.'),
                     ),
                     array(
                         'type' => 'select',
@@ -5110,7 +5238,7 @@ class Advancedexport extends Module
     public function getFiles($type)
     {
         $dirname = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' . $type . '/';
-        $files = glob($dirname . '*.{csv}', GLOB_BRACE);
+        $files = glob($dirname . '*.{csv,xlsx,xls,ods,pdf,html}', GLOB_BRACE);
 
         $result = array();
         $lp = 1;
@@ -5730,10 +5858,10 @@ class Advancedexport extends Module
         $images = $obj->getImages($obj->id);
         foreach ($images as $image) {
             $imagelinks[] = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $image['id_image'],
-                $ae->image_type
-            );
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $image['id_image'],
+                    $ae->image_type
+                );
         }
 
         return implode(',', $imagelinks);
@@ -5743,10 +5871,10 @@ class Advancedexport extends Module
     {
         $image = Product::getCover($obj->id);
         $imageLink = 'http://' . $this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id . '-' . $image['id_image'],
-            $ae->image_type
-        );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $image['id_image'],
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6005,10 +6133,10 @@ class Advancedexport extends Module
             foreach ($product_attribute['images'] as $image) {
                 $attrImage = ($image['id_image'] ? new Image($image['id_image']) : null);
                 $images[] = 'http://' . $this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $attrImage->id,
-                    $ae->image_type
-                );
+                        $obj->link_rewrite[$ae->id_lang],
+                        $obj->id . '-' . $attrImage->id,
+                        $ae->image_type
+                    );
             }
         }
 
@@ -6053,10 +6181,10 @@ class Advancedexport extends Module
         $attrImage = ($product_attribute['id_image'] ? new Image($product_attribute['id_image']) : null);
         if ($attrImage) {
             return 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $attrImage->id,
-                $ae->image_type
-            );
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $attrImage->id,
+                    $ae->image_type
+                );
         } else {
             return '';
         }
@@ -6326,10 +6454,10 @@ class Advancedexport extends Module
     public function categoriesImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id . '-' . $obj->id_image,
-            $ae->image_type
-        );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6406,10 +6534,10 @@ class Advancedexport extends Module
     public function manufacturersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id . '-' . $obj->id_image,
-            $ae->image_type
-        );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
@@ -6487,10 +6615,10 @@ class Advancedexport extends Module
     public function suppliersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-            $obj->link_rewrite[$ae->id_lang],
-            $obj->id . '-' . $obj->id_image,
-            $ae->image_type
-        );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $obj->id_image,
+                $ae->image_type
+            );
 
         return $imageLink;
     }
