@@ -30,8 +30,6 @@ require_once 'classes/Model/AdvancedExportClass.php';
 require_once 'classes/Model/AdvancedExportCronClass.php';
 require_once 'classes/Model/AdvancedExportFieldClass.php';
 
-
-
 class Advancedexport extends Module
 {
     public $hasAttr;
