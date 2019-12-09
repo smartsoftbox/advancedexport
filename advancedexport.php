@@ -6537,10 +6537,10 @@ class Advancedexport extends Module
     public function manufacturersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
@@ -6618,10 +6618,10 @@ class Advancedexport extends Module
     public function suppliersImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
