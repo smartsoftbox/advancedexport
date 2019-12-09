@@ -6136,10 +6136,10 @@ class Advancedexport extends Module
             foreach ($product_attribute['images'] as $image) {
                 $attrImage = ($image['id_image'] ? new Image($image['id_image']) : null);
                 $images[] = 'http://' . $this->link->getImageLink(
-                        $obj->link_rewrite[$ae->id_lang],
-                        $obj->id . '-' . $attrImage->id,
-                        $ae->image_type
-                    );
+                    $obj->link_rewrite[$ae->id_lang],
+                    $obj->id . '-' . $attrImage->id,
+                    $ae->image_type
+                );
             }
         }
 
@@ -6184,10 +6184,10 @@ class Advancedexport extends Module
         $attrImage = ($product_attribute['id_image'] ? new Image($product_attribute['id_image']) : null);
         if ($attrImage) {
             return 'http://' . $this->link->getImageLink(
-                    $obj->link_rewrite[$ae->id_lang],
-                    $obj->id . '-' . $attrImage->id,
-                    $ae->image_type
-                );
+                $obj->link_rewrite[$ae->id_lang],
+                $obj->id . '-' . $attrImage->id,
+                $ae->image_type
+            );
         } else {
             return '';
         }
@@ -6457,10 +6457,10 @@ class Advancedexport extends Module
     public function categoriesImage($obj, $ae)
     {
         $imageLink = 'http://' . $this->link->getImageLink(
-                $obj->link_rewrite[$ae->id_lang],
-                $obj->id . '-' . $obj->id_image,
-                $ae->image_type
-            );
+            $obj->link_rewrite[$ae->id_lang],
+            $obj->id . '-' . $obj->id_image,
+            $ae->image_type
+        );
 
         return $imageLink;
     }
