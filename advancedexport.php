@@ -3722,13 +3722,18 @@ class Advancedexport extends Module
 
     public function ftpFile($protocol, $export_file, $directory)
     {
-        if (count($protocol->getErrors())) {
+        if ($protocol->getErrors()) {
             $this->displayErrors($protocol->getErrors());
             return false;
         }
-        $protocol->changeDir($directory);
-        $protocol->put('', $export_file);
-        if (count($protocol->getErrors())) {
+        if($directory != null && $directory != "") {
+            $protocol->changeDir($directory);
+        }
+
+        $filename = basename($export_file);
+        $protocol->put($filename, $export_file);
+
+        if ($protocol->getErrors()) {
             $this->displayErrors($protocol->getErrors());
             return false;
         }
