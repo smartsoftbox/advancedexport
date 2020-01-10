@@ -3629,9 +3629,11 @@ class Advancedexport extends Module
             $readyForExport = array();
             //put in correct sort order
             foreach ($allexportfields as $value) {
-                $object = $this->processDecimalSettings($object, $ae, $value);
-                $object[$value] = (Validate::isInt($object[$value]) ? (int)$object[$value] : $object[$value]);
-                $object[$value] = (Validate::isFloat($object[$value]) ? (float)$object[$value] : $object[$value]);
+		if (!substr($object[$value], 0, 1) == '0') {
+                    $object = $this->processDecimalSettings($object, $ae, $value);
+                    $object[$value] = (Validate::isInt($object[$value]) ? (int)$object[$value] : $object[$value]);
+                    $object[$value] = (Validate::isFloat($object[$value]) ? (float)$object[$value] : $object[$value]);
+		}
                 $readyForExport[$value] = ($ae->file_format === 'csv' ?
                     iconv('UTF-8', $ae->charset, $object[$value]) : $object[$value]);
             }
