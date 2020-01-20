@@ -108,9 +108,10 @@
                 </div>
                 <div class="row">
                   <ul class="list-group" style="height: 480px; overflow: auto">
+                    {foreach from=$fields_value[$input.name] key=$key item=$field}
                       {foreach $input.options.optiongroup.query AS $optiongroup}
                           {foreach $optiongroup[$input.options.options.query] as $option}
-                              {if $option[$input.options.options.id]|array_key_exists:$fields_value[$input.name]}
+                              {if $option[$input.options.options.id] == $key}
                                   <li id="option-{$option[$input.options.options.id]|escape:'htmlall':'UTF-8'}" class="list-group-item"
                                       rel="{$optiongroup[$input.options.optiongroup.label]|escape:'htmlall':'UTF-8'}">
                                       <span class="hide">{$option[$input.options.options.name]|escape:'htmlall':'UTF-8'}</span>
@@ -120,6 +121,7 @@
                               {/if}
                           {/foreach}
                       {/foreach}
+                    {/foreach}
                     </ul>
                     <input type="hidden" name="{$input.name|escape:'htmlall':'UTF-8'}" id="{$input.id|escape:'htmlall':'UTF-8'}" value="" />
                 </div>
