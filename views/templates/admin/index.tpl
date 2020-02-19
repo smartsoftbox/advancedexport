@@ -11,7 +11,7 @@
       <div id="topLoader"></div>
     </div>
     <div class="row">
-      <div class="col-lg-2 col-md-3">
+      <div class="col-lg-2">
         <div class="list-group" id="entities">
           <a href="#" id="welcome" class="list-group-item"><b>Start</b></a>
             {foreach from=$export_types item=export_type name=blockCategTree}
