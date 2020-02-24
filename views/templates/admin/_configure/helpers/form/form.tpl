@@ -108,7 +108,7 @@
                 </div>
                 <div class="row">
                   <ul class="list-group" style="height: 480px; overflow: auto">
-                    {foreach from=$fields_value[$input.name] key=$key item=$field}
+                    {foreach from=$fields_value[$input.name] key=key item=field}
                       {foreach $input.options.optiongroup.query AS $optiongroup}
                           {foreach $optiongroup[$input.options.options.query] as $option}
                               {if $option[$input.options.options.id] == $key}
