@@ -2664,7 +2664,7 @@ class Advancedexport extends Module
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
         $this->need_instance = 0;
-        $this->version = '4.4.5';
+        $this->version = '4.4.7';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
@@ -2730,6 +2730,7 @@ class Advancedexport extends Module
         }
 
         $this->addFieldsToTable();
+        $this->installCustomFields();
 
         return true;
     }
@@ -2777,10 +2778,10 @@ class Advancedexport extends Module
         foreach ($this->export_types as $tab) {
             foreach ($customFields->$tab as $field) {
                 if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
-                    Db::getInstance()->executeS("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield` 
+                    Db::getInstance()->execute("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield` 
                     WHERE `field` = '" . pSQL($field['field']) . "'");
 
-                    $this->saveField($tab, $field);
+                    $this->saveField($tab, $field, true);
                 }
             }
         }
@@ -6982,11 +6983,12 @@ class Advancedexport extends Module
     /**
      * @param $tab
      * @param $item
+     * @param bool $custom
      * @return mixed
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
-    public function saveField($tab, $item)
+    public function saveField($tab, $item, $custom = false)
     {
         $field = new AdvancedExportFieldClass();
         $field->tab = $tab;
@@ -7002,6 +7004,7 @@ class Advancedexport extends Module
             (isset($item['import_combination']) ? $item['import_combination'] : false);
         $field->import_combination_name =
             (isset($item['import_combination_name']) ? $item['import_combination_name'] : '');
+        $field->isCustom = $custom;
         $field->group15 = (isset($item['group15']) ? $item['group15'] : '');
         $field->group17 = (isset($item['group17']) ? $item['group17'] : '');
 
