@@ -2778,8 +2778,8 @@ class Advancedexport extends Module
         foreach ($this->export_types as $tab) {
             foreach ($customFields->$tab as $field) {
                 if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
-                    Db::getInstance()->execute("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield` 
-                    WHERE `field` = '" . pSQL($field['field']) . "'");
+//                    Db::getInstance()->execute("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield`
+//                    WHERE `field` = '" . pSQL($field['field']) . "' AND `tab` = '" . pSQL($tab) . "'");
 
                     $this->saveField($tab, $field, true);
                 }
