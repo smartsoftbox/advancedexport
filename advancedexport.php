@@ -3280,6 +3280,7 @@ class Advancedexport extends Module
         return $style;
     }
 
+
     public function getSpoutWriter($file_format)
     {
         $file = null;
