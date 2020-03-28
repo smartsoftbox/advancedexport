@@ -38,6 +38,13 @@ class Advancedexport extends Module
     public $link;
     public $currentColor = 'white';
 
+
+    public $mime_attachment = array(
+        'csv' => 'text/csv',
+        'xlsx' => 'application/vnd.ms-excel',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+    );
+
     public $products = array(
         array(
             'name' => 'Product Id',
@@ -3762,13 +3769,14 @@ class Advancedexport extends Module
 
     public function sentFile($export_file, $email, $filename, $name)
     {
-        $file_attachement = null;
-        $file_attachement['content'] = Tools::file_get_contents($export_file);
-        $file_attachement['name'] = $filename;
-        $file_attachement['mime'] = 'text/csv';
+        $extension = pathinfo($export_file, PATHINFO_EXTENSION);
+        $file_attachment = null;
+        $file_attachment['content'] = Tools::file_get_contents($export_file);
+        $file_attachment['name'] = $filename . '.' . $extension;
+        $file_attachment['mime'] = $this->mime_attachment[$extension];
 
         $id_lang = $this->getConfiguration("PS_LANG_DEFAULT");
-        Mail::Send(
+        if (!Mail::Send(
             $id_lang,
             'index',
             $name,
@@ -3777,10 +3785,12 @@ class Advancedexport extends Module
             null,
             null,
             "advanced export",
-            $file_attachement,
+            $file_attachment,
             null,
             dirname(__FILE__) . '/mails/'
-        );
+        )) {
+            throw new PrestaShopException("Can't sent email.");
+        }
     }
 
     public function getConfiguration($value)
