@@ -1034,6 +1034,13 @@ class Advancedexport extends Module
             'group15' => ProductGroup::COMBINATIONS,
             'attribute' => true,
         ),
+        array(
+            'name' => 'Combination Id Product Attribute',
+            'field' => 'combination_id_product_attribute',
+            'database' => '',
+            'attribute' => true,
+            'group15' => ProductGroup::COMBINATIONS
+        ),
     );
 
     public $orders = array(
@@ -2664,7 +2671,7 @@ class Advancedexport extends Module
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
         $this->need_instance = 0;
-        $this->version = '4.4.8';
+        $this->version = '4.4.9';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
@@ -3330,7 +3337,7 @@ class Advancedexport extends Module
 
         $i = 1;
         while ($element = $this->nextRow($elements)) {
-            if ($i == $this->rowsNumber - 1) {
+            if ($i == $this->rowsNumber) {
                 $this->lastElement = $element;
             }
 
@@ -3573,6 +3580,7 @@ class Advancedexport extends Module
             $combinationImages = $obj->getCombinationImages((int)($ae->id_lang));
 
             foreach ($combinaisons as $combinaison) {
+                $combArray[$combinaison['id_product_attribute']]['id_product_attribute'] = $combinaison['id_product_attribute'];
                 $combArray[$combinaison['id_product_attribute']]['wholesale_price'] = $combinaison['wholesale_price'];
                 $combArray[$combinaison['id_product_attribute']]['price'] = $combinaison['price'];
                 $combArray[$combinaison['id_product_attribute']]['weight'] = $combinaison['weight'];
@@ -6045,6 +6053,11 @@ class Advancedexport extends Module
     public function combinationImpactPrice($obj, $product_attribute)
     {
         return $product_attribute['price'];
+    }
+
+    public function combinationIdProductAttribute($obj, $product_attribute)
+    {
+        return $product_attribute['id_product_attribute'];
     }
 
     public function combinationPrice($obj, $product_attribute)
