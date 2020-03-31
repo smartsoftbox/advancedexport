@@ -14,7 +14,7 @@ if (!defined('_PS_VERSION_')) {
 
 require_once dirname(__FILE__) . '/UpgradeHelper.php';
 require_once dirname(__FILE__) . '/../classes/Group/ProductGroup.php';
-
+require_once dirname(__FILE__) . '/../classes/Group/OrderGroup.php';
 
 function upgrade_module_4_4_9($module)
 {
@@ -25,7 +25,7 @@ function upgrade_module_4_4_9($module)
     //insert id product attribute
     $id_product_attribute = true;
 
-    if (!UpgradeHelper::isColumnWithValueExists('field', 'combination_id_product_attribute', 'advancedexportfield')) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'products', 'combination_id_product_attribute', 'advancedexportfield')) {
         $id_product_attribute = $module->DbExecute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
@@ -35,7 +35,37 @@ function upgrade_module_4_4_9($module)
         );
     }
 
-    if (!$id_product_attribute) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders','invoice_vat_number', 'advancedexportfield')) {
+        $invoice_vat_number = $module->DbExecute(
+            "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
+            `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
+            `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice VAT', 
+            'invoice_vat_number', 'address', 'inv_a', '1', 0, '', 0, '', 0, '', 0, '" .
+            OrderGroup::INVOICE . "', '', '');"
+        );
+    }
+
+    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders','invoice_dni', 'advancedexportfield')) {
+        $invoice_dni = $module->DbExecute(
+            "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
+            `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
+            `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice DNI', 
+            'invoice_dni', 'address', 'inv_a', '1', 0, '', 0, '', 0, '', 0, '" .
+            OrderGroup::INVOICE . "', '', '');"
+        );
+    }
+
+    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders','invoicecountry_iso_code', 'advancedexportfield')) {
+        $invoicecountry_iso_code = $module->DbExecute(
+            "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
+            `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
+            `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice country iso', 
+            'invoicecountry_iso_code', 'country', 'inv_co', '1', 0, '', 0, '', 0, '', 0, '" .
+            OrderGroup::INVOICE . "', '', '');"
+        );
+    }
+
+    if (!$id_product_attribute && !$invoice_dni && !$invoice_vat_number && !$invoicecountry_iso_code) {
         $module->upgrade_detail[$upgrade_version][] =
             $module->l(sprintf('Can not insert id_product_attribute fields'));
     }

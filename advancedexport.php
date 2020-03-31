@@ -1759,6 +1759,30 @@ class Advancedexport extends Module
             'alias' => 'od',
             'group15' => OrderGroup::PRODUCT
         ),
+        array(
+            'name' => 'Invoice VAT',
+            'field' => 'invoice_vat_number',
+            'as' => true,
+            'database' => 'address',
+            'alias' => 'inv_a',
+            'group15' => OrderGroup::INVOICE
+        ),
+        array(
+            'name' => 'Invoice DNI',
+            'field' => 'invoice_dni',
+            'as' => true,
+            'database' => 'address',
+            'alias' => 'inv_a',
+            'group15' => OrderGroup::INVOICE
+        ),
+        array(
+            'name' => 'Invoice country iso',
+            'field' => 'invoicecountry_iso_code',
+            'as' => true,
+            'database' => 'country',
+            'alias' => 'inv_co',
+            'group15' => OrderGroup::INVOICE
+        ),
     );
     public $categories = array(
         array(
