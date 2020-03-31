@@ -25,8 +25,12 @@ function upgrade_module_4_4_9($module)
     //insert id product attribute
     $id_product_attribute = true;
 
-    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'products', 'combination_id_product_attribute',
-        'advancedexportfield')) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists(
+        'field',
+        'products',
+        'combination_id_product_attribute',
+        'advancedexportfield'
+    )) {
         $id_product_attribute = $module->DbExecute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
@@ -36,7 +40,12 @@ function upgrade_module_4_4_9($module)
         );
     }
 
-    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders', 'invoice_vat_number', 'advancedexportfield')) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists(
+        'field',
+        'orders',
+        'invoice_vat_number',
+        'advancedexportfield'
+    )) {
         $invoice_vat_number = $module->DbExecute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
@@ -46,7 +55,12 @@ function upgrade_module_4_4_9($module)
         );
     }
 
-    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders', 'invoice_dni', 'advancedexportfield')) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists(
+        'field',
+        'orders',
+        'invoice_dni',
+        'advancedexportfield'
+    )) {
         $invoice_dni = $module->DbExecute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
@@ -56,8 +70,12 @@ function upgrade_module_4_4_9($module)
         );
     }
 
-    if (!UpgradeHelper::isColumnAndTabWithValueExists('field', 'orders', 'invoicecountry_iso_code',
-        'advancedexportfield')) {
+    if (!UpgradeHelper::isColumnAndTabWithValueExists(
+        'field',
+        'orders',
+        'invoicecountry_iso_code',
+        'advancedexportfield'
+    )) {
         $invoicecountry_iso_code = $module->DbExecute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
