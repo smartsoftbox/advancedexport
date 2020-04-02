@@ -38,7 +38,6 @@ class Advancedexport extends Module
     public $link;
     public $currentColor = 'white';
 
-
     public $mime_attachment = array(
         'csv' => 'text/csv',
         'xlsx' => 'application/vnd.ms-excel',
@@ -1732,8 +1731,7 @@ class Advancedexport extends Module
             'field' => 'invoice_other',
             'as' => true,
             'database' => 'address',
-            'alias'
-            => 'inv_a',
+            'alias' => 'inv_a',
             'group15' => OrderGroup::INVOICE
         ),
         array(
@@ -1781,6 +1779,14 @@ class Advancedexport extends Module
             'as' => true,
             'database' => 'country',
             'alias' => 'inv_co',
+            'group15' => OrderGroup::INVOICE
+        ),
+        array(
+            'name' => 'Invoice state iso code',
+            'field' => 'invoicestate_iso_code',
+            'as' => true,
+            'database' => 'state',
+            'alias' => 'inv_s',
             'group15' => OrderGroup::INVOICE
         ),
     );
@@ -2702,7 +2708,7 @@ class Advancedexport extends Module
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
         $this->need_instance = 0;
-        $this->version = '4.5.0';
+        $this->version = '4.5.1';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
