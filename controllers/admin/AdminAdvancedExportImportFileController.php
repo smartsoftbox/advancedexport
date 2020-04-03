@@ -49,8 +49,6 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
         $this->addRowAction('log');
 
         parent::__construct();
-
-        $this->type = $this->getEntity();
     }
 
     public function initToolbar()
@@ -106,11 +104,11 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
 
         $total = count($files);
 
-        $name_filter = $cookie->{'advancedexportimportfile' . $this->type . 'filesFilter_name'};
-        $submitFilter = $cookie->{'submitFilter' . $this->type . 'files'};
+        $name_filter = $cookie->{'advancedexportimportfileimportfilesFilter_name'};
+        $submitFilter = $cookie->{'submitFilterimportfiles'};
 
-        if ($typeFilesPagination = $this->moduleTools->getValue($this->type . 'files_pagination')) {
-            $cookie->{$this->type . 'files_pagination'} = $typeFilesPagination;
+        if ($typeFilesPagination = $this->moduleTools->getValue('importfiles_pagination')) {
+            $cookie->{'importfiles_pagination'} = $typeFilesPagination;
             $per_page = $typeFilesPagination;
         }
         $start = ($submitFilter ? ($submitFilter - 1) * $per_page : 0);

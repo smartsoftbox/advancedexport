@@ -93,9 +93,8 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
             return $entity;
         }
 
-//        $cookie = Context::getContext()->cookie;
-//        if (isset($_COOKIE['current_tab_id']) && $_COOKIE['current_tab_id']) {
-//            return $_COOKIE['current_tab_id']; // default if no cookie
+//        if (isset($cookie->current_tab_id) && $cookie->current_tab_id) {
+//            return $cookie->current_tab_id; // default if no cookie
 //        }
 
         return 'products'; // default if no cookie
@@ -227,10 +226,10 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
             'submitFilter' . $type . 'files',
             $type . 'export_pagination',
             $type . 'files_pagination',
-            'submitFilteradvancedexportimportfile',
+            'submitFilterimportfiles',
             'submitFilteradvancedexportcron',
             'advancedexportimport_pagination',
-            'advancedexportimportfile_pagination',
+            'importfiles_pagination',
             'advancedexportcron_pagination',
 
         );
