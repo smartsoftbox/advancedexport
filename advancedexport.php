@@ -92,7 +92,7 @@ class Advancedexport extends Module
     }
 
     /**
-     * Add application static methods for easy tests
+     * Add application static methods for easy test
      * @return ModuleTools
      */
     public function getModuleTools()
