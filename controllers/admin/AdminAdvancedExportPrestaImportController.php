@@ -43,7 +43,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         return $dest_file;
     }
 
-    public static function getPath($file = '')
+    public static function getPath($file = '') //todo check if you need this parameter
     {
         $id = Tools::getValue('id');
         $aeImport = new AdvancedExportImportClass($id);

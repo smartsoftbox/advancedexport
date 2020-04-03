@@ -48,9 +48,11 @@ class Install
 
     public static function installTabs()
     {
-        if (!self::installTab((int)Tab::getIdFromClassName('AdminTools'), _ADMIN_AE_,
-            'Import & Export')
-        ) {
+        if (!self::installTab(
+            (int)Tab::getIdFromClassName('AdminTools'),
+            _ADMIN_AE_,
+            'Import & Export'
+        )) {
             return false;
         }
 

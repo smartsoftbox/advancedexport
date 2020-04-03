@@ -102,8 +102,7 @@ function upgrade_module_4_5_5($module)
     if (!rename(
         dirname(__FILE__) . '/../classes/CustomFields.php',
         dirname(__FILE__) . '/../classes/Field/CustomFields.php'
-        )
-    ) {
+    )) {
         $module->upgrade_detail[$upgrade_version][] =
             $module->l('Can\'t copy classes/CustomFields.php');
     }

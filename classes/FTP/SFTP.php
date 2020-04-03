@@ -114,8 +114,7 @@ class SFTP implements FtpInterface
         $path = $this->pwd();
         $files = $this->listDir($path);
 
-        if (!in_array($path . $filename, $files))
-        {
+        if (!in_array($path . $filename, $files)) {
             $this->errors[] = "Can't find file.";
         }
     }

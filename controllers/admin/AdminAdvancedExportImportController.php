@@ -468,7 +468,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $res = parent::processBulkDelete();
         $imports = $this->moduleTools->getValue('advancedexportimportBox');
         foreach ($imports as $id) {
-            if(file_exists(_AE_IMPORT_PATH_ . $id)) {
+            if (file_exists(_AE_IMPORT_PATH_ . $id)) {
                 Tools::deleteDirectory(_AE_IMPORT_PATH_ . $id);
             }
         }
@@ -928,7 +928,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
     {
         $base = $this->getImportFilePath($id_import) . '/';
 
-        if($mapping) {
+        if ($mapping) {
             $base .= $this->getImportMappingFileName($file_name);
         } else {
             $base .= self::getImportFileName($file_name);
@@ -953,7 +953,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $aeImport = $this->getAdvancedExportImportClass($id);
         if ($offset = (int)Tools::getValue('offset') === 0 &&
             $validateOnly = (int)Tools::getValue('validateOnly') === 1) {
-            $path = $this->getImportPath($aeImport, false);
+            $this->getImportPath($aeImport, false);
         }
 
         $this->addImportGETValues($aeImport->id);

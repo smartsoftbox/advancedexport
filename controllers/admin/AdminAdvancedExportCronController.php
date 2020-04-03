@@ -161,9 +161,9 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
             Tools::getValue($this->list_id . 'Orderway') ||
             Tools::getValue($this->list_id . '_pagination')) {
             $this->redirect_after = Context::getContext()->link->getAdminLink(
-                    _ADMIN_AE_,
-                    true
-                ) . $this->getFilters();
+                _ADMIN_AE_,
+                true
+            ) . $this->getFilters();
         }
     }
 

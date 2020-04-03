@@ -148,8 +148,7 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
         $target,
         $local = null,
         $ftp_directory = null
-    )
-    {
+    ) {
         if (!in_array(Tools::strtolower($protocol), array('ftp', 'sftp'))) {
             throw new PrestaShopException('Invalid Protocol');
         }
@@ -197,7 +196,7 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
         $errors = $ftp->getErrors();
 
-        if(!$errors && isset($params['import_from'])) {
+        if (!$errors && isset($params['import_from'])) {
             $ftp->isFileExists($params['filename']);
         }
 
@@ -235,12 +234,12 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
         );
         $filters = '';
-
+        $cookie = Context::getContext()->cookie; // I added this on validation
         foreach ($filtersNames as $filtersName) {
             if ($filterExport = $this->moduleTools->getValue($filtersName)) {
 //                $this->context->cookie->{$filtersName} = $filterExport;
                 $filters .= '&' . $filtersName . '=' . $filterExport;
-            } else if (isset($cookie->{$filtersName})) {
+            } elseif (isset($cookie->{$filtersName})) {
                 $filters .= '&' . $filtersName . '=' . $cookie->{$filtersName};
             }
         }
@@ -320,7 +319,7 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
     public function getFilesFromDirectory($dirname, $formats)
     {
-        if ( !is_dir( $dirname ) ) {
+        if (!is_dir( $dirname )) {
             throw new PrestaShopException($this->l('Invalid Directory.'));
         }
 
