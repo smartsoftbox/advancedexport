@@ -514,7 +514,8 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
     public function displayAjaxGetExportForm()
     {
         $models = $this->renderList();
-        $files = '';
+        $aeFile = new AdminAdvancedExportModelFileController();
+        $files = $aeFile->renderList();
         echo $models . $files;
     }
 

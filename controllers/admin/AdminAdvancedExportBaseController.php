@@ -93,9 +93,10 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
             return $entity;
         }
 
-        if (isset($_COOKIE['current_tab_id']) && $_COOKIE['current_tab_id']) {
-            return $_COOKIE['current_tab_id']; // default if no cookie
-        }
+//        $cookie = Context::getContext()->cookie;
+//        if (isset($_COOKIE['current_tab_id']) && $_COOKIE['current_tab_id']) {
+//            return $_COOKIE['current_tab_id']; // default if no cookie
+//        }
 
         return 'products'; // default if no cookie
     }
@@ -319,7 +320,7 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
     public function getFilesFromDirectory($dirname, $formats)
     {
-        if (!is_dir( $dirname )) {
+        if (!is_dir($dirname)) {
             throw new PrestaShopException($this->l('Invalid Directory.'));
         }
 
