@@ -238,7 +238,7 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
         $cookie = Context::getContext()->cookie; // I added this on validation
         foreach ($filtersNames as $filtersName) {
             if ($filterExport = $this->moduleTools->getValue($filtersName)) {
-//                $this->context->cookie->{$filtersName} = $filterExport;
+                $this->context->cookie->{$filtersName} = $filterExport;
                 $filters .= '&' . $filtersName . '=' . $filterExport;
             } elseif (isset($cookie->{$filtersName})) {
                 $filters .= '&' . $filtersName . '=' . $cookie->{$filtersName};
