@@ -2,6 +2,7 @@
 
 namespace LegacyTests\TestCase;
 
+use Employee;
 use PrestaShopBundle\Install\DatabaseDump;
 use Context;
 use Advancedexport;
@@ -24,7 +25,7 @@ class OrderFieldTest extends IntegrationTestCase
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
         require_once __DIR__ . '/../../../../config/config.inc.php';
-        Context::getContext()->employee = new \Employee(1);
+        Context::getContext()->employee = new Employee(1);
     }
 
     public static function tearDownAfterClass()

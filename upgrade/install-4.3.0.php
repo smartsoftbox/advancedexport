@@ -2,9 +2,9 @@
 /**
  * 2016 Smart Soft.
  *
- *  @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 
@@ -21,10 +21,10 @@ function upgrade_module_4_3_0($module)
 
     $module->upgrade_detail[$upgrade_version] = array();
 
-    $table_name = _DB_PREFIX_.'advancedexportfield';
-    DB::getInstance()->execute('DROP TABLE IF EXISTS `'.$table_name.'`');
+    $table_name = _DB_PREFIX_ . 'advancedexportfield';
+    DB::getInstance()->execute('DROP TABLE IF EXISTS `' . $table_name . '`');
 
-    $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+    $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
         `id_advancedexportfield` int(10) unsigned NOT NULL auto_increment,
         `tab` varchar(255) NOT NULL,
         `name` varchar(255) NOT NULL,
@@ -40,11 +40,11 @@ function upgrade_module_4_3_0($module)
         `import_combination_name` varchar(255) NOT NULL,
         `isCustom` BOOL NOT NULL DEFAULT 0,
         PRIMARY KEY  (`id_advancedexportfield`)
-        ) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+        ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
     if (!DB::getInstance()->execute($query)) {
         $module->upgrade_detail[$upgrade_version][] =
-            $module->l(sprintf('Can not install %s table', _DB_PREFIX_.'advancedexportfield'));
+            $module->l(sprintf('Can not install %s table', _DB_PREFIX_ . 'advancedexportfield'));
     }
 
     //insert fields
@@ -61,11 +61,11 @@ function upgrade_module_4_3_0($module)
 
 
     $version = DB::getInstance()->executeS(
-        'SELECT version FROM `'._DB_PREFIX_.'module` WHERE name = "advancedexport"'
+        'SELECT version FROM `' . _DB_PREFIX_ . 'module` WHERE name = "advancedexport"'
     );
 
     if ('4.2.0' == $version[0]['version']) {
-        $models = DB::getInstance()->executeS('select * from '._DB_PREFIX_.'advancedexport');
+        $models = DB::getInstance()->executeS('select * from ' . _DB_PREFIX_ . 'advancedexport');
 
         foreach ($models as $model) {
             if (checkIfModelContainsCustomFields($model)) {
@@ -75,7 +75,7 @@ function upgrade_module_4_3_0($module)
         }
         if (count($module->upgrade_detail[$upgrade_version]) == 0) {
             $all = DB::getInstance()->executeS(
-                sprintf("SELECT * FROM `%s`", _DB_PREFIX_.'advancedexportfield')
+                sprintf("SELECT * FROM `%s`", _DB_PREFIX_ . 'advancedexportfield')
             );
 
             $allFields = array();
@@ -86,17 +86,17 @@ function upgrade_module_4_3_0($module)
             foreach ($models as $model) {
                 $namesFields = changeIdsToFieldNames($model, $allFields);
 
-                DB::getInstance()->execute('UPDATE `'._DB_PREFIX_.'advancedexport`
+                DB::getInstance()->execute('UPDATE `' . _DB_PREFIX_ . 'advancedexport`
                     SET fields = "' . pSQL($namesFields) .
                     '" WHERE id_advancedexport = ' . $model['id_advancedexport']);
             }
         }
     } else {
         $module->upgrade_detail[$upgrade_version][] =
-        $module->l(sprintf('You can upgrade only from version 4.2.0'));
+            $module->l(sprintf('You can upgrade only from version 4.2.0'));
     }
 
-    return (bool) !count($module->upgrade_detail[$upgrade_version]);
+    return (bool)!count($module->upgrade_detail[$upgrade_version]);
 }
 
 /**

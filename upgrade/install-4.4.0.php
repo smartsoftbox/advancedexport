@@ -2,9 +2,9 @@
 /**
  * 2019 Smart Soft.
  *
- *  @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 
@@ -65,7 +65,7 @@ function upgrade_module_4_4_0($module)
     }
 
     // remove export attributes option
-    $models = DB::getInstance()->executeS('select * from '._DB_PREFIX_.'advancedexport');
+    $models = DB::getInstance()->executeS('select * from ' . _DB_PREFIX_ . 'advancedexport');
 
     foreach ($models as $model) {
         $fields = Tools::jsonDecode($model['fields'], true);
@@ -85,15 +85,15 @@ function upgrade_module_4_4_0($module)
         }
         DB::getInstance()->execute(
             'UPDATE ' . _DB_PREFIX_ . 'advancedexport SET fields = \'' . json_encode($fields) . '\' 
-            WHERE id_advancedexport = "' . $model['id_advancedexport']  . '"'
+            WHERE id_advancedexport = "' . $model['id_advancedexport'] . '"'
         );
     }
 
 
     // clean advancedexportfield
-    $table_name = _DB_PREFIX_.'advancedexportfield';
+    $table_name = _DB_PREFIX_ . 'advancedexportfield';
 
-    $query = 'DELETE FROM `'.$table_name.'` WHERE isCustom = 0';
+    $query = 'DELETE FROM `' . $table_name . '` WHERE isCustom = 0';
 
     if (!Db::getInstance()->execute($query)) {
         $module->upgrade_detail[$upgrade_version][] =
@@ -113,9 +113,9 @@ function upgrade_module_4_4_0($module)
     }
 
     // create cron table
-    $table_name = _DB_PREFIX_.'advancedexportcron';
+    $table_name = _DB_PREFIX_ . 'advancedexportcron';
 
-    $query = 'CREATE TABLE IF NOT EXISTS `'.$table_name.'` (
+    $query = 'CREATE TABLE IF NOT EXISTS `' . $table_name . '` (
 			`id_advancedexportcron` int(10) unsigned NOT NULL auto_increment,
 			`id_advancedexport` int(10) NOT NULL,
 			`type` varchar(255) NOT NULL,
@@ -127,14 +127,14 @@ function upgrade_module_4_4_0($module)
 			`last_export` varchar(255) NOT NULL,
             `active` BOOL NOT NULL DEFAULT 0,
 			PRIMARY KEY  (`id_advancedexportcron`)
-			) ENGINE=' ._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8';
+			) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
 
     if (!Db::getInstance()->execute($query)) {
         $module->upgrade_detail[$upgrade_version][] =
             $module->l('Can\'t create table advancedexportcron');
     }
 
-    return (bool) !count($module->upgrade_detail[$upgrade_version]);
+    return (bool)!count($module->upgrade_detail[$upgrade_version]);
 }
 
 function findKeyByValue($array, $field, $value)

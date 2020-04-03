@@ -415,21 +415,24 @@ class Field418
             'import_name' => 'Customizable (0 = No, 1 = Yes)',
             'alias' => 'p'
         ),
-        array('name' => 'Uploadable Files',
+        array(
+            'name' => 'Uploadable Files',
             'field' => 'uploadable_files',
             'database' => 'products',
             'import' => 50,
             'import_name' => 'Uploadable files (0 = No, 1 = Yes)',
             'alias' => 'p'
         ),
-        array('name' => 'Text Fields',
+        array(
+            'name' => 'Text Fields',
             'field' => 'text_fields',
             'database' => 'products',
             'import' => 52,
             'import_name' => 'Text fields (0 = No, 1 = Yes)',
             'alias' => 'p'
         ),
-        array('name' => 'Available For Order',
+        array(
+            'name' => 'Available For Order',
             'field' => 'available_for_order',
             'database' => 'products',
             'import' => 38,
@@ -495,7 +498,8 @@ class Field418
             'database' => 'other',
             'import' => 46,
             'import_name' => 'Feature(Name:Value:Position
-            )'),
+            )'
+        ),
         array(
             'name' => 'Attributes',
             'field' => 'attributes',
@@ -1248,7 +1252,8 @@ class Field418
             'database' => 'category',
             'alias' => 'c',
             'import' => 2,
-            'import_name' => 'Active (0/1)'),
+            'import_name' => 'Active (0/1)'
+        ),
         array(
             'name' => 'Is root category',
             'field' => 'is_root_category',
@@ -1266,7 +1271,8 @@ class Field418
             'name' => 'Id shop',
             'field' => 'id_shop',
             'database' => 'category_lang',
-            'alias' => 'cl'),
+            'alias' => 'cl'
+        ),
         array(
             'name' => 'Name',
             'field' => 'name',
@@ -1352,7 +1358,8 @@ class Field418
             'database' => 'manufacturer',
             'alias' => 'm',
             'import' => 2,
-            'import_name' => 'Active (0/1)'),
+            'import_name' => 'Active (0/1)'
+        ),
         array(
             'name' => 'description',
             'field' => 'description',
@@ -1779,7 +1786,8 @@ class Field418
             'alias' => 'm',
             'as' => true,
             'import' => 6,
-            'import_name' => 'Manufacturer'),
+            'import_name' => 'Manufacturer'
+        ),
         array(
             'name' => 'supplier',
             'field' => 'supplier_name',
@@ -1787,7 +1795,8 @@ class Field418
             'alias' => 's',
             'as' => true,
             'import' => 7,
-            'import_name' => 'Supplier'),
+            'import_name' => 'Supplier'
+        ),
         array(
             'name' => 'company',
             'field' => 'company',

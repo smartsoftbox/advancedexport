@@ -2,6 +2,7 @@
 
 namespace PrestaShop\PrestaShop\tests\Integration\classes;
 
+use Employee;
 use PrestaShop\PrestaShop\Tests\TestCase\IntegrationTestCase;
 use PHPUnit_Framework_Assert as Assert;
 use PrestaShop\PrestaShop\Tests\TestCase\DatabaseDump;
@@ -40,7 +41,7 @@ class OrdersTest extends IntegrationTestCase
         // Some tests might have cleared the configuration
         Configuration::loadConfiguration();
 
-        Context::getContext()->employee = new \Employee(1);
+        Context::getContext()->employee = new Employee(1);
     }
 
     public static function tearDownAfterClass()
@@ -61,9 +62,9 @@ class OrdersTest extends IntegrationTestCase
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/orders/test_orders.csv';
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/orders/test_orders.csv';
         $rows = array_map('str_getcsv', file($url));;
-        foreach($rows[0] as $key => $fieldname) {
+        foreach ($rows[0] as $key => $fieldname) {
             $this->row[$fieldname] = $rows['1'][$key];
         }
     }
@@ -264,12 +265,12 @@ class OrdersTest extends IntegrationTestCase
     public function createModelWithAllFieldsAndDefaultSettings($type)
     {
         $aec = null;
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexport WHERE type = "'.$type.'"
-                AND filename = "test_' . $type.'"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexport WHERE type = "' . $type . '"
+                AND filename = "test_' . $type . '"';
 
         $result = Db::getInstance()->ExecuteS($query);
 
-        if(count($result) == 0) {
+        if (count($result) == 0) {
             $aec = new AdvancedExportClass();
             $aec->delimiter = ',';
             $aec->separator = '"';
@@ -304,7 +305,8 @@ class OrdersTest extends IntegrationTestCase
      * @param $x
      * @return bool
      */
-    function check_your_datetime($x) {
+    function check_your_datetime($x)
+    {
         return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
@@ -315,7 +317,7 @@ class OrdersTest extends IntegrationTestCase
     private function getFieldsNames($type)
     {
         $result = [];
-        foreach($this->ae->$type as $field) {
+        foreach ($this->ae->$type as $field) {
             $result[] = $field['field'];
         }
         return $result;

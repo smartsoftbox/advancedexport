@@ -15,18 +15,21 @@ use Db;
 use Group;
 use Order;
 use PrestaShopBundle\Security\Admin\Employee;
+use PrestaShopDatabaseException;
 use Product;
 use Tools;
 use Tax;
 use TaxRulesGroup;
 use TaxRule;
-use AdvancedExport;
+use Export;
 use Validate;
 use Customer;
 use AdvancedExportClass;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
+require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
 require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
 
 class Orders17Test extends IntegrationTestCase
 {
@@ -53,15 +56,15 @@ class Orders17Test extends IntegrationTestCase
      */
     public function setUp()
     {
-        $this->ae = new AdvancedExport();
+        $this->ae = new Export();
 
         $id = $this->createModelWithAllFieldsAndDefaultSettings('orders');
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/orders/test_orders.csv';
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/orders/test_orders.csv';
         $rows = array_map('str_getcsv', file($url));;
-        foreach($rows[0] as $key => $fieldname) {
+        foreach ($rows[0] as $key => $fieldname) {
             $this->row[$fieldname] = $rows['1'][$key];
         }
     }
@@ -257,7 +260,7 @@ class Orders17Test extends IntegrationTestCase
 
     public function test_AllFieldsExported()
     {
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "orders"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "orders"';
         $result = Db::getInstance()->ExecuteS($query);
 
 
@@ -289,6 +292,7 @@ class Orders17Test extends IntegrationTestCase
         $aec->type = $type;
         $aec->name = 'test';
         $aec->filename = 'test_' . $type;
+        $aec->file_format = 'csv';
         $aec->fields = Tools::jsonEncode(
             [
                 'fields[]' => $this->getFieldsNames($type)
@@ -303,22 +307,23 @@ class Orders17Test extends IntegrationTestCase
      * @param $x
      * @return bool
      */
-    function check_your_datetime($x) {
+    function check_your_datetime($x)
+    {
         return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
     /**
      * @param $type
      * @return array
-     * @throws \PrestaShopDatabaseException
+     * @throws PrestaShopDatabaseException
      */
     private function getFieldsNames($type)
     {
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "'.$type.'"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "' . $type . '"';
         $result = Db::getInstance()->ExecuteS($query);
 
         $return = [];
-        foreach($result as $field) {
+        foreach ($result as $field) {
             $return[$field['field']] = array($field['name']);
         }
         return $return;

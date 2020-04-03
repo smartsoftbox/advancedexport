@@ -2,9 +2,9 @@
 /**
  * 2016 Smart Soft.
  *
- *  @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 

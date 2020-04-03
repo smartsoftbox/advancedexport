@@ -15,6 +15,7 @@ use Db;
 use Group;
 use Order;
 use PrestaShopBundle\Security\Admin\Employee;
+use PrestaShopDatabaseException;
 use Product;
 use Tools;
 use Tax;
@@ -58,9 +59,9 @@ class ProductsTest extends IntegrationTestCase
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/products/test_products.csv';
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/products/test_products.csv';
         $rows = array_map('str_getcsv', file($url));;
-        foreach($rows[0] as $key => $fieldname) {
+        foreach ($rows[0] as $key => $fieldname) {
             $this->row[$fieldname] = $rows['1'][$key];
         }
     }
@@ -74,9 +75,11 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Name', 'field' => 'name', 'database' => 'products_lang', 'import' => 2, 'import_name' => 'Name *', 'alias' => 'pl'),
         $this->assertSame($this->row['Name'], 'Faded Short Sleeves T-shirt');
         //array('name' => 'Short Description', 'field' => 'description_short', 'database' => 'products_lang', 'import' => 30, 'import_name' => 'Description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Short Description'], '<p>Faded short sleeves t-shirt with high neckline. Soft and stretchy material for a comfortable fit. Accessorize with a straw hat and you\'re ready for summer!</p>');
+        $this->assertSame($this->row['Short Description'],
+            '<p>Faded short sleeves t-shirt with high neckline. Soft and stretchy material for a comfortable fit. Accessorize with a straw hat and you\'re ready for summer!</p>');
         //array('name' => 'Long Description', 'field' => 'description', 'database' => 'products_lang', 'import' => 31, 'import_name' => 'Short description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Long Description'], '<p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman\'s wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>');
+        $this->assertSame($this->row['Long Description'],
+            '<p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman\'s wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>');
         //array('name' => 'Quantity', 'field' => 'quantity', 'database' => 'other', 'import' => 24, 'import_name' => 'Quantity', 'import_combination' => 10, 'import_combination_name' => 'Quantity', 'attribute' => true),
         $this->assertSame($this->row['Quantity'], '1799');
         //array('name' => 'Price', 'field' => 'price', 'database' => 'products', 'alias' => 'p', 'import_combination' => 9, 'import_combination_name' => 'Impact on Price', 'attribute' => true),
@@ -138,7 +141,8 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Accessories', 'field' => 'accessories', 'database' => 'other'),
         $this->assertSame($this->row['Accessories'], '');
         //array('name' => 'Images', 'field' => 'images', 'database' => 'other', 'attribute' => true, 'import_combination' => 16, 'import_combination_name' => 'Image URLs (x,y,z...)'),
-        $this->assertSame($this->row['Images'], Tools::getHttpHost(true).__PS_BASE_URI__.'/1-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/2-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/3-home_default/faded-short-sleeves-tshirt.jpg,'.Tools::getHttpHost(true).__PS_BASE_URI__.'/4-home_default/faded-short-sleeves-tshirt.jpg');
+        $this->assertSame($this->row['Images'],
+            Tools::getHttpHost(true) . __PS_BASE_URI__ . '/1-home_default/faded-short-sleeves-tshirt.jpg,' . Tools::getHttpHost(true) . __PS_BASE_URI__ . '/2-home_default/faded-short-sleeves-tshirt.jpg,' . Tools::getHttpHost(true) . __PS_BASE_URI__ . '/3-home_default/faded-short-sleeves-tshirt.jpg,' . Tools::getHttpHost(true) . __PS_BASE_URI__ . '/4-home_default/faded-short-sleeves-tshirt.jpg');
         //array('name' => 'Online only', 'field' => 'online_only', 'database' => 'products', 'import' => 47, 'import_name' => 'Available online only (0 = No, 1 = Yes)', 'alias' => 'p'),
         $this->assertSame($this->row['Online only'], '0');
         //array('name' => 'Upc', 'field' => 'upc', 'database' => 'products', 'import' => 18,  'import_combination' => 7, 'import_combination_name' => 'UPC', 'import_name' => 'UPC', 'alias' => 'p', 'attribute' => true),
@@ -190,7 +194,8 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Link Rewrite', 'field' => 'link_rewrite', 'database' => 'products_lang', 'import' => 36, 'import_name' => 'URL rewritten', 'alias' => 'pl'),
         $this->assertSame($this->row['Link Rewrite'], 'faded-short-sleeves-tshirt');
         //array('name' => 'Url Product', 'field' => 'url_product', 'database' => 'other'),
-        $this->assertSame($this->row['Url Product'], 'http://localhost:8888/presta1704t/tshirts/1-faded-short-sleeves-tshirt.html');
+        $this->assertSame($this->row['Url Product'],
+            'http://localhost:8888/presta1704t/tshirts/1-faded-short-sleeves-tshirt.html');
         //array('name' => 'Features', 'field' => 'features', 'database' => 'other', 'import' => 46, 'import_name' => 'Feature(Name:Value:Position)'),
         $this->assertSame($this->row['Features'], 'Compositions-Cotton,Styles-Casual,Properties-Short Sleeve');
         //array('name' => 'Attributes', 'field' => 'attributes', 'database' => 'other', 'attribute' => true),
@@ -212,7 +217,8 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Discount to (yyyy-mm-dd)', 'field' => 'to', 'database' => 'specific_price', 'import' => 12, 'import_name' => 'Discount to (yyyy-mm-dd)', 'alias' => 'sp_tmp'),
         $this->assertSame($this->row['Discount to (yyyy-mm-dd)'], "");
         //array('name' => 'Cover', 'field' => 'image', 'database' => 'other', 'import' => 42, 'import_name' => 'Image URLs (x,y,z...)'),
-        $this->assertSame($this->row['Cover'], 'http://localhost:8888/presta1704t/1-home_default/faded-short-sleeves-tshirt.jpg');
+        $this->assertSame($this->row['Cover'],
+            'http://localhost:8888/presta1704t/1-home_default/faded-short-sleeves-tshirt.jpg');
         //array('name' => 'Id shop default', 'field' => 'id_shop_default', 'database' => 'products', 'import' => 54, 'import_name' => 'ID / Name of shop', 'alias' => 'p', 'import_combination' => 2, 'import_combination_name' => 'ID / Name of shop'),
         $this->assertSame($this->row['Id shop default'], '1');
         //array('name' => 'Advanced stock management', 'field' => 'advanced_stock_management', 'database' => 'products', 'import' => 55, 'import_name' => 'Advanced stock managment', 'import_combination' => 20, 'import_combination_name' => 'Advanced stock managment', 'alias' => 'p'),
@@ -228,7 +234,6 @@ class ProductsTest extends IntegrationTestCase
         //array('name' => 'Default (0 = No 1 = Yes)', 'field' => 'default_combination', 'database' => 'other', 'import_combination' => 16, 'import_combination_name' => 'Default (0 = No, 1 = Yes)', 'attribute' => true),
         $this->assertSame($this->row['Default (0 = No 1 = Yes)'], '');
     }
-
 
 
     /**
@@ -272,22 +277,23 @@ class ProductsTest extends IntegrationTestCase
      * @param $x
      * @return bool
      */
-    function check_your_datetime($x) {
+    function check_your_datetime($x)
+    {
         return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
     /**
      * @param $type
      * @return array
-     * @throws \PrestaShopDatabaseException
+     * @throws PrestaShopDatabaseException
      */
     private function getFieldsNames($type)
     {
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "'.$type.'"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "' . $type . '"';
         $result = Db::getInstance()->ExecuteS($query);
 
         $return = [];
-        foreach($result as $field) {
+        foreach ($result as $field) {
             $return[$field['field']] = array($field['name']);
         }
         return $return;

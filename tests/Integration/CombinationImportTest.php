@@ -2,17 +2,18 @@
 
 namespace LegacyTests\TestCase;
 
+use Employee;
 use PrestaShopBundle\Install\DatabaseDump;
 use Context;
-use Advancedexport;
+use Export;
 use AdvancedExportClass;
 use Configuration;
 use Product;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
-require_once dirname(__FILE__) . '/../../classes/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
 require_once dirname(__FILE__) . '/../../tests/Integration/HelperImport.php';
 
 class CombinationImportTest extends IntegrationTestCase
@@ -27,7 +28,7 @@ class CombinationImportTest extends IntegrationTestCase
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
         require_once __DIR__ . '/../../../../config/config.inc.php';
-        Context::getContext()->employee = new \Employee(1);
+        Context::getContext()->employee = new Employee(1);
     }
 
     public static function tearDownAfterClass()

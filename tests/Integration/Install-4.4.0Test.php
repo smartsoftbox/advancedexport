@@ -90,15 +90,15 @@ class Install_4_4_0Test extends IntegrationTestCase
                     $this->assertSame(
                         true,
                         UpgradeHelper::isColumnAndTabWithValueExists($key, $export_type, $value, 'advancedexportfield'),
-                        'field name ' . $field['field'] . ' with column '. $key . ' under tab ' . $export_type .
-                        ' with value ' . $value .  ' does\'t exists'
+                        'field name ' . $field['field'] . ' with column ' . $key . ' under tab ' . $export_type .
+                        ' with value ' . $value . ' does\'t exists'
                     );
                 }
             }
         }
 
         // check attributes option removed
-        $models = DB::getInstance()->executeS('select * from '._DB_PREFIX_.'advancedexport');
+        $models = DB::getInstance()->executeS('select * from ' . _DB_PREFIX_ . 'advancedexport');
         //insert fields
         $field418 = new Field418();
 
@@ -111,7 +111,7 @@ class Install_4_4_0Test extends IntegrationTestCase
 //                    WHERE field = "' . $key . '" AND tab = "' . $model['type'] . '"'
 //                );
                 $name = findKeyByFieldName($key, $field418->$tab);
-                $this->assertSame(array($name),  $field);
+                $this->assertSame(array($name), $field);
             }
         }
 
@@ -119,7 +119,7 @@ class Install_4_4_0Test extends IntegrationTestCase
         foreach ($models as $model) {
             if ($model['type'] == 'products') {
                 $fields = Tools::jsonDecode($model['fields'], true);
-                $this->assertSame(true,  isset($fields['fields[]']['combination_reference']));
+                $this->assertSame(true, isset($fields['fields[]']['combination_reference']));
             }
         }
     }
@@ -128,10 +128,10 @@ class Install_4_4_0Test extends IntegrationTestCase
 function findKeyByFieldName($field, $array)
 {
     foreach ($array as $key => $value) {
-        if(isset($value['attribute']) && $value['attribute'] == true) {
+        if (isset($value['attribute']) && $value['attribute'] == true) {
             $field = str_replace('combination_', '', $field);
         }
-        if($value['field'] == $field) {
+        if ($value['field'] == $field) {
             return $value['name'];
         }
     }

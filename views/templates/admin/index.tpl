@@ -15,11 +15,28 @@
         <div class="list-group" id="entities">
           <a href="#" id="welcome" class="list-group-item"><b>Start</b></a>
             {foreach from=$export_types item=export_type name=blockCategTree}
-              <a href="#" id="{$export_type|escape:'htmlall':'UTF-8'}" class="list-group-item">
+              <a href="#" id="{$export_type|escape:'html':'UTF-8'}" class="entity list-group-item">
                   {$export_type|escape:'htmlall':'UTF-8'}
               </a>
             {/foreach}
+          <a href="#" id="import" class="list-group-item"><b>Import (PrestaShop 1.7)</b></a>
+          <a href="#" id="cron" class="list-group-item"><b>Cron</b></a>
         </div>
       </div>
-      <div class="form-horizontal col-lg-10">
-        <div class="list-group">
+      <div id="right-column" class="form-horizontal col-lg-10">
+        <div alt="welcome" class="tab-content list-group">
+            {include file=$start}
+        </div>
+          {foreach from=$export_types item=export_type name=blockCategTree}
+            <div alt="{$export_type|escape:'html':'UTF-8'}" class="tab-content list-group">
+              <div alt="model-{$export_type|escape:'html':'UTF-8'}"></div>
+            </div>
+          {/foreach}
+        <div alt="import" class="tab-content list-group"></div>
+        <div alt="cron" class="tab-content list-group"></div>
+        <div id="ajax-loader"><img src="../modules/advancedexport/views/img/ajax-loader.gif"></div>
+      </div>
+    </div>
+  </div>
+</div>
+

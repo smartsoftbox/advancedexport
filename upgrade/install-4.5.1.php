@@ -31,7 +31,7 @@ function upgrade_module_4_5_1($module)
         'invoicestate_iso_code',
         'advancedexportfield'
     )) {
-        $invoicestate_iso_code = $module->DbExecute(
+        $invoicestate_iso_code = DB::getInstance()->execute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice state iso code', 

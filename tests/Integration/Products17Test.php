@@ -15,18 +15,23 @@ use Db;
 use Group;
 use Order;
 use PrestaShopBundle\Security\Admin\Employee;
+use PrestaShopDatabaseException;
+use PrestaShopException;
 use Product;
 use Tools;
 use Tax;
 use TaxRulesGroup;
 use TaxRule;
-use AdvancedExport;
+use Export;
 use Validate;
 use Customer;
 use AdvancedExportClass;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
+require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
 require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
+
 
 class Products17Test extends IntegrationTestCase
 {
@@ -53,15 +58,15 @@ class Products17Test extends IntegrationTestCase
      */
     public function setUp()
     {
-        $this->ae = new AdvancedExport();
+        $this->ae = new Export();
 
         $id = $this->createModel('products');
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/products/test_products.csv';
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/products/test_products.csv';
         $rows = array_map('str_getcsv', file($url));;
-        foreach($rows[0] as $key => $fieldname) {
+        foreach ($rows[0] as $key => $fieldname) {
             $this->row[$fieldname] = $rows['1'][$key];
         }
     }
@@ -75,9 +80,11 @@ class Products17Test extends IntegrationTestCase
         //array('name' => 'Name', 'field' => 'name', 'database' => 'products_lang', 'import' => 2, 'import_name' => 'Name *', 'alias' => 'pl'),
         $this->assertSame($this->row['Name'], 'Hummingbird printed t-shirt');
         //array('name' => 'Short Description', 'field' => 'description_short', 'database' => 'products_lang', 'import' => 30, 'import_name' => 'Description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Short Description'], '<p><span style="font-size:10pt;font-style:normal;">Regular fit, round neckline, short sleeves. Made of extra long staple pima cotton. </span></p>');
+        $this->assertSame($this->row['Short Description'],
+            '<p><span style="font-size:10pt;font-style:normal;">Regular fit, round neckline, short sleeves. Made of extra long staple pima cotton. </span></p>');
         //array('name' => 'Long Description', 'field' => 'description', 'database' => 'products_lang', 'import' => 31, 'import_name' => 'Short description', 'alias' => 'pl'),
-        $this->assertSame($this->row['Long Description'], '<p><span style="font-size:10pt;font-style:normal;"><span style="font-size:10pt;font-style:normal;">Symbol of lightness and delicacy, the hummingbird evokes curiosity and joy.</span><span style="font-size:10pt;font-style:normal;"> Studio Design\' PolyFaune collection features classic products with colorful patterns, inspired by the traditional japanese origamis. To wear with a chino or jeans. The sublimation textile printing process provides an exceptional color rendering and a color, guaranteed overtime.</span></span></p>');
+        $this->assertSame($this->row['Long Description'],
+            '<p><span style="font-size:10pt;font-style:normal;"><span style="font-size:10pt;font-style:normal;">Symbol of lightness and delicacy, the hummingbird evokes curiosity and joy.</span><span style="font-size:10pt;font-style:normal;"> Studio Design\' PolyFaune collection features classic products with colorful patterns, inspired by the traditional japanese origamis. To wear with a chino or jeans. The sublimation textile printing process provides an exceptional color rendering and a color, guaranteed overtime.</span></span></p>');
         //array('name' => 'Quantity', 'field' => 'quantity', 'database' => 'other', 'import' => 24, 'import_name' => 'Quantity', 'import_combination' => 10, 'import_combination_name' => 'Quantity', 'attribute' => true),
         $this->assertSame($this->row['Quantity'], '2400');
         //array('name' => 'Price', 'field' => 'price', 'database' => 'products', 'alias' => 'p', 'import_combination' => 9, 'import_combination_name' => 'Impact on Price', 'attribute' => true),
@@ -139,7 +146,8 @@ class Products17Test extends IntegrationTestCase
         //array('name' => 'Accessories', 'field' => 'accessories', 'database' => 'other'),
         $this->assertSame($this->row['Accessories'], '');
         //array('name' => 'Images', 'field' => 'images', 'database' => 'other', 'attribute' => true, 'import_combination' => 16, 'import_combination_name' => 'Image URLs (x,y,z...)'),
-        $this->assertSame($this->row['Images'], Tools::getHttpHost(true).__PS_BASE_URI__.'img/p/1/1-home_default.jpg,http://prestashop-git/img/p/2/2-home_default.jpg');
+        $this->assertSame($this->row['Images'],
+            Tools::getHttpHost(true) . __PS_BASE_URI__ . 'img/p/1/1-home_default.jpg,http://prestashop-git/img/p/2/2-home_default.jpg');
         //array('name' => 'Online only', 'field' => 'online_only', 'database' => 'products', 'import' => 47, 'import_name' => 'Available online only (0 = No, 1 = Yes)', 'alias' => 'p'),
         $this->assertSame($this->row['Online only'], '0');
         //array('name' => 'Upc', 'field' => 'upc', 'database' => 'products', 'import' => 18,  'import_combination' => 7, 'import_combination_name' => 'UPC', 'import_name' => 'UPC', 'alias' => 'p', 'attribute' => true),
@@ -191,7 +199,8 @@ class Products17Test extends IntegrationTestCase
         //array('name' => 'Link Rewrite', 'field' => 'link_rewrite', 'database' => 'products_lang', 'import' => 36, 'import_name' => 'URL rewritten', 'alias' => 'pl'),
         $this->assertSame($this->row['Link Rewrite'], 'hummingbird-printed-t-shirt');
         //array('name' => 'Url Product', 'field' => 'url_product', 'database' => 'other'),
-        $this->assertSame($this->row['Url Product'], 'http://prestashop-git/index.php?id_product=1&rewrite=hummingbird-printed-t-shirt&controller=product&id_lang=1');
+        $this->assertSame($this->row['Url Product'],
+            'http://prestashop-git/index.php?id_product=1&rewrite=hummingbird-printed-t-shirt&controller=product&id_lang=1');
         //array('name' => 'Features', 'field' => 'features', 'database' => 'other', 'import' => 46, 'import_name' => 'Feature(Name:Value:Position)'),
         $this->assertSame($this->row['Features'], 'Composition-Cotton,Property-Short sleeves');
         //array('name' => 'Visibility', 'field' => 'visibility', 'database' => 'products', 'import' => 26, 'import_name' => 'Visibility', 'alias' => 'p'),
@@ -236,7 +245,7 @@ class Products17Test extends IntegrationTestCase
 
     public function test_AllFieldsExported()
     {
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "products"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "products"';
         $result = Db::getInstance()->ExecuteS($query);
 
 
@@ -248,10 +257,11 @@ class Products17Test extends IntegrationTestCase
     }
 
 
-
     /**
      * @param $type
      * @return AdvancedExportClass
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function createModel($type)
     {
@@ -272,6 +282,7 @@ class Products17Test extends IntegrationTestCase
         $aec->type = $type;
         $aec->name = 'test';
         $aec->filename = 'test_' . $type;
+        $aec->file_format = 'csv';
         $aec->fields = Tools::jsonEncode(
             [
                 'fields[]' => $this->getFieldsNames($type),
@@ -289,22 +300,23 @@ class Products17Test extends IntegrationTestCase
      * @param $x
      * @return bool
      */
-    function check_your_datetime($x) {
+    function check_your_datetime($x)
+    {
         return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
     /**
      * @param $type
      * @return array
-     * @throws \PrestaShopDatabaseException
+     * @throws PrestaShopDatabaseException
      */
     private function getFieldsNames($type)
     {
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexportfield WHERE tab = "'.$type.'"';
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "' . $type . '"';
         $result = Db::getInstance()->ExecuteS($query);
 
         $return = [];
-        foreach($result as $field) {
+        foreach ($result as $field) {
             if (strpos($field['field'], 'combination') === false) {
                 $return[$field['field']] = array($field['name']);
             }

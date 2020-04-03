@@ -4,7 +4,10 @@ namespace LegacyTests\TestCase;
 
 use PrestaShopBundle\Install\DatabaseDump;
 use Context;
-use UpgradeHelper;;
+use UpgradeHelper;
+
+;
+
 use Configuration;
 use Product;
 use Tools;

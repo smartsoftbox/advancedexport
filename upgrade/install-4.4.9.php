@@ -31,7 +31,7 @@ function upgrade_module_4_4_9($module)
         'combination_id_product_attribute',
         'advancedexportfield'
     )) {
-        $id_product_attribute = $module->DbExecute(
+        $id_product_attribute = DB::getInstance()->execute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('products', 'Combination Id Product Attribute', 
@@ -46,7 +46,7 @@ function upgrade_module_4_4_9($module)
         'invoice_vat_number',
         'advancedexportfield'
     )) {
-        $invoice_vat_number = $module->DbExecute(
+        $invoice_vat_number = DB::getInstance()->execute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice VAT', 
@@ -61,7 +61,7 @@ function upgrade_module_4_4_9($module)
         'invoice_dni',
         'advancedexportfield'
     )) {
-        $invoice_dni = $module->DbExecute(
+        $invoice_dni = DB::getInstance()->execute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice DNI', 
@@ -76,7 +76,7 @@ function upgrade_module_4_4_9($module)
         'invoicecountry_iso_code',
         'advancedexportfield'
     )) {
-        $invoicecountry_iso_code = $module->DbExecute(
+        $invoicecountry_iso_code = DB::getInstance()->execute(
             "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Invoice country iso', 

@@ -2,9 +2,9 @@
 /**
  * 2019 Smart Soft.
  *
- *  @author    Marcin Kubiak
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 
@@ -33,8 +33,8 @@ class AdvancedexportCronModuleFrontController extends ModuleFrontController
         $day_of_week = ($cron['cron_week'] === '*') ? date('D') :
             date('D', strtotime('Sunday +' . $cron['cron_week'] . ' days'));
 
-        $day = date('Y').'-'.str_pad($month, 2, '0', STR_PAD_LEFT).'-'.str_pad($day, 2, '0', STR_PAD_LEFT);
-        $execution = $day_of_week.' '.$day.' '.str_pad($hour, 2, '0', STR_PAD_LEFT);
+        $day = date('Y') . '-' . str_pad($month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($day, 2, '0', STR_PAD_LEFT);
+        $execution = $day_of_week . ' ' . $day . ' ' . str_pad($hour, 2, '0', STR_PAD_LEFT);
         $now = date('D Y-m-d H');
 
         return !(bool)strcmp($now, $execution);
@@ -43,15 +43,19 @@ class AdvancedexportCronModuleFrontController extends ModuleFrontController
     private function runCron()
     {
         $tasks = Db::getInstance()->executeS(
-            'SELECT * FROM '._DB_PREFIX_.'advancedexportcron WHERE `active` = 1'
+            'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportcron WHERE `active` = 1'
         );
 
         if (is_array($tasks) and count($tasks) > 0) {
             foreach ($tasks as $task) {
                 if ($this->isTimeForRun($task)) {
-                    $this->module->cronTask($task['id_advancedexport']);
-                    $query = 'UPDATE '._DB_PREFIX_.'advancedexportcron SET `last_export` = NOW() 
-                    WHERE `id_advancedexportcron` = "'.(int)$task['id_advancedexport'].'"';
+                    if ($task['is_import']) {
+                        $this->module->cronImportTask($task['id_model']);
+                    } else {
+                        $this->module->cronExportTask($task['id_model']);
+                    }
+                    $query = 'UPDATE ' . _DB_PREFIX_ . 'advancedexportcron SET `last_export` = NOW() 
+                    WHERE `id_advancedexportcron` = "' . (int)$task['id_advancedexportcron'] . '"';
                     Db::getInstance()->execute($query);
                 }
             }

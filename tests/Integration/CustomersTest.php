@@ -3,14 +3,17 @@
 namespace LegacyTests\TestCase;
 
 use Context;
-use Advancedexport;
+use Export;
 use AdvancedExportClass;
 use Configuration;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
-require_once dirname(__FILE__) . '/../../classes/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
+
 
 class CustomersTest extends IntegrationTestCase
 {
@@ -18,28 +21,42 @@ class CustomersTest extends IntegrationTestCase
     private $ae;
     private $row;
 
+    public static function setUpBeforeClass()
+    {
+        // parent::setUpBeforeClass();
+        // Some tests might have cleared the configuration
+        // Configuration::loadConfiguration();
+        require_once __DIR__ . '/../../../../config/config.inc.php';
+        Context::getContext()->employee = new \Employee(1);
+    }
+
+
+    protected function tearDown()
+    {
+    }
+
     /**
      * Provide sensible defaults for tests that don't specify them.
      */
     public function setUp()
     {
-        $this->ae = new Advancedexport();
+        $this->ae = new Export();
 
         $id = $this->createModelWithAllFieldsAndDefaultSettings('customers');
         $aec = new AdvancedExportClass($id);
         $this->ae->createExportFile($aec);
 
-        $url = _PS_ROOT_DIR_.'/modules/advancedexport/csv/customers/test_customers.csv';
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/customers/test_customers.csv';
         $rows = array_map('str_getcsv', file($url));;
-        foreach($rows[0] as $key => $fieldname) {
-            $this->row[$fieldname] = $rows['1'][$key];
+        foreach ($rows[0] as $key => $fieldname) {
+            $this->row[$fieldname] = $rows['2'][$key];
         }
     }
 
     public function test_CsvFileData()
     {
         //array('name' => 'id customer', 'field' => 'id_customer', 'database' => 'customer', 'alias' => 'c', 'import' => 1, 'import_name' => 'ID'),
-        $this->assertSame($this->row['id customer'], '1');
+        $this->assertSame($this->row['id customer'], '2');
         //array('name' => 'id gender', 'field' => 'id_gender', 'database' => 'customer', 'alias' => 'c', 'import' => 3, 'import_name' => 'Titles ID (Mr = 1, Ms = 2, else 0)'),
         $this->assertSame($this->row['id gender'], '1');
         //array('name' => 'company', 'field' => 'company', 'database' => 'customer', 'alias' => 'c'),
@@ -91,9 +108,9 @@ class CustomersTest extends IntegrationTestCase
         //array('name' => 'address phone', 'field' => 'phone', 'database' => 'address', 'alias' => 'a'),
         $this->assertSame($this->row['address phone'], '0102030405');
         //array('name' => 'address phone_mobile', 'field' => 'phone_mobile', 'database' => 'address', 'alias' => 'a'),
-        $this->assertSame($this->row['address phone_mobile'], '');
+        $this->assertSame($this->row['address phone mobile'], '');
         //array('name' => 'address vat_number', 'field' => 'vat_number', 'database' => 'address', 'alias' => 'a'),
-        $this->assertSame($this->row['address vat_number'], '');
+        $this->assertSame($this->row['address vat number'], '');
         //array('name' => 'address dni', 'field' => 'dni', 'database' => 'address', 'alias' => 'a'),
         $this->assertSame($this->row['address dni'], '');
         //array('name' => 'address active', 'field' => 'active', 'database' => 'address', 'alias' => 'a'),
@@ -111,12 +128,12 @@ class CustomersTest extends IntegrationTestCase
     public function createModelWithAllFieldsAndDefaultSettings($type)
     {
         $aec = null;
-        $query = 'SELECT * FROM '._DB_PREFIX_.'advancedexport WHERE type = "'.$type.'"
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexport WHERE type = "' . $type . '"
                 AND filename = "test_' . $type . '"';
 
         $result = Db::getInstance()->ExecuteS($query);
 
-        if(count($result) == 0) {
+        if (count($result) == 0) {
             $aec = new AdvancedExportClass();
             $aec->delimiter = ',';
             $aec->separator = '"';
@@ -134,6 +151,7 @@ class CustomersTest extends IntegrationTestCase
             $aec->type = $type;
             $aec->name = 'test';
             $aec->filename = 'test_' . $type;
+            $aec->file_format = 'csv';
             $aec->fields = Tools::jsonEncode(
                 [
                     'fields[]' => $this->getFieldsNames($type)
@@ -151,7 +169,8 @@ class CustomersTest extends IntegrationTestCase
      * @param $x
      * @return bool
      */
-    function check_your_datetime($x) {
+    function check_your_datetime($x)
+    {
         return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
@@ -161,10 +180,13 @@ class CustomersTest extends IntegrationTestCase
      */
     private function getFieldsNames($type)
     {
-        $result = [];
-        foreach($this->ae->$type as $field) {
-            $result[] = $field['field'];
+        $query = 'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportfield WHERE tab = "' . $type . '"';
+        $result = Db::getInstance()->ExecuteS($query);
+
+        $return = [];
+        foreach ($result as $field) {
+            $return[$field['field']] = array($field['name']);
         }
-        return $result;
+        return $return;
     }
 }

@@ -2,9 +2,9 @@
 /**
  * 2019 Smart Soft.
  *
- *  @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
- *  @copyright Smart Soft
- *  @license   Commercial License
+ * @author    Marcin Kubiak <zlecenie@poczta.onet.pl>
+ * @copyright Smart Soft
+ * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
 
@@ -26,5 +26,5 @@ function upgrade_module_4_4_2($module)
             $module->l(sprintf('Can\'t insert file_format'));
     }
 
-    return (bool) !count($module->upgrade_detail[$upgrade_version]);
+    return (bool)!count($module->upgrade_detail[$upgrade_version]);
 }
