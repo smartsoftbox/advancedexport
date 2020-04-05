@@ -116,6 +116,22 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 ),
                 array(
                     'type' => 'select',
+                    'label' => $this->l('What do you want to import?'),
+                    'name' => 'entity',
+                    'default' => '-1',
+                    'class' => '',
+                    'options' => array(
+                        'default' => array(
+                            'label' => $this->l('Please select entity'),
+                            'value' => '-1',
+                        ),
+                        'query' => $this->getExportEntities(),
+                        'id' => 'id',
+                        'name' => 'name',
+                    ),
+                ),
+                array(
+                    'type' => 'select',
                     'label' => $this->l('Import From'),
                     'name' => 'import_from',
                     'default' => '-1',
@@ -139,22 +155,6 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                         ),
                         'query' => AdvancedExportClass::getAll(),
                         'id' => 'id_advancedexport',
-                        'name' => 'name',
-                    ),
-                ),
-                array(
-                    'type' => 'select',
-                    'label' => $this->l('What do you want to import?'),
-                    'name' => 'entity',
-                    'default' => '-1',
-                    'class' => 'custom-hide',
-                    'options' => array(
-                        'default' => array(
-                            'label' => $this->l('Please select entity'),
-                            'value' => '-1',
-                        ),
-                        'query' => $this->getExportEntities(),
-                        'id' => 'id',
                         'name' => 'name',
                     ),
                 ),
@@ -567,6 +567,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 'title' => $this->l('Mapping Form'),
                 'icon' => 'icon-envelope',
             ),
+            'input' => array(
+            ),
             'submit' => array(
                 'title' => $this->l('Save'),
             )
@@ -671,9 +673,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         return _AE_CSV_PATH_ . $ae->type . '/' . $ae->filename . '.' . $ae->file_format;
     }
 
-    private function getLabels($aeImport)
+    private function getLabels($path)
     {
-        $path = $this->getImportPath($aeImport, true);
         $file_name = basename($path);
         $file_format = $this->getFileFormatFromPath($file_name);
 
@@ -754,12 +755,20 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             $aeImport = $this->saveImportSettings($aeImport);
             $this->createImportFolder($aeImport->id);
             $this->uploadMappingFile($aeImport);
-            $labels = $this->getLabels($aeImport);
+            $path = $this->getImportPath($aeImport, true);
+            $labels = null;
 
-            if (empty($labels)) {
+            if($this->isPathExists($path)) {
+                $labels = $this->getLabels($path);
+                if(!count($labels)) {
+                    $this->errors[] = $this->l('It looks like empty file.');
+                }
+            }
+
+            if (!empty($this->errors)) {
                 $this->display = 'edit';
-                $this->errors[] = $this->l('It looks like empty file.');
             } else {
+                // if we have errors, we stay on the form instead of going back to the list
                 $this->initFormMapping($labels, $aeImport);
             }
         }
@@ -791,15 +800,6 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
     public function saveImportSettings($aeImport)
     {
         $aeImport->copyFromPost();
-//
-//        if (isset($_FILES['upload_file']['name']) && (int)$this->moduleTools->getValue('import_from') ===
-//            ImportFrom::getImportFromIdByName('upload')) {
-//            $aeImport->filename = $_FILES['upload_file']['name'];
-//        }
-//
-//        if ((int)$this->moduleTools->getValue('import_from') === ImportFrom::getImportFromIdByName('url')) {
-//            $aeImport->filename = basename($this->moduleTools->getValue('url'));
-//        }
 
         $aeImport->file_token = ($aeImport->file_token ? $this->generateFileToken() : $aeImport->file_token);
         $aeImport->save();
@@ -1207,5 +1207,14 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         }
 
         return $files_info;
+    }
+
+    public function isPathExists($path)
+    {
+        if (!$is_exist = file_exists($path)) {
+            $this->errors[] = sprintf($this->l('Could not open %s for reading!'), basename($path));
+        }
+
+        return $is_exist;
     }
 }

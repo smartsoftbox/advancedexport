@@ -648,6 +648,11 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
         if (Tools::isSubmit('generate')) {
             $this->generateDefaultCsvForImport($this->type);
+
+            $this->redirect_after = Context::getContext()->link->getAdminLink(
+                    _ADMIN_AE_,
+                    true
+                ) . $this->getFilters();
         }
     }
 
@@ -674,7 +679,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
     public function generateDefaultCsvForImport($type)
     {
         if ($type == 'products') {
-            return $this->generateCombination($type);
+            $this->generateCombination($type);
         }
 
         return $this->generateDefaultCsvByType($type);
