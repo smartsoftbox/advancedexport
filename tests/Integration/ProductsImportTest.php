@@ -56,7 +56,7 @@ class ProductsImportTest extends IntegrationTestCase
         $this->export = new Export();
 
         // create export models for import
-        $advancedExportClass = $this->adminAdvancedExportModelController->generateDefaultCsvByType($this->entity);
+        $advancedExportClass = $this->adminAdvancedExportModelController->generateDefaultCsvForImport($this->entity);
         // run export
         $this->export->createExportFile($advancedExportClass);
         // read files

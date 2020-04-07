@@ -24,7 +24,7 @@ require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
 require_once dirname(__FILE__) . '/../../classes/ModuleTools.php';
 
-class ProductsCronImportTest extends IntegrationTestCase
+class ProductsCronImportUrlTest extends IntegrationTestCase
 {
     const PRODUCTS = 'products';
     private static $dump;
@@ -98,11 +98,11 @@ class ProductsCronImportTest extends IntegrationTestCase
         $import = new \AdvancedExportImportClass();
         $import->entity = 1;
         $import->name = 'test';
-        $import->import_from = \ImportFrom::getImportFromIdByName('model');
+        $import->import_from = \ImportFrom::getImportFromIdByName('url');
         $import->import_filename = 'products_import.csv';
         $import->filename = '';
         $import->file_token = '';
-        $import->url = '';
+        $import->url = 'http:://prestashop-git/';
         $import->id_advancedexport = $id_ae;
         $import->ftp_user_name = '';
         $import->ftp_hostname = '';

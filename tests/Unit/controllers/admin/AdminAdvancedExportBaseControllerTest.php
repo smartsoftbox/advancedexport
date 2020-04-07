@@ -251,4 +251,27 @@ class AdminAdvancedExportBaseControllerTest extends testcase
         //It is pass as query string that's wy equals not same
         $this->assertEquals(1, $result);
     }
+
+    public function testGetFiltersNames()
+    {
+        //arrange
+        $adminAdvancedExportBaseController = $this->createPartialMock(self::className, array());
+
+        //act
+        $filter_names = $adminAdvancedExportBaseController->getFiltersNames('products');
+
+        //assert
+        //It is pass as query string that's wy equals not same
+        $this->assertSame('submitFilterproductsexport', $filter_names[0]);
+        $this->assertSame('submitFilterproductsfiles', $filter_names[1]);
+        $this->assertSame('productsexport_pagination', $filter_names[2]);
+        $this->assertSame('productsfiles_pagination', $filter_names[3]);
+        $this->assertSame('submitFilterimportfiles', $filter_names[4]);
+        $this->assertSame('submitFilteradvancedexportcron', $filter_names[5]);
+        $this->assertSame('advancedexportimport_pagination', $filter_names[6]);
+        $this->assertSame('importfiles_pagination', $filter_names[7]);
+        $this->assertSame('advancedexportcron_pagination', $filter_names[8]);
+        $this->assertSame('submitFilteradvancedexportimport', $filter_names[9]);
+    }
+
 }

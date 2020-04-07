@@ -24,7 +24,7 @@ require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
 require_once dirname(__FILE__) . '/../../classes/ModuleTools.php';
 
-class ProductsCronImportTest extends IntegrationTestCase
+class ProductsCronImportXlsxTest extends IntegrationTestCase
 {
     const PRODUCTS = 'products';
     private static $dump;
@@ -84,6 +84,8 @@ class ProductsCronImportTest extends IntegrationTestCase
 
         // create export models for import
         $advancedExportClass = $this->aeModelController->generateDefaultCsvForImport(self::PRODUCTS);
+        $advancedExportClass->file_format = 'xlsx';
+        $advancedExportClass->save();
 
         $this->export = new Export();
         // run export
@@ -99,7 +101,7 @@ class ProductsCronImportTest extends IntegrationTestCase
         $import->entity = 1;
         $import->name = 'test';
         $import->import_from = \ImportFrom::getImportFromIdByName('model');
-        $import->import_filename = 'products_import.csv';
+        $import->import_filename = 'products_import.xlsx';
         $import->filename = '';
         $import->file_token = '';
         $import->url = '';
