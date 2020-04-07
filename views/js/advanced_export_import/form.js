@@ -55,6 +55,25 @@ jQuery(function ($) {
       $('input#forceIDs_on').closest('.form-group').hide();
     }
   });
+
+  $('button#auto-select').on('click', function () {
+    var fields = document.querySelectorAll('select[id^="fields"]');
+    fields.forEach(function(field) {
+      // console.log(field);
+      var parent = field.closest('div.form-group');
+      var text = parent.querySelector('label').textContent.trim();
+      // console.log(text);
+      var selectOptions = field.options;
+      for (var opt, j = 0; opt = selectOptions[j]; j++) {
+        if (opt.text.toLowerCase() === text.toLocaleLowerCase()) {
+          console.log(field);
+          field.selectedIndex = j;
+          $(field).trigger("chosen:updated");
+          break;
+        }
+      }
+    });
+  });
 });
 
 
