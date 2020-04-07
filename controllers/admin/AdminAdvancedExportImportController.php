@@ -568,13 +568,22 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 'icon' => 'icon-envelope',
             ),
             'input' => array(
+                array(
+                    'type' => 'html',
+                    'name' => 'html_data',
+                    'html_content' => '<button type="button" class="btn btn-default" id="auto-select">' .
+                        $this->l('Auto select') . '</button>'
+                )
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
             )
         );
 
-        $fields_form[0]['form']['input'] = $this->getLabelFields($labels);
+        $fields_form[0]['form']['input'] = array_merge(
+            $fields_form[0]['form']['input'],
+            $this->getLabelFields($labels)
+        );
 
         return $fields_form;
     }
@@ -621,6 +630,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             'type' => 'select',
             'label' => $label,
             'name' => 'fields[' . $column_index . ']',
+            'class' => 'chosen',
             'default' => '0',
             'options' => array(
                 'query' => $available_fields,
@@ -817,6 +827,12 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $this->moduleTools->copy(
             _AE_IMPORT_PATH_ . '.htaccess',
             _AE_IMPORT_PATH_ . $id . '/.htaccess'
+        );
+
+        //copy index to import
+        $this->moduleTools->copy(
+            _AE_IMPORT_PATH_ . 'index.php',
+            _AE_IMPORT_PATH_ . $id . '/index.php'
         );
     }
 

@@ -219,32 +219,19 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
     public function getFilters()
     {
-        $type = $this->getEntity();
-
-        $filtersNames = array(
-            'submitFilter' . $type . 'export',
-            'submitFilter' . $type . 'files',
-            $type . 'export_pagination',
-            $type . 'files_pagination',
-            'submitFilterimportfiles',
-            'submitFilteradvancedexportcron',
-            'advancedexportimport_pagination',
-            'importfiles_pagination',
-            'advancedexportcron_pagination',
-
-        );
-        $filters = '';
+        $filtersNames = $this->getFiltersNames($this->getEntity());
+        $parameters = '';
         $cookie = Context::getContext()->cookie; // I added this on validation
         foreach ($filtersNames as $filtersName) {
             if ($filterExport = $this->moduleTools->getValue($filtersName)) {
                 $this->context->cookie->{$filtersName} = $filterExport;
-                $filters .= '&' . $filtersName . '=' . $filterExport;
+                $parameters .= '&' . $filtersName . '=' . $filterExport;
             } elseif (isset($cookie->{$filtersName})) {
-                $filters .= '&' . $filtersName . '=' . $cookie->{$filtersName};
+                $parameters .= '&' . $filtersName . '=' . $cookie->{$filtersName};
             }
         }
 
-        return $filters;
+        return $parameters;
     }
 
     public function formatSize($size)
@@ -327,5 +314,25 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
             'basename',
             glob($dirname . '*.{' . implode(',', $formats) . '}', GLOB_BRACE)
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function getFiltersNames($type)
+    {
+        $filter_name = array();
+        $filter_name[] = 'submitFilter' . $type . 'export';
+        $filter_name[] = 'submitFilter' . $type . 'files';
+        $filter_name[] = $type . 'export_pagination';
+        $filter_name[] = $type . 'files_pagination';
+        $filter_name[] = 'submitFilterimportfiles';
+        $filter_name[] = 'submitFilteradvancedexportcron';
+        $filter_name[] = 'advancedexportimport_pagination';
+        $filter_name[] = 'importfiles_pagination';
+        $filter_name[] = 'advancedexportcron_pagination';
+        $filter_name[] = 'submitFilteradvancedexportimport';
+
+        return $filter_name;
     }
 }

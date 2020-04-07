@@ -114,6 +114,15 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
         }
     }
 
+    public function processBulkDelete()
+    {
+        if (parent::processBulkDelete()) {
+            Tools::redirectAdmin(
+                Context::getContext()->link->getAdminLink(_ADMIN_AE_, true) . '&conf=1'
+            );
+        }
+    }
+
     public function getList(
         $id_lang,
         $order_by = null,

@@ -167,28 +167,31 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
             true
         );
 
+        $list = '';
         $id_import = $this->getImportId($this->moduleTools->getValue('id_advancedexportimport'));
-        $this->toolbar_title = $this->getToolbarTitle(new AdvancedExportImportClass($id_import));
+        $aeImport = new AdvancedExportImportClass($id_import);
+        if($this->isExistsImportModel($aeImport)) {
+            $this->toolbar_title = $this->getToolbarTitle($aeImport);
+            list($files, $total) = $this->getFiles($id_import);
 
-        list($files, $total) = $this->getFiles($id_import);
+            $helper = new HelperList();
+            $this->_listTotal = $total;
+            $this->identifier = 'type_with_name';
+            $helper->no_link = true;
+            $helper->toolbar_title = 'Files';
+            $this->setHelperDisplay($helper);
+            $helper->tpl_vars = $this->tpl_list_vars;
+            $helper->tpl_delete_link_vars = $this->tpl_delete_link_vars;
 
-        $helper = new HelperList();
-        $this->_listTotal = $total;
-        $this->identifier = 'type_with_name';
-        $helper->no_link = true;
-        $helper->toolbar_title = 'Files';
-        $this->setHelperDisplay($helper);
-        $helper->tpl_vars = $this->tpl_list_vars;
-        $helper->tpl_delete_link_vars = $this->tpl_delete_link_vars;
-
-        // For compatibility reasons, we have to check standard actions in class attributes
-        foreach ($this->actions_available as $action) {
-            if (!in_array($action, $this->actions) && isset($this->$action) && $this->$action) {
-                $this->actions[] = $action;
+            // For compatibility reasons, we have to check standard actions in class attributes
+            foreach ($this->actions_available as $action) {
+                if (!in_array($action, $this->actions) && isset($this->$action) && $this->$action) {
+                    $this->actions[] = $action;
+                }
             }
-        }
 
-        $list = $helper->generateList($files, $this->fields_list);
+            $list = $helper->generateList($files, $this->fields_list);
+        }
 
         return $list;
     }
@@ -224,5 +227,10 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
             _ADMIN_AE_,
             true
         ) . $this->getFilters();
+    }
+
+    private function isExistsImportModel($aeImport)
+    {
+        return ($aeImport->id ? true : false);
     }
 }

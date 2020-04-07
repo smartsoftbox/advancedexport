@@ -7,6 +7,7 @@
  * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportBaseController.php';
 
@@ -47,7 +48,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
     {
         $id = Tools::getValue('id');
         $aeImport = new AdvancedExportImportClass($id);
-        return _AE_IMPORT_PATH_ . '/' . $id . '/' . $aeImport->import_filename;
+        $path = _AE_IMPORT_PATH_ . $id . '/' . $file;
+        return $path;
     }
 
     protected function receiveTab()
