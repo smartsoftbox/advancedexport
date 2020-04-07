@@ -28,7 +28,7 @@ class Install
             or !self::createSettingsTables()
             or !self::createCronTable()
             or !Configuration::updateGlobalValue(
-                'ADVANCEDEXPorT_SECURE_KEY',
+                'ADVANCEDEXPORT_SECURE_KEY',
                 Tools::strtoupper(Tools::passwdGen(16))
             )) {
             return false;

@@ -54,7 +54,7 @@ class Export
         $file_path = $this->writeToFile(
             $ae,
             $sorted_fields,
-            $entityExportObject->getEntityData($ae, $ae->fields),
+            $entityExportObject->getEntityData(),
             $entityExportObject
         );
 
@@ -723,8 +723,8 @@ class Export
      */
     private function getEntityExportObject($ae, $fields)
     {
-        $class_name = $ae->type . 'Export';
-        require_once Tools::ucfirst($class_name) . '.php';
+        $class_name = Tools::ucfirst($ae->type) . 'Export';
+        require_once $class_name . '.php';
         $entity_export = new $class_name($ae, $fields);
 
         return $entity_export;
