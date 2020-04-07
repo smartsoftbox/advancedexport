@@ -136,6 +136,8 @@ class Advancedexport extends Module
 
     public function cronImportTask($id)
     {
+        require_once 'controllers/admin/AdminAdvancedExportImportController.php';
+
         $context = Context::getContext();
         $context->employee = new Employee(1);
 
