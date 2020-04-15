@@ -13,16 +13,16 @@ use Product;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
-require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportModelController.php';
-require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportImportController.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportImportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportCronClass.php';
-require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
-require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
-require_once dirname(__FILE__) . '/../../classes/ModuleTools.php';
+require_once dirname(__FILE__) . '/../../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportModelController.php';
+require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportImportController.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportImportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportCronClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/CustomFields.php';
+require_once dirname(__FILE__) . '/../../../classes/Data/ImportFrom.php';
+require_once dirname(__FILE__) . '/../../../classes/ModuleTools.php';
 
 class ProductsCronImportUrlTest extends IntegrationTestCase
 {
@@ -39,7 +39,7 @@ class ProductsCronImportUrlTest extends IntegrationTestCase
         // parent::setUpBeforeClass();
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
-        require_once __DIR__ . '/../../../../config/config.inc.php';
+        require_once __DIR__ . '/../../../../../config/config.inc.php';
         Context::getContext()->employee = new Employee(1);
     }
 
@@ -56,7 +56,7 @@ class ProductsCronImportUrlTest extends IntegrationTestCase
 
         $this->cleanCronTable();
         $id_ae = $this->createProductsDefaultExportModel();
-        $id_ae_import = $this->createImportModel($id_ae);
+        $id_ae_import = $this->createImportModel();
         $this->createCronModel($id_ae_import);
         $this->http = $this->runCron();
     }
@@ -64,15 +64,6 @@ class ProductsCronImportUrlTest extends IntegrationTestCase
     public function cleanCronTable()
     {
         DB::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'advancedexportcron');
-    }
-
-    /**
-     * @param $x
-     * @return bool
-     */
-    function check_your_datetime($x)
-    {
-        return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
     private function createProductsDefaultExportModel()
@@ -93,7 +84,7 @@ class ProductsCronImportUrlTest extends IntegrationTestCase
         return $advancedExportClass->id;
     }
 
-    private function createImportModel($id_ae)
+    private function createImportModel()
     {
         $import = new \AdvancedExportImportClass();
         $import->entity = 1;
@@ -102,8 +93,8 @@ class ProductsCronImportUrlTest extends IntegrationTestCase
         $import->import_filename = 'products_import.csv';
         $import->filename = '';
         $import->file_token = '';
-        $import->url = 'http:://prestashop-git/';
-        $import->id_advancedexport = $id_ae;
+        $import->url = 'http://prestashop-git/modules/advancedexport/csv/products/products_import.csv';
+        $import->id_advancedexport = 0;
         $import->ftp_user_name = '';
         $import->ftp_hostname = '';
         $import->ftp_user_pass = '';

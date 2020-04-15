@@ -13,18 +13,18 @@ use Product;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
-require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportModelController.php';
-require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportImportController.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportImportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportCronClass.php';
-require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
-require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
-require_once dirname(__FILE__) . '/../../classes/ModuleTools.php';
+require_once dirname(__FILE__) . '/../../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportModelController.php';
+require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportImportController.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportImportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportCronClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/CustomFields.php';
+require_once dirname(__FILE__) . '/../../../classes/Data/ImportFrom.php';
+require_once dirname(__FILE__) . '/../../../classes/ModuleTools.php';
 
-class ProductsCronImportXlsxTest extends IntegrationTestCase
+class ProductsCronImportUploadTest extends IntegrationTestCase
 {
     const PRODUCTS = 'products';
     private static $dump;
@@ -39,7 +39,7 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
         // parent::setUpBeforeClass();
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
-        require_once __DIR__ . '/../../../../config/config.inc.php';
+        require_once __DIR__ . '/../../../../../config/config.inc.php';
         Context::getContext()->employee = new Employee(1);
     }
 
@@ -56,7 +56,7 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
 
         $this->cleanCronTable();
         $id_ae = $this->createProductsDefaultExportModel();
-        $id_ae_import = $this->createImportModel($id_ae);
+        $id_ae_import = $this->createImportModel();
         $this->createCronModel($id_ae_import);
         $this->http = $this->runCron();
     }
@@ -64,15 +64,6 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
     public function cleanCronTable()
     {
         DB::getInstance()->execute('DELETE FROM ' . _DB_PREFIX_ . 'advancedexportcron');
-    }
-
-    /**
-     * @param $x
-     * @return bool
-     */
-    function check_your_datetime($x)
-    {
-        return (date('Y-m-d H:i:s', strtotime($x)) == $x);
     }
 
     private function createProductsDefaultExportModel()
@@ -84,8 +75,6 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
 
         // create export models for import
         $advancedExportClass = $this->aeModelController->generateDefaultCsvForImport(self::PRODUCTS);
-        $advancedExportClass->file_format = 'xlsx';
-        $advancedExportClass->save();
 
         $this->export = new Export();
         // run export
@@ -95,17 +84,17 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
         return $advancedExportClass->id;
     }
 
-    private function createImportModel($id_ae)
+    private function createImportModel()
     {
         $import = new \AdvancedExportImportClass();
         $import->entity = 1;
         $import->name = 'test';
-        $import->import_from = \ImportFrom::getImportFromIdByName('model');
-        $import->import_filename = 'products_import.xlsx';
+        $import->import_from = \ImportFrom::getImportFromIdByName('upload');
+        $import->import_filename = 'mapping_products_import.csv';
         $import->filename = '';
         $import->file_token = '';
         $import->url = '';
-        $import->id_advancedexport = $id_ae;
+        $import->id_advancedexport = 0;
         $import->ftp_user_name = '';
         $import->ftp_hostname = '';
         $import->ftp_user_pass = '';
@@ -130,8 +119,13 @@ class ProductsCronImportXlsxTest extends IntegrationTestCase
         $adminAEImport->setModuleTools(new \ModuleTools());
 
         $adminAEImport->createImportFolder($import->id);
-        $adminAEImport->getImportPath($import, true);
+//        $adminAEImport->getImportPath($import, true);
         chmod(_AE_IMPORT_PATH_ . $import->id, 0777);
+
+        copy(
+            _AE_CSV_PATH_ . 'products/products_import.csv',
+            _AE_IMPORT_PATH_ . $import->id . '/mapping_products_import.csv'
+        );
 
         return $import->id;
     }
