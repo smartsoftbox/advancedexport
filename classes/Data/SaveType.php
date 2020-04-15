@@ -24,4 +24,18 @@ class SaveType
     {
         return self::$save_types;
     }
+
+    public static function getSaveTypeNameById($id)
+    {
+        if (is_null($id)) {
+            throw new PrestaShopException('Invalid save type id');
+        }
+
+        foreach (self::$save_types as $save_type) {
+            if ($save_type['id'] === (int)$id) {
+                return $save_type['name'];
+            }
+        }
+    }
+
 }

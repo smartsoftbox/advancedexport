@@ -8,8 +8,10 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__). '/../../vendor/Box/Spout/Autoloader/autoload.php';
-require_once dirname(__FILE__). '/../Data/ExportEnum.php';
+require_once dirname(__FILE__) . '/../../vendor/Box/Spout/Autoloader/autoload.php';
+require_once dirname(__FILE__) . '/../Data/ExportEnum.php';
+require_once dirname(__FILE__) . '/../FTP/SFTP.php';
+require_once dirname(__FILE__) . '/../FTP/FTP.php';
 include_once 'ExportInterface.php';
 
 class Export
@@ -60,7 +62,7 @@ class Export
 
         $this->saveLastExportId($ae, $this->lastElement);
 
-        $this->processFile($ae->save_type, $file_path, $ae);
+        $this->processFile($ae, $file_path);
     }
 
     private function decodeFields($fields)
@@ -362,19 +364,19 @@ class Export
         return $ae;
     }
 
-    public function processFile($process, $url, $ae)
+    public function processFile($ae, $url)
     {
-        if ($process == 0) {
-            return;
+        if ($ae->save_type == 0) {
+            return true;
         };
 
-        if ($process == 2) {
+        if ($ae->save_type == 2) {
             return $this->sentFile($url, $ae->email, $ae->filename, $ae->name);
         }
 
-        if ($process == 1 or $process == 3) {
-            $protocol = Tools::strtoupper($$ae->save_type);
-            $ftp = new $$protocol($ae->ftp_hostname, $ae->ftp_user_name, $ae->ftp_user_pass);
+        if ($ae->save_type == 1 or $ae->save_type == 3) {
+            $protocol = Tools::strtoupper(SaveType::getSaveTypeNameById($ae->save_type));
+            $ftp = new $protocol($ae->ftp_hostname, $ae->ftp_user_name, $ae->ftp_user_pass);
             $this->ftpFile($ftp, $url, $ae->ftp_directory);
         }
     }
@@ -714,6 +716,8 @@ class Export
         )) {
             throw new PrestaShopException("Can't sent email.");
         }
+
+        return true;
     }
 
     /**
