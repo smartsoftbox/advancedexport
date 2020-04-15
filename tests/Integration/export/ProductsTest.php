@@ -25,9 +25,11 @@ use AdvancedExport;
 use Validate;
 use Customer;
 use AdvancedExportClass;
+use Export;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../../advancedexport.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
 
 class ProductsTest extends IntegrationTestCase
 {
@@ -40,7 +42,7 @@ class ProductsTest extends IntegrationTestCase
         // parent::setUpBeforeClass();
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
-        require_once __DIR__ . '/../../../../config/config.inc.php';
+        require_once __DIR__ . '/../../../../../config/config.inc.php';
         Context::getContext()->employee = new \Employee(1);
     }
 
@@ -57,7 +59,9 @@ class ProductsTest extends IntegrationTestCase
 
         $id = $this->createModel('products');
         $aec = new AdvancedExportClass($id);
-        $this->ae->createExportFile($aec);
+
+        $export = new Export();
+        $export->createExportFile($aec);
 
         $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/products/test_products.csv';
         $rows = array_map('str_getcsv', file($url));;
@@ -259,6 +263,7 @@ class ProductsTest extends IntegrationTestCase
         $aec->type = $type;
         $aec->name = 'test';
         $aec->filename = 'test_' . $type;
+        $aec->file_format = 'csv';
         $aec->fields = Tools::jsonEncode(
             [
                 'fields[]' => $this->getFieldsNames($type),

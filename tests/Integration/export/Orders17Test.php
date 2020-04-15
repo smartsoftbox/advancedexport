@@ -26,10 +26,10 @@ use Validate;
 use Customer;
 use AdvancedExportClass;
 
-require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
-require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
+require_once dirname(__FILE__) . '/../../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/CustomFields.php';
 
 class Orders17Test extends IntegrationTestCase
 {
@@ -42,7 +42,7 @@ class Orders17Test extends IntegrationTestCase
         // parent::setUpBeforeClass();
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
-        require_once __DIR__ . '/../../../../config/config.inc.php';
+        require_once __DIR__ . '/../../../../../config/config.inc.php';
         Context::getContext()->employee = new \Employee(1);
     }
 
