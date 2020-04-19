@@ -9,6 +9,7 @@
  */
 
 include_once 'ExportInterface.php';
+require_once dirname(__FILE__) . '/../Field/CustomFields.php';
 
 class ProductsExport extends ExportInterface
 {

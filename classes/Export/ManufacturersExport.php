@@ -8,6 +8,8 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
+require_once dirname(__FILE__) . '/../Field/CustomFields.php';
+
 class ManufacturersExport extends ExportInterface
 {
     public function getEntityData()
