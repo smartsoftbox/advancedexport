@@ -25,7 +25,7 @@ class AdvancedexportCronModuleFrontController extends ModuleFrontController
         die();
     }
 
-    protected function isTimeForRun($cron)
+    public function isTimeForRun($cron)
     {
         $hour = ($cron['cron_hour'] === '*') ? date('H') : $cron['cron_hour'];
         $day = ($cron['cron_day'] === '*') ? date('d') : $cron['cron_day'];
@@ -42,23 +42,50 @@ class AdvancedexportCronModuleFrontController extends ModuleFrontController
 
     private function runCron()
     {
-        $tasks = Db::getInstance()->executeS(
-            'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportcron WHERE `active` = 1'
-        );
+        $tasks = $this->getCronTasks();
 
         if (is_array($tasks) and count($tasks) > 0) {
             foreach ($tasks as $task) {
-                if ($this->isTimeForRun($task)) {
-                    if ($task['is_import']) {
-                        $this->module->cronImportTask($task['id_model']);
-                    } else {
-                        $this->module->cronExportTask($task['id_model']);
-                    }
-                    $query = 'UPDATE ' . _DB_PREFIX_ . 'advancedexportcron SET `last_export` = NOW() 
-                    WHERE `id_advancedexportcron` = "' . (int)$task['id_advancedexportcron'] . '"';
-                    Db::getInstance()->execute($query);
-                }
+                $this->runCronTask($task);
             }
         }
+    }
+
+    /**
+     * @return array|false|mysqli_result|PDOStatement|resource|null
+     * @throws PrestaShopDatabaseException
+     */
+    public function getCronTasks()
+    {
+        $tasks = Db::getInstance()->executeS(
+            'SELECT * FROM ' . _DB_PREFIX_ . 'advancedexportcron WHERE `active` = 1'
+        );
+        return $tasks;
+    }
+
+    /**
+     * @param $task
+     */
+    public function runCronTask($task)
+    {
+        if ($this->isTimeForRun($task)) {
+            if ($task['is_import']) {
+                $this->module->cronImportTask($task['id_model']);
+            } else {
+                $this->module->cronExportTask($task['id_model']);
+            }
+            $this->updateLastExport($task);
+        }
+    }
+
+    /**
+     * @param $task
+     * @return bool
+     */
+    public function updateLastExport($task)
+    {
+        $query = 'UPDATE ' . _DB_PREFIX_ . 'advancedexportcron SET `last_export` = NOW() 
+                    WHERE `id_advancedexportcron` = "' . (int)$task['id_advancedexportcron'] . '"';
+        return Db::getInstance()->execute($query);
     }
 }
