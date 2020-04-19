@@ -13,11 +13,11 @@ use Product;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
-require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportModelController.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
-require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportFieldClass.php';
-require_once dirname(__FILE__) . '/../../classes/Field/CustomFields.php';
+require_once dirname(__FILE__) . '/../../../classes/Export/Export.php';
+require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportModelController.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportFieldClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/CustomFields.php';
 
 class ProductsImportTest extends IntegrationTestCase
 {
@@ -32,7 +32,7 @@ class ProductsImportTest extends IntegrationTestCase
         // parent::setUpBeforeClass();
         // Some tests might have cleared the configuration
         // Configuration::loadConfiguration();
-        require_once __DIR__ . '/../../../../config/config.inc.php';
+        require_once __DIR__ . '/../../../../../config/config.inc.php';
         Context::getContext()->employee = new Employee(1);
     }
 
@@ -105,7 +105,7 @@ class ProductsImportTest extends IntegrationTestCase
         $this->assertSame($this->row['Label when backorder allowed'], '');
         $this->assertSame($this->row['Available for order (0 = No 1 = Yes)'], '1');
         $this->assertSame($this->row['Product availability date'], '0000-00-00');
-        $this->assertSame($this->row['Product creation date'], '2020-03-05 10:34:02');
+        $this->assertTrue($this->check_your_datetime($this->row['Product creation date']));
         $this->assertSame($this->row['Show price (0 = No 1 = Yes)'], '1');
         $this->assertSame($this->row['Available online only (0 = No 1 = Yes)'], '0');
         $this->assertSame($this->row['Condition'], 'new');

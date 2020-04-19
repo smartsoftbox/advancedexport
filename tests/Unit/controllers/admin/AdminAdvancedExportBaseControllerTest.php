@@ -41,27 +41,27 @@ class AdminAdvancedExportBaseControllerTest extends testcase
         $this->assertSame('products', $type);
     }
 
-    public function testGetEntity_Should_Return_Orders_Current_Tab_Id_Is_Orders_And_Type_Is_0_And_Ajax_0()
-    {
-        //arrange
-        $adminAdvancedExportBaseController = $this->createPartialMock(self::className, array());
-
-        $moduleTools = $this->createPartialMock(self::moduleTools, array('getValue'));
-        $moduleTools->expects($this->once())
-            ->method('getValue')
-            ->with($this->equalTo('type'))
-            ->willReturn(false);
-
-        $_COOKIE['current_tab_id'] = 'orders';
-
-        $adminAdvancedExportBaseController->setModuleTools($moduleTools);
-
-        //act
-        $type = $adminAdvancedExportBaseController->getEntity();
-
-        //assert
-        $this->assertSame('orders', $type);
-    }
+//    public function testGetEntity_Should_Return_Orders_Current_Tab_Id_Is_Orders_And_Type_Is_0_And_Ajax_0()
+//    {
+//        //arrange
+//        $adminAdvancedExportBaseController = $this->createPartialMock(self::className, array());
+//
+//        $moduleTools = $this->createPartialMock(self::moduleTools, array('getValue'));
+//        $moduleTools->expects($this->once())
+//            ->method('getValue')
+//            ->with($this->equalTo('type'))
+//            ->willReturn(false);
+//
+//        $_COOKIE['current_tab_id'] = 'orders';
+//
+//        $adminAdvancedExportBaseController->setModuleTools($moduleTools);
+//
+//        //act
+//        $type = $adminAdvancedExportBaseController->getEntity();
+//
+//        //assert
+//        $this->assertSame('orders', $type);
+//    }
 
     public function testGetEntity_Should_Return_Orders_Type_Is_Orders_And_Ajax_0()
     {

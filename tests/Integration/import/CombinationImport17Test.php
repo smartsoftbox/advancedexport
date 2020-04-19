@@ -18,7 +18,7 @@ require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.ph
 require_once dirname(__FILE__) . '/../../../tests/Integration/HelperImport.php';
 require_once dirname(__FILE__) . '/../../../controllers/admin/AdminAdvancedExportModelController.php';
 
-class CombinationImportTest extends IntegrationTestCase
+class CombinationImport17Test extends IntegrationTestCase
 {
     private static $dump;
     private $row;
@@ -61,29 +61,30 @@ class CombinationImportTest extends IntegrationTestCase
 
         $this->assertSame($this->row['Product ID'], '1');
 //        $this->assertSame($this->row['Product Reference'], 'demo_1'); // todo check reference
-        $this->assertSame($this->row['Attributes Name'], 'Size:select:0,Color:color:1');
-        $this->assertSame($this->row['Attributes Value'], 'S:0,White:3');
-        $this->assertSame($this->row['Supplier Reference'], '');
+        $this->assertSame($this->row['Attribute (Name:Type:Position)*'], 'Size:select:0,Color:color:1');
+        $this->assertSame($this->row['Value (Value:Position)*'], 'S:0,White:3');
+        $this->assertSame($this->row['Supplier reference'], '');
 //        reference not need if id
 //        $this->assertSame($this->row['Reference'], '1');
-        $this->assertSame($this->row['EAN 13'], ''); // reduction_price
-        $this->assertSame($this->row['Upc'], ''); // reduction_percent
-        $this->assertSame($this->row['Wholesale Price'], '0.000000');
-        $this->assertSame($this->row['Price'], '0.000000');
+        $this->assertSame($this->row['EAN13'], ''); // reduction_price
+        $this->assertSame($this->row['UPC'], ''); // reduction_percent
+        $this->assertSame($this->row['MPN'], ''); // reduction_percent
+        $this->assertSame($this->row['Cost price'], '0.000000');
+        $this->assertSame($this->row['Impact on price'], '0.000000');
         $this->assertSame($this->row['Ecotax'], '0.000000');
         $this->assertSame($this->row['Quantity'], '300');
-        $this->assertSame($this->row['Minimal Quantity'], '1');
-        $this->assertSame($this->row['Low Stock Threshold'], '');
-        $this->assertSame($this->row['Low Stock Alert'], '0');
-        $this->assertSame($this->row['Weight'], '0.000000');
+        $this->assertSame($this->row['Minimal quantity'], '1');
+        $this->assertSame($this->row['Low stock level'], '');
+        $this->assertSame($this->row['Send me an email when the quantity is under this level'], '0');
+        $this->assertSame($this->row['Impact on weight'], '0.000000');
         $this->assertSame($this->row['Default (0 = No 1 = Yes)'], '1');
-        $this->assertSame($this->row['Product available date'], '0000-00-00');
-        $this->assertSame($this->row['Image position'], '2');
-        $this->assertSame($this->row['Images'], 'http://prestashop-git/img/p/2/2.jpg');
-        $this->assertSame($this->row['Image alt'], 'Hummingbird printed t-shirt');
+        $this->assertSame($this->row['Combination availability date'], '0000-00-00');
+        $this->assertSame($this->row['Choose among product images by position (1 2 3...)'], '2');
+        $this->assertSame($this->row['Image URLs (x y z...)'], 'http://prestashop-git/img/p/2/2.jpg');
+        $this->assertSame($this->row['Image alt texts (x y z...)'], 'Hummingbird printed t-shirt');
 //        $this->assertSame($this->row['Shop'], '0000-00-00'); todo check shops id
-        $this->assertSame($this->row['Advanced stock management'], '0');
-        $this->assertSame($this->row['Depends On Stock'], '');
+        $this->assertSame($this->row['Advanced Stock Management'], '0');
+        $this->assertSame($this->row['Depends on stock'], '');
         $this->assertSame($this->row['Warehouse'], '');
     }
 

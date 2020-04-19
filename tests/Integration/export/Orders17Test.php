@@ -83,20 +83,20 @@ class Orders17Test extends IntegrationTestCase
         //array('name' => 'Payment', 'field' => 'payment', 'database' => 'orders',  'alias' => 'o'),
         $this->assertSame($this->row['Payment'], 'Payment by check');
         //array('name' => 'Total paid', 'field' => 'total_paid', 'database' => 'orders',  'alias' => 'o'),
-        $this->assertSame($this->row['Total paid'], '61.800000');
+        $this->assertSame($this->row['Total paid'], '61.8');
         //array('name' => 'Total paid tax incl', 'field' => 'total_paid_tax_incl', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Total paid tax incl'], '61.800000');
+        $this->assertSame($this->row['Total paid tax incl'], '61.8');
         //array('name' => 'Total paid tax excl', 'field' => 'total_paid_tax_excl', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Total paid tax excl'], '61.800000');
+        $this->assertSame($this->row['Total paid tax excl'], '61.8');
         //array('name' => 'Total products with tax', 'field' => 'total_products_wt', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Total products with tax'], '59.800000');
+        $this->assertSame($this->row['Total products with tax'], '59.8');
         //array('name' => 'Total paid real', 'field' => 'total_paid_real', 'database' => 'orders', 'alias' => 'o'),
         //todo check why 0 not 55
         $this->assertSame($this->row['Total paid real'], '0.000000');
         //array('name' => 'Total products', 'field' => 'total_products', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Total products'], '59.800000');
+        $this->assertSame($this->row['Total products'], '59.8');
         //array('name' => 'Total shipping', 'field' => 'total_shipping', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Total shipping'], '2.000000');
+        $this->assertSame($this->row['Total shipping'], '2');
         //array('name' => 'Total wrapping', 'field' => 'total_wrapping', 'database' => 'orders', 'alias' => 'o'),
         $this->assertSame($this->row['Total wrapping'], '0.000000');
         //array('name' => 'Shipping number', 'field' => 'shipping_number', 'database' => 'orders', 'alias' => 'o'),
@@ -110,9 +110,9 @@ class Orders17Test extends IntegrationTestCase
         //array('name' => 'Delivery date', 'field' => 'delivery_date', 'database' => 'orders', 'alias' => 'o'),
         $this->assertSame($this->row['Delivery date'], '0000-00-00 00:00:00');
         //array('name' => 'Date added', 'field' => 'date_add', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Date added'], '2019-10-05 10:40:50');
+        $this->assertTrue($this->check_your_datetime($this->row['Date added']));
         //array('name' => 'Date updated', 'field' => 'date_upd', 'database' => 'orders', 'alias' => 'o'),
-        $this->assertSame($this->row['Date updated'], '2019-10-05 10:40:50');
+        $this->assertTrue($this->check_your_datetime($this->row['Date updated']));
         //array('name' => 'Total discounts', 'field' => 'total_discounts', 'database' => 'orders', 'alias' => 'o'),
         $this->assertSame($this->row['Total discounts'], '0.000000');
         //array('name' => 'Gift message', 'field' => 'gift_message', 'database' => 'orders', 'alias' => 'o'),
@@ -206,7 +206,7 @@ class Orders17Test extends IntegrationTestCase
         //array('name' => 'Product Name', 'field' => 'product_name', 'database' => 'order_detail', 'alias' => 'od'),
         $this->assertSame($this->row['Product Name'], 'Hummingbird printed t-shirt - Color : White, Size : S');
         //array('name' => 'Product Price', 'field' => 'product_price', 'database' => 'order_detail', 'alias' => 'od'),
-        $this->assertSame($this->row['Product Price'], '23.900000');
+        $this->assertSame($this->row['Product Price'], '23.9');
         //array('name' => 'Product Quantity', 'field' => 'product_quantity', 'database' => 'order_detail', 'alias' => 'od'),
         $this->assertSame($this->row['Product Quantity'], '1');
         //array('name' => 'Shop name', 'field' => 'shop_name', 'database' => 'shop', 'as' => true, 'alias' => 'sh'),
@@ -229,13 +229,13 @@ class Orders17Test extends IntegrationTestCase
         //array('name' => 'Product ean13', 'field' => 'product_ean13', 'database' => 'order_detail', 'alias' => 'od'),
         $this->assertSame($this->row['Product ean13'], '');
         //array('name' => 'Product Unit price tax incl', 'field' => 'unit_price_tax_incl', 'database' => 'order_detail', 'alias' => 'od'),
-        $this->assertSame($this->row['Product Unit price tax incl'], '23.900000');
+        $this->assertSame($this->row['Product Unit price tax incl'], '23.9');
         //array('name' => 'Product Unit price tax excl', 'field' => 'unit_price_tax_excl', 'database' => 'order_detail', 'alias' => 'od'),
-        $this->assertSame($this->row['Product Unit price tax excl'], '23.900000');
+        $this->assertSame($this->row['Product Unit price tax excl'], '23.9');
         //array('name' => 'Product Total price tax excl', 'field' => 'total_price_tax_incl', 'database' => 'order_detail', 'alias' => 'od'),
-        $this->assertSame($this->row['Product Total price tax incl'], '27.000000');
+        $this->assertSame($this->row['Product Total price tax incl'], '27');
         //array('name' => 'Product Total price tax excl', 'field' => 'total_price_tax_excl', 'database' => 'order_detail', 'alias' => 'od'),
-        $this->assertSame($this->row['Product Total price tax excl'], '23.900000');
+        $this->assertSame($this->row['Product Total price tax excl'], '23.9');
         //array('name' => 'Product Total shipping price tax excl', 'field' => 'total_shipping_price_tax_incl', 'database' => 'order_detail', 'alias' => 'od'),
         $this->assertSame($this->row['Product Total shipping price tax excl'], '0.000000');
         //array('name' => 'Product ecotax', 'field' => 'ecotax', 'database' => 'order_detail', 'alias' => 'od'),

@@ -14,7 +14,7 @@ use ImportForm;
 use PHPUnit\Framework\TestCase;
 
 require_once dirname(__file__) . '/../../../../advancedexport.php';
-require_once dirname(__file__) . '/../../../../classes/Form/ImportForm.php';
+require_once dirname(__file__) . '/../../../../classes/Data/ImportForm.php';
 
 class ImportFormTest extends testcase
 {

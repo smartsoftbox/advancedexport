@@ -1,6 +1,9 @@
 <?php
 
 namespace LegacyTests\TestCase;
+use Export;
+
+require_once dirname(__FILE__) . '/../../classes/Export/Export.php';
 
 
 class HelperImport
@@ -14,7 +17,9 @@ class HelperImport
             $advancedExportClass = $advancedExport->generateDefaultCsvByType($entity);
         }
         // run export
-        $advancedExport->createExportFile($advancedExportClass);
+        $export = new Export();
+        $export->createExportFile($advancedExportClass);
+
         // read files
         $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' .
             ($entity == 'combination' ? 'products' : $entity) . '/' . $entity . '_import.csv';

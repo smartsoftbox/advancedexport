@@ -62,7 +62,9 @@ class Products17Test extends IntegrationTestCase
 
         $id = $this->createModel('products');
         $aec = new AdvancedExportClass($id);
-        $this->ae->createExportFile($aec);
+
+        $export = new Export();
+        $export->createExportFile($aec);
 
         $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/products/test_products.csv';
         $rows = array_map('str_getcsv', file($url));;
@@ -88,7 +90,7 @@ class Products17Test extends IntegrationTestCase
         //array('name' => 'Quantity', 'field' => 'quantity', 'database' => 'other', 'import' => 24, 'import_name' => 'Quantity', 'import_combination' => 10, 'import_combination_name' => 'Quantity', 'attribute' => true),
         $this->assertSame($this->row['Quantity'], '2400');
         //array('name' => 'Price', 'field' => 'price', 'database' => 'products', 'alias' => 'p', 'import_combination' => 9, 'import_combination_name' => 'Impact on Price', 'attribute' => true),
-        $this->assertSame($this->row['Price'], '23.900000');
+        $this->assertSame($this->row['Price'], '23.9');
         //array('name' => 'Price Catalogue TTC', 'field' => 'price_tax_nodiscount', 'database' => 'other', 'attribute' => true),
         $this->assertSame($this->row['Price Catalogue TTC'], '28.68');
         //array('name' => 'Price Tax', 'field' => 'price_tax', 'database' => 'other', 'import' => 5, 'import_name' => 'Price tax included',  'attribute' => true),

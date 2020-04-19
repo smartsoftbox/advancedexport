@@ -94,7 +94,7 @@ class Combination17Test extends IntegrationTestCase
         //should be 16.51000 but if id currency is 0 default
         //function automatically convert
         //todo-change that for proper value
-        $this->assertSame($this->row['Price'], '23.900000');
+        $this->assertSame($this->row['Price'], '23.9');
         //array('name' => 'Price Catalogue TTC', 'field' => 'price_tax_nodiscount', 'database' => 'other', 'attribute' => true),
         //should be 19.812 but if id currency is 0 default
         //function automatically convert

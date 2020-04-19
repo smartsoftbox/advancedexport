@@ -12,13 +12,13 @@ use Configuration;
 use Tools;
 use Db;
 
-require_once dirname(__FILE__) . '/../../advancedexport.php';
-require_once dirname(__FILE__) . '/../../upgrade/install-4.3.0.php';
-require_once dirname(__FILE__) . '/../../upgrade/install-4.3.7.php';
-require_once dirname(__FILE__) . '/../../upgrade/install-4.3.8.php';
-require_once dirname(__FILE__) . '/../../upgrade/install-4.4.0.php';
-require_once dirname(__FILE__) . '/../../upgrade/UpgradeHelper.php';
-require_once dirname(__FILE__) . '/../../upgrade/Field418.php';
+require_once dirname(__FILE__) . '/../../../advancedexport.php';
+require_once dirname(__FILE__) . '/../../../upgrade/install-4.3.0.php';
+require_once dirname(__FILE__) . '/../../../upgrade/install-4.3.7.php';
+require_once dirname(__FILE__) . '/../../../upgrade/install-4.3.8.php';
+require_once dirname(__FILE__) . '/../../../upgrade/install-4.4.0.php';
+require_once dirname(__FILE__) . '/../../../upgrade/UpgradeHelper.php';
+require_once dirname(__FILE__) . '/../../../upgrade/Field418.php';
 
 class Install_4_4_0Test extends IntegrationTestCase
 {

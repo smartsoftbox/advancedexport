@@ -12,10 +12,14 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use AdvancedExportClass;
+use ProductsFields;
+use OrdersFields;
 
 require_once dirname(__FILE__) . '/../../../advancedexport.php';
-require_once dirname(__FILE__) . '/../../../classes/AdvancedExportClass.php';
+require_once dirname(__FILE__) . '/../../../classes/Model/AdvancedExportClass.php';
 require_once dirname(__FILE__) . '/../../../upgrade/install-4.3.0.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/ProductsFields.php';
+require_once dirname(__FILE__) . '/../../../classes/Field/OrdersFields.php';
 
 class Install430Test extends TestCase
 {
@@ -39,11 +43,11 @@ class Install430Test extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_checkIfModelContainsCustomFields_ShouldReturnTrue_IfOrdersFieldIdIsMoreThen66()
+    public function test_checkIfModelContainsCustomFields_ShouldReturnTrue_IfOrdersFieldIdIsMoreThen86()
     {
         //arrange
         $model = array();
-        $model['fields'] = json_encode(array('fields[]' => array(1, 2, 3, 68)));
+        $model['fields'] = json_encode(array('fields[]' => array(1, 2, 3, 88)));
         $model['type'] = 'orders';
 
         //act
@@ -95,7 +99,7 @@ class Install430Test extends TestCase
         $this->assertTrue($result);
     }
 
-    public function test_checkIfModelContainsCustomFields_ShouldReturnTrue_IfCustomersFieldIdIsMoreThen24()
+    public function test_checkIfModelContainsCustomFields_ShouldReturnTrue_IfCustomersFieldIdIsMoreThen26()
     {
         //arrange
         $model = array();
@@ -126,6 +130,9 @@ class Install430Test extends TestCase
     public function test_changeIdsToFieldNames_ShouldChangeIdToFieldName()
     {
         //arrange
+        $productFields = new ProductsFields();
+        $ordersFields = new OrdersFields();
+
         $model = array();
 
         $model['fields'] = json_encode(array('fields[]' => range(0, 63)));
@@ -135,8 +142,8 @@ class Install430Test extends TestCase
             ->getMock();
 
         $fields = array(
-            'products' => $ae->products,
-            'orders' => $ae->orders
+            'products' => $productFields->getFields(),
+            'orders' => $ordersFields->getFields()
         );
 
         //act
@@ -151,6 +158,9 @@ class Install430Test extends TestCase
     public function test_changeIdsToFieldNames_ShouldNotRemoveOtherOptions()
     {
         //arrange
+        $productFields = new ProductsFields();
+        $ordersFields = new OrdersFields();
+
         $model = array();
 
         $model['fields'] = json_encode(array('fields[]' => range(0, 63), 'out_of_stoc' => '1'));
@@ -160,8 +170,8 @@ class Install430Test extends TestCase
             ->getMock();
 
         $fields = array(
-            'products' => $ae->products,
-            'orders' => $ae->orders
+            'products' => $productFields->getFields(),
+            'orders' => $ordersFields->getFields()
         );
 
         //act
