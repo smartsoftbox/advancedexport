@@ -593,16 +593,10 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
     public function processBulkDelete()
     {
-        $res = false;
-        $export_models = Tools::getValue($this->type . 'exportBox');
-        foreach ($export_models as $export_model) {
-            $ae = new AdvancedExportClass($export_model);
-            $res = $ae->delete();
-        }
+        parent::processBulkDelete();
         $this->redirect_after = Context::getContext()->link->getAdminLink(_ADMIN_AE_, true)
             . '&conf=1';
 
-        return $res;
     }
 
     public function processSave()

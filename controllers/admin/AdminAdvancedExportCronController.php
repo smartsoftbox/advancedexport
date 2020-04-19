@@ -301,30 +301,24 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
     /**
      * @return array|false|mysqli_result|PDOStatement|resource|null
      */
-    private function getAll()
+    public function getAll()
     {
-        $models_export = AdvancedExportClass::getAll();
-        $models_export = array_map(function ($model_export) {
-            $model_export['id_model'] = 'export-' . $model_export['id_advancedexport'];
-            return $model_export;
-        }, $models_export);
-
-        $models_import = AdvancedExportImportClass::getAll();
-        $models_import = array_map(function ($model_import) {
-            $model_import['id_model'] = 'import-' . $model_import['id_advancedexportimport'];
-            return $model_import;
-        }, $models_import);
-
         $grouped = array(
             'export' => array(
                 'name' => 'export',
-                'groups' => $models_export
-            ),
-            'import' => array(
-                'name' => 'import',
-                'groups' => $models_import
-            ),
+                'groups' => $this->getExportModels(),
+            )
         );
+
+        if (_PS_VERSION_ > 1.6) {
+            $grouped = array_merge($grouped, array(
+                'import' => array(
+                    'name' => 'import',
+                    'groups' => $this->getImportModels(),
+                ),
+            ));
+        }
+
         return $grouped;
     }
 
@@ -348,5 +342,33 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
         $fields_values['id_model'] = ($obj->is_import ? 'import-' : 'export-') . $obj->id_model;
 
         return $fields_values;
+    }
+
+    /**
+     * @return array|false|mysqli_result|PDOStatement|resource|null
+     */
+    public function getExportModels()
+    {
+        $models_export = AdvancedExportClass::getAll();
+        $models_export = array_map(function ($model_export) {
+            $model_export['id_model'] = 'export-' . $model_export['id_advancedexport'];
+            return $model_export;
+        }, $models_export);
+
+        return $models_export;
+    }
+
+    /**
+     * @return array|false|mysqli_result|PDOStatement|resource|null
+     */
+    public function getImportModels()
+    {
+        $models_import = AdvancedExportImportClass::getAll();
+        $models_import = array_map(function ($model_import) {
+            $model_import['id_model'] = 'import-' . $model_import['id_advancedexportimport'];
+            return $model_import;
+        }, $models_import);
+
+        return $models_import;
     }
 }

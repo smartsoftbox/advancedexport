@@ -67,13 +67,16 @@ class AdminAdvancedExportController extends AdminAdvancedExportBaseController
     public function initModal()
     {
         parent::initModal();
-        $modal_content = $this->context->smarty->fetch('controllers/import/modal_import_progress.tpl');
-        $this->modals[] = array(
-            'modal_id' => 'importProgress',
-            'modal_class' => 'modal-md',
-            'modal_title' => $this->l('Importing your data...'),
-            'modal_content' => $modal_content,
-        );
+
+        if (_PS_VERSION_ > 1.6) {
+            $modal_content = $this->context->smarty->fetch('controllers/import/modal_import_progress.tpl');
+            $this->modals[] = array(
+                'modal_id' => 'importProgress',
+                'modal_class' => 'modal-md',
+                'modal_title' => $this->l('Importing your data...'),
+                'modal_content' => $modal_content,
+            );
+        }
     }
 
     public function initContent()

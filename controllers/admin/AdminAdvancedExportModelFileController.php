@@ -163,7 +163,8 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
 
     public function processBulkDelete()
     {
-        $files = Tools::getValue($this->type . 'filesBox');
+        $files = Tools::getValue($this->getFileBoxName());
+
         foreach ($files as $file) {
             $this->deleteFile($file);
         }
@@ -234,5 +235,14 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
             _ADMIN_AE_,
             true
         ) . $this->getFilters();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileBoxName()
+    {
+        $filesBox = (_PS_VERSION_ > 1.5 ? $this->type . 'filesBox' : 'filesBox');
+        return $filesBox;
     }
 }
