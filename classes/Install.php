@@ -151,7 +151,7 @@ class Install
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
-    public function saveField($tab, $item, $custom = false)
+    public static function saveField($tab, $item, $custom = false)
     {
         $field = new AdvancedExportFieldClass();
         $field->tab = $tab;
