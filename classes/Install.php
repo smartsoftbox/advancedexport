@@ -22,6 +22,8 @@ require_once 'Field/CustomFields.php';
 
 class Install
 {
+    const PARENT = -1;
+
     public static function run()
     {
         if (!self::createFieldTable()
@@ -56,17 +58,17 @@ class Install
             return false;
         }
 
-        if (!self::installTab(0, _ADMIN_AE_MODEL_, 'Export Model')
-            or !self::installTab(0, _ADMIN_AE_CRON_, 'Cron Tasks')
-            or !self::installTab(0, _ADMIN_AE_MODEL_FIELD_, 'Export Field')
-            or !self::installTab(0, _ADMIN_AE_MODEL_FILE_, 'Export Files')
+        if (!self::installTab(self::PARENT, _ADMIN_AE_MODEL_, 'Export Model')
+            or !self::installTab(self::PARENT, _ADMIN_AE_CRON_, 'Cron Tasks')
+            or !self::installTab(self::PARENT, _ADMIN_AE_MODEL_FIELD_, 'Export Field')
+            or !self::installTab(self::PARENT, _ADMIN_AE_MODEL_FILE_, 'Export Files')
         ) {
             return false;
         }
 
         if (_PS_VERSION_ >= 1.7) {
-            if (!self::installTab(0, _ADMIN_AE_IMPORT_, 'Import Model')
-                or !self::installTab(0, _ADMIN_AE_IMPORT_FILE_, 'Import Files')
+            if (!self::installTab(self::PARENT, _ADMIN_AE_IMPORT_, 'Import Model')
+                or !self::installTab(self::PARENT, _ADMIN_AE_IMPORT_FILE_, 'Import Files')
             ) {
                 return false;
             }

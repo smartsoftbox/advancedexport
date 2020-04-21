@@ -31,6 +31,13 @@ class AdvancedExportFieldClass extends ObjectModel
     public static $definition = array(
         'table' => 'advancedexportfield',
         'primary' => 'id_advancedexportfield',
+        'fields' => array(
+            'tab' => array('type' => self::TYPE_STRING, 'validate' => 'isName', 'required' => true, 'size' => 255),
+            'name' => array('type' => self::TYPE_STRING, 'validate' => 'isName', 'required' => true, 'size' => 255),
+//            'field' => array('type' => self::TYPE_STRING, 'validate' => 'isName', 'size' => 255),
+            'table' => array('type' => self::TYPE_STRING, 'validate' => 'isName', 'required' => true, 'size' => 255),
+            'isCustom' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+        )
     );
 
     public static function getDefaultCombinationImportFields($tab)
