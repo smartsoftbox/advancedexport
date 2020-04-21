@@ -19,7 +19,9 @@
                   {$export_type|escape:'htmlall':'UTF-8'}
               </a>
             {/foreach}
-          <a href="#" id="import" class="list-group-item"><b>Import (PrestaShop 1.7)</b></a>
+            {if $is_17}
+              <a href="#" id="import" class="list-group-item"><b>Import (PrestaShop 1.7)</b></a>
+            {/if}
           <a href="#" id="cron" class="list-group-item"><b>Cron</b></a>
         </div>
       </div>
@@ -32,7 +34,9 @@
               <div alt="model-{$export_type|escape:'html':'UTF-8'}"></div>
             </div>
           {/foreach}
-        <div alt="import" class="tab-content list-group"></div>
+          {if $is_17}
+            <div alt="import" class="tab-content list-group"></div>
+          {/if}
         <div alt="cron" class="tab-content list-group"></div>
         <div id="ajax-loader"><img src="../modules/advancedexport/views/img/ajax-loader.gif"></div>
       </div>
