@@ -89,13 +89,18 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
     public function getEntity()
     {
+        $cookie = $this->moduleTools->getCookieObject();
+
         if ($entity = $this->moduleTools->getValue('type')) {
+            $cookie->current_tab_id = $entity;
+            $cookie->write();
             return $entity;
         }
 
-//        if (isset($cookie->current_tab_id) && $cookie->current_tab_id) {
-//            return $cookie->current_tab_id; // default if no cookie
-//        }
+        //this is for PrestaShop 1.5
+        if (isset($cookie->current_tab_id) && $cookie->current_tab_id) {
+            return $cookie->current_tab_id; // default if no cookie
+        }
 
         return 'products'; // default if no cookie
     }
