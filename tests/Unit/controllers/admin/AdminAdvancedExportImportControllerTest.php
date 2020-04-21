@@ -310,7 +310,7 @@ class AdminAdvancedExportImportControllerTest extends testcase
             ->with(1)
             ->willReturn($aeImport);
 
-        $adminAdvancedExportImportController->expects($this->exactly(10))
+        $adminAdvancedExportImportController->expects($this->exactly(12))
             ->method('addToGet')
             ->withConsecutive(
                 ['id', $aeImport->id],
@@ -322,7 +322,9 @@ class AdminAdvancedExportImportControllerTest extends testcase
                 ['separator', $aeImport->separator],
                 ['multi_value_separator', $aeImport->multi_value_separator],
                 ['skip', $aeImport->skip],
-                ['truncate', $aeImport->truncate]
+                ['truncate', $aeImport->truncate],
+                ['match_ref', $aeImport->match_ref],
+                ['forceIDs', $aeImport->forceIDs]
             );
 
         $adminAdvancedExportImportController->expects($this->once())
