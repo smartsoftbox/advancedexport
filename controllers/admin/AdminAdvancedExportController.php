@@ -91,7 +91,8 @@ class AdminAdvancedExportController extends AdminAdvancedExportBaseController
         $this->context->smarty->assign(array(
             'export_types' => ExportEnum::getExportEntities(),
             'cron_url' => $cron_url,
-            'start' => dirname(__FILE__) . '/../../views/templates/admin/start.tpl'
+            'start' => dirname(__FILE__) . '/../../views/templates/admin/start.tpl',
+            'is_17' => $this->isGreaterOrEqualThenPrestaShopVersion(1.7),
         ));
         $content = $this->context->smarty->fetch(_PS_MODULE_DIR_ .
             'advancedexport/views/templates/admin/index.tpl');

@@ -138,8 +138,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
         }
 
         $this->toolbar_btn['edit'] = array(
-            'href' => $this->context->link->getAdminLink(_ADMIN_AE_MODEL_FILE_) .
-                '&type=' . $this->type,
+            'href' => $this->context->link->getAdminLink(_ADMIN_AE_MODEL_FIELD_) . '&type=' . $this->type,
             'desc' => $this->l('Edit export fields.'),
         );
 

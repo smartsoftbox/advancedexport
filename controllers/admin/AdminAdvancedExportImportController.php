@@ -342,6 +342,25 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                         ),
                     ),
                 ),
+                array(
+                    'type' => $this->switch,
+                    'label' => $this->l('Skip first row'),
+                    'name' => 'skip',
+                    'class' => 't',
+                    'is_bool' => true,
+                    'values' => array(
+                        array(
+                            'id' => 'skip_on',
+                            'value' => 1,
+                            'label' => $this->l('Yes'),
+                        ),
+                        array(
+                            'id' => 'skip_off',
+                            'value' => 0,
+                            'label' => $this->l('No'),
+                        ),
+                    ),
+                ),
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
@@ -1147,6 +1166,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $this->addToGet('multi_value_separator', $aeImport->multi_value_separator);
         $this->addToGet('skip', $aeImport->skip);
         $this->addToGet('truncate', $aeImport->truncate);
+        $this->addToGet('match_ref', $aeImport->match_ref);
+        $this->addToGet('forceIDs', $aeImport->forceIDs);
 
         $this->addMappingToGet($aeImport->mapping);
     }

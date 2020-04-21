@@ -18,8 +18,6 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
 
     public function __construct()
     {
-        $this->type = $this->getEntity();
-
         $this->table = 'advancedexportfield';
         $this->className = 'AdvancedExportFieldClass';
         $this->fields_list = array(
@@ -48,7 +46,10 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
 
         $this->context = Context::getContext();
         $this->context->controller = $this;
-        $this->fields_form = $this->getFormFields();
+
+        parent::__construct();
+
+        $this->type = $this->getEntity();
 
         $this->_where = 'AND a.`tab` = "' . $this->type . '"';
 
@@ -63,8 +64,29 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
                 'confirm' => $this->l('Would you like to delete the selected items?'),
             )
         );
+    }
 
-        parent::__construct();
+    public function processSave()
+    {
+        $id = Tools::getValue('id_advancedexportfield');
+        $field = new AdvancedExportFieldClass($id);
+        $field->tab = Tools::getValue('type');
+        $field->name = Tools::getValue('name');
+        $field->return = Tools::getValue('return');
+        $field->table = 'static';
+        $field->isCustom = 1;
+        if ($id) {
+            $field->field = 'field_' . $field->id;
+            $field->save();
+        } else {
+            $field->save();
+            $field->field = 'field_' . $field->id;
+            $field->save();
+        }
+
+        Tools::redirectAdmin(
+            Context::getContext()->link->getAdminLink(_ADMIN_AE_MODEL_FIELD_, true) . '&conf=3'
+        );
     }
 
     public function initToolbar()
@@ -84,9 +106,9 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
         }
     }
 
-    public function getFormFields()
+    public function renderForm()
     {
-        $result = array(
+        $this->fields_form = array(
             'legend' => array(
                 'title' => $this->l('Settings Form'),
                 'icon' => 'icon-envelope',
@@ -107,23 +129,24 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
                     'required' => true,
                     'desc' => $this->l('Field name'),
                 ),
-                array(
-                    'type' => 'text',
-                    'label' => $this->l('Return value'),
-                    'name' => 'return',
-                    'desc' => $this->l('Return value'),
-                )
             ),
             'submit' => array(
                 'title' => $this->l('Save'),
             )
         );
 
-        return $result;
-    }
+        $id = Tools::getValue('id_advancedexportfield');
+        $field = new AdvancedExportFieldClass($id);
 
-    public function displayAjaxGetExportForm()
-    {
-        echo $this->renderList();
+        if ($field->isCustom or !$id) {
+            $this->fields_form['input'][] = array(
+                'type' => 'text',
+                'label' => $this->l('Return value'),
+                'name' => 'return',
+                'desc' => $this->l('Return value'),
+            );
+        }
+
+        return parent::renderForm();
     }
 }
