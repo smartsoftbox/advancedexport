@@ -101,8 +101,6 @@ jQuery(function ($) {
   } else {
     $('div.list-group a:first').click();
   }
-
-
 });
 
 function showLoader() {
