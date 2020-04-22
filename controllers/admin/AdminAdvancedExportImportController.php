@@ -793,22 +793,16 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
     {
         if (Tools::isSubmit('submitAddadvancedexportimport')) {
             $aeImport = $this->getAdvancedExportImportClass($this->moduleTools->getValue('id_advancedexportimport'));
-//            if (!$aeImport->id) {
-//                Tools::deleteFile($this->getImportFilePathWithFileName(
-//                    $aeImport->id,
-//                    $aeImport->filename,
-//                    true
-//                ));
-//            }
+
             $aeImport = $this->saveImportSettings($aeImport);
             $this->createImportFolder($aeImport->id);
             $this->uploadMappingFile($aeImport);
             $path = $this->getImportPath($aeImport, true);
             $labels = null;
 
-            if($this->isPathExists($path)) {
+            if ($this->isPathExists($path)) {
                 $labels = $this->getLabels($path);
-                if(!count($labels)) {
+                if (!count($labels)) {
                     $this->errors[] = $this->l('It looks like empty file.');
                 }
             }

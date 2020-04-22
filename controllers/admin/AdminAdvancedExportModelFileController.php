@@ -61,7 +61,7 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
         unset($this->toolbar_btn['new']);
     }
 
-    public function displayDownloadLink($token = null, $id, $name = null) //todo check if you need default value
+    public function displayDownloadLink($token, $id, $name = null)
     {
         $tpl = $this->createTemplate('helpers/list/list_action_download.tpl');
 
@@ -75,7 +75,7 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
         return $tpl->fetch();
     }
 
-    public function displayDeleteLink($token = null, $id, $name = null)
+    public function displayDeleteLink($token, $id, $name = null)
     {
         $tpl = $this->createTemplate('helpers/list/list_action_delete.tpl');
 

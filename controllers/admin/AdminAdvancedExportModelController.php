@@ -592,7 +592,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
     public function processBulkDelete()
     {
-        if(_PS_VERSION_ >= 1.6) {
+        if (_PS_VERSION_ >= 1.6) {
             $res = false;
             $export_models = Tools::getValue($this->type . 'exportBox');
             foreach ($export_models as $export_model) {
@@ -654,9 +654,9 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
             $this->generateDefaultCsvForImport($this->type);
 
             $this->redirect_after = Context::getContext()->link->getAdminLink(
-                    _ADMIN_AE_,
-                    true
-                ) . $this->getFilters();
+                _ADMIN_AE_,
+                true
+            ) . $this->getFilters();
         }
     }
 

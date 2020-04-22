@@ -20,4 +20,13 @@ require_once dirname(__FILE__) . '/../../../../classes/ModuleTools.php';
 class AdminAdvancedExportPrestaImportControllerTest extends testcase
 {
     const className = 'AdminAdvancedExportPrestaImportController';
+
+    public function testGetPath()
+    {
+        //arrange
+
+        //act
+
+        //assert
+    }
 }

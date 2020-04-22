@@ -59,7 +59,7 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
     }
 
     // todo check if you need null as default value
-    public function displayDownloadLink($token = null, $id, $name = null)
+    public function displayDownloadLink($token, $id, $name = null)
     {
         $tpl = $this->createTemplate('helpers/list/list_action_download.tpl');
 
@@ -73,7 +73,7 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
         return $tpl->fetch();
     }
 
-    public function displayLogLink($token = null, $id, $name = null)
+    public function displayLogLink($token, $id, $name = null)
     {
         $tpl = $this->createTemplate('helpers/list/list_action_log.tpl');
 
@@ -170,7 +170,7 @@ class AdminAdvancedExportImportFileController extends AdminAdvancedExportBaseCon
         $list = '';
         $id_import = $this->getImportId($this->moduleTools->getValue('id_advancedexportimport'));
         $aeImport = new AdvancedExportImportClass($id_import);
-        if($this->isExistsImportModel($aeImport)) {
+        if ($this->isExistsImportModel($aeImport)) {
             $this->toolbar_title = $this->getToolbarTitle($aeImport);
             list($files, $total) = $this->getFiles($id_import);
 

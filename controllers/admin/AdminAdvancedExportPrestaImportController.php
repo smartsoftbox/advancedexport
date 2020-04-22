@@ -7,6 +7,7 @@
  * @license   Commercial License
  *  International Registered Trademark & Property of Smart Soft
  */
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportBaseController.php';
@@ -44,10 +45,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         return $dest_file;
     }
 
-    public static function getPath($file = '') //todo check if you need this parameter
+    public static function getPath($file = '')
     {
         $id = Tools::getValue('id');
-        $aeImport = new AdvancedExportImportClass($id);
+        // when there is no file specify it only needs path without filename
         $path = _AE_IMPORT_PATH_ . $id . '/' . $file;
         return $path;
     }
