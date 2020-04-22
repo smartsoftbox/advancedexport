@@ -315,10 +315,12 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
             throw new PrestaShopException($this->l('Invalid Directory.'));
         }
 
-        return array_map(
+        $files = array_map(
             'basename',
             glob($dirname . '*.{' . implode(',', $formats) . '}', GLOB_BRACE)
         );
+
+        return array_reverse($files);
     }
 
     /**
