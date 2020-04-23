@@ -995,7 +995,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         return  'mapping-' . $file_name;
     }
 
-    public function displayAjaxImport()
+    public function ajaxProcessImport()
     {
         $id = $this->moduleTools->getValue('id');
         $aeImport = $this->getAdvancedExportImportClass($id);

@@ -155,7 +155,7 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
         if (Tools::isSubmit('delete')) {
             if ($this->deleteFile(Tools::getValue('url'))) {
                 Tools::redirectAdmin(
-                    Context::getContext()->link->getAdminLink(_ADMIN_AE_, true)
+                    Context::getContext()->link->getAdminLink(_ADMIN_AE_, true) . '&conf=1'
                 );
             }
         }

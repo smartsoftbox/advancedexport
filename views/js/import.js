@@ -41,7 +41,7 @@ function importNow(id, offset, limit, total, validateOnly, crossStepsVariables, 
 
   $.ajax({
     type: 'POST',
-    url: ae_controller_import_url + '&ajax=1&import=1&id=' + id + '&offset=' + offset + '&limit=' + limit + (validateOnly ? '&validateOnly=1' : ''),
+    url: ae_controller_import_url + '&ajax=1&action=import&id=' + id + '&offset=' + offset + '&limit=' + limit + (validateOnly ? '&validateOnly=1' : '')+((moreStep>0)?'&moreStep='+moreStep:''),
     dataType: "json",
     data: {
       ajax: 1,

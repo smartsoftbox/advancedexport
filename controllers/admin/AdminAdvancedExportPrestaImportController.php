@@ -12,6 +12,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 require_once dirname(__FILE__) . '/../../controllers/admin/AdminAdvancedExportBaseController.php';
 
+// Report all errors except E_NOTICE
+// This is the default value set in php.ini
+error_reporting(E_ALL & ~E_NOTICE); // todo check if you really need this line
+
 class AdminAdvancedExportPrestaImportController extends AdminImportControllerCore
 {
     protected function excelToCsvFile($filename)
