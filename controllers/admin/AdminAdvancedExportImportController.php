@@ -1092,14 +1092,14 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         }
 
         // Retrieve errors/warnings if any
-        if (count($this->errors) > 0) {
-            $results['errors'] = $this->errors;
+        if (count($aeImportController->errors) > 0) {
+            $results['errors'] = $aeImportController->errors;
         }
-        if (count($this->warnings) > 0) {
-            $results['warnings'] = $this->warnings;
+        if (count($aeImportController->warnings) > 0) {
+            $results['warnings'] = $aeImportController->warnings;
         }
-        if (count($this->informations) > 0) {
-            $results['informations'] = $this->informations;
+        if (count($aeImportController->informations) > 0) {
+            $results['informations'] = $aeImportController->informations;
         }
 
         if (!$validateOnly && (bool)$results['isFinished'] && !isset($results['oneMoreStep']) &&
