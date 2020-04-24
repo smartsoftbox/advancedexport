@@ -71,7 +71,7 @@ class AdvancedExportImportClass extends ObjectModel
             'match_ref' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'forceIDs' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
             'send_email' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
-            'skip' => array('type' => self::TYPE_BOOL, 'validate' => 'isBool'),
+            'skip' => array('type' => self::TYPE_INT, 'validate' => 'isInt'),
             'mapping' => array('type' => self::TYPE_STRING, 'validate' => 'isCleanHtml'),
         )
     );
@@ -126,7 +126,7 @@ class AdvancedExportImportClass extends ObjectModel
         $fields['match_ref'] = (bool)($this->match_ref);
         $fields['forceIDs'] = (bool)($this->forceIDs);
         $fields['send_email'] = (bool)($this->send_email);
-        $fields['skip'] = (bool)($this->skip);
+        $fields['skip'] = $this->skip;
         $fields['mapping'] = (string)($this->mapping);
 
         return $fields;

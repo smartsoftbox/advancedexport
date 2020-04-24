@@ -362,23 +362,14 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                     ),
                 ),
                 array(
-                    'type' => $this->switch,
-                    'label' => $this->l('Skip first row'),
+                    'type' => 'text',
+                    'label' => $this->l('Skip rows'),
                     'name' => 'skip',
-                    'class' => 't',
-                    'is_bool' => true,
-                    'values' => array(
-                        array(
-                            'id' => 'skip_on',
-                            'value' => 1,
-                            'label' => $this->l('Yes'),
-                        ),
-                        array(
-                            'id' => 'skip_off',
-                            'value' => 0,
-                            'label' => $this->l('No'),
-                        ),
-                    ),
+                    'required' => true,
+                    'maxlength' => 1,
+                    'class' => 'input fixed-width-xs',
+                    'default_value' => 1,
+                    'desc' => $this->l('Number of first rows to skip.'),
                 ),
             ),
             'submit' => array(
@@ -839,10 +830,16 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         }
     }
 
+    /**
+     * @param $aeImport
+     * @return mixed
+     */
     public function saveImportSettings($aeImport)
     {
         $aeImport->copyFromPost();
 
+        $aeImport->separator =
+            ($aeImport->id_advancedexport && $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
         $aeImport->file_token = ($aeImport->file_token ? $this->generateFileToken() : $aeImport->file_token);
         $aeImport->save();
 

@@ -19,6 +19,9 @@ require_once dirname(__FILE__) . '/../../../../controllers/admin/AdminAdvancedEx
 require_once dirname(__FILE__) . '/../../../../classes/Model/AdvancedExportImportClass.php';
 require_once dirname(__FILE__) . '/../../../../classes/Model/AdvancedExportClass.php';
 
+/**
+ * @covers AdminAdvancedExportImportController
+ */
 class AdminAdvancedExportImportControllerTest extends testcase
 {
     const className = 'AdminAdvancedExportImportController';
@@ -405,7 +408,7 @@ class AdminAdvancedExportImportControllerTest extends testcase
             );
 
         //act
-        $adminAdvancedExportImportController->displayAjaxImport();
+        $adminAdvancedExportImportController->ajaxProcessImport();
     }
 
     public function testIsImportFromIsExportModelAndIdIsNotEmpty_Should_Return_True_When_Import_From_Is_0_And_Id_Advancedexport_Is_Not_Empty()
@@ -579,5 +582,53 @@ class AdminAdvancedExportImportControllerTest extends testcase
 
         //assert
         $this->assertSame(40, $length);
+    }
+
+    /**
+     * @test
+     * @covers AdminAdvancedExportImportController::saveImportSettings
+     */
+    public function AddDefaultSeparatorIfNotCsvFormatAndExportModelChosen()
+    {
+        //arrange
+        $adminAdvancedExportImportController =
+            $this->createPartialMock(self::className, array());
+
+        $aeImport = $this->createPartialMock(self::aeImportClassName, array(
+            'copyFromPost', 'save'
+        ));
+        $aeImport->id_advancedexport = 1;
+        $aeImport->file_format = 'xlsx';
+        $aeImport->separator = ',';
+
+        //act
+        $aeImport = $adminAdvancedExportImportController->saveImportSettings($aeImport);
+
+        //assert
+        $this->assertSame(';', $aeImport->separator);
+    }
+
+    /**
+     * @test
+     * @covers AdminAdvancedExportImportController::saveImportSettings
+     */
+    public function AddUserSeparatorIfCsvFormatChosen()
+    {
+        //arrange
+        $adminAdvancedExportImportController =
+            $this->createPartialMock(self::className, array());
+
+        $aeImport = $this->createPartialMock(self::aeImportClassName, array(
+            'copyFromPost', 'save'
+        ));
+        $aeImport->id_advancedexport = 0;
+        $aeImport->file_format = 'csv';
+        $aeImport->separator = ',';
+
+        //act
+        $aeImport = $adminAdvancedExportImportController->saveImportSettings($aeImport);
+
+        //assert
+        $this->assertSame(',', $aeImport->separator);
     }
 }

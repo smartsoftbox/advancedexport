@@ -275,7 +275,7 @@ class Install
             `match_ref` BOOL NOT NULL DEFAULT 0,
             `forceIDs` BOOL NOT NULL DEFAULT 0,
             `send_email` BOOL NOT NULL DEFAULT 0,
-            `skip` BOOL NOT NULL DEFAULT 0,
+            `skip` int(10) NOT NULL DEFAULT 0,
             `mapping` TEXT NOT NULL,
 			PRIMARY KEY  (`id_advancedexportimport`)
 			) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8';
