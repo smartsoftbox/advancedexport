@@ -568,7 +568,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $helper->back_url = $back;
         $helper->currentIndex = self::$currentIndex;
         $helper->token = $this->token;
-        $helper->table = $this->table;
+        $helper->table = $this->table . 'mapping';
         $helper->identifier = $this->identifier;
         $helper->id = $aeImport->id;
         $helper->toolbar_scroll = false;
@@ -580,7 +580,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $helper->title = $this->trans('Add a new feature value', array(), 'Admin.Catalog.Feature');
         $helper->submit_action = "saveMapping";
         $helper->show_cancel_button = true;
-        $this->content .= $helper->generateForm($this->fields_form);
+        return $helper->generateForm(array($this->fields_form));
     }
 
     /**
@@ -590,27 +590,28 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      */
     public function getMappingForm($labels)
     {
-        $fields_form = null;
-        $fields_form[0]['form'] = array(
-            'legend' => array(
-                'title' => $this->l('Mapping Form'),
-                'icon' => 'icon-envelope',
-            ),
-            'input' => array(
-                array(
-                    'type' => 'html',
-                    'name' => 'html_data',
-                    'html_content' => '<button type="button" class="btn btn-default" id="auto-select">' .
-                        $this->l('Auto select') . '</button>'
+        $fields_form = array(
+            'form' => array(
+                'legend' => array(
+                    'title' => $this->l('Mapping Form'),
+                    'icon' => 'icon-envelope',
+                ),
+                'input' => array(
+                    array(
+                        'type' => 'html',
+                        'name' => 'html_data',
+                        'html_content' => '<button type="button" class="btn btn-default" id="auto-select">' .
+                            $this->l('Auto select') . '</button>'
+                    )
+                ),
+                'submit' => array(
+                    'title' => $this->l('Save'),
                 )
-            ),
-            'submit' => array(
-                'title' => $this->l('Save'),
             )
         );
 
-        $fields_form[0]['form']['input'] = array_merge(
-            $fields_form[0]['form']['input'],
+        $fields_form['form']['input'] = array_merge(
+            $fields_form['form']['input'],
             $this->getLabelFields($labels)
         );
 
@@ -734,7 +735,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 $cnt++;
             }
         } catch (Exception $e) {
-            die($e);
+            $this->errors[] = $this->l('There was a problem when read your file.');
         }
     }
 
@@ -780,30 +781,79 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         ));
     }
 
-    public function processSave()
+    public function displayAjaxSubmitImport()
     {
-        if (Tools::isSubmit('submitAddadvancedexportimport')) {
-            $aeImport = $this->getAdvancedExportImportClass($this->moduleTools->getValue('id_advancedexportimport'));
+//        $this->validateRules();
 
-            $aeImport = $this->saveImportSettings($aeImport);
-            $this->createImportFolder($aeImport->id);
-            $this->uploadMappingFile($aeImport);
-            $path = $this->getImportPath($aeImport, true);
-            $labels = null;
+        $this->submitImportValidation();
 
-            if ($this->isPathExists($path)) {
-                $labels = $this->getLabels($path);
-                if (!count($labels)) {
-                    $this->errors[] = $this->l('It looks like empty file.');
-                }
-            }
+        if (!empty($this->errors)) {
+            echo json_encode(array('errors' => $this->errors));
+        } else {
+            list($aeImport, $labels) = $this->saveImport();
 
             if (!empty($this->errors)) {
                 $this->display = 'edit';
+                echo json_encode(array('errors' => $this->errors));
             } else {
                 // if we have errors, we stay on the form instead of going back to the list
-                $this->initFormMapping($labels, $aeImport);
+                echo json_encode(array('id' => $aeImport->id, 'form' => $this->initFormMapping($labels, $aeImport)));
             }
+        }
+    }
+
+    public function submitImportValidation()
+    {
+        if (!Tools::getValue('name')) {
+            $this->errors[] = $this->l('Please enter name.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 0 && !Tools::getValue('id_advancedexport')) {
+            $this->errors[] = $this->l('Please select model export.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 1 && empty($_FILES['upload_file']['tmp_name'])) {
+            $this->errors[] = $this->l('Please select upload file.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 2 && !Tools::getValue('url')) {
+            $this->errors[] = $this->l('Please select file url.');
+        }
+
+        if ((int)Tools::getValue('import_from') !== 0 && !Tools::getValue('separator')) {
+            $this->errors[] = $this->l('Please enter separator.');
+        }
+
+        if ((int)Tools::getValue('import_from') !== 0 && !Tools::getValue('multi_value_separator')) {
+            $this->errors[] = $this->l('Please enter multi separator.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('filename') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('filename')) {
+            $this->errors[] = $this->l('Please enter filename.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('hostname') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('hostname')) {
+            $this->errors[] = $this->l('Please enter hostname.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('username') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('username')) {
+            $this->errors[] = $this->l('Please enter username.');
+        }
+
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('username') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('username')) {
+            $this->errors[] = $this->l('Please enter password.');
+        }
+
+        if (!Validate::isInt(Tools::getValue('skip'))) {
+            $this->errors[] = $this->l('Please enter skip.');
+        }
+
+        if (!Validate::isInt(Tools::getValue('port'))) {
+            $this->errors[] = $this->l('Please enter valid port.');
         }
     }
 
@@ -821,13 +871,13 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 $this->redirect_after = Context::getContext()->link->getAdminLink(
                     _ADMIN_AE_,
                     true
-                );
+                ) . '&conf=3';
             }
         }
 
-        if (Tools::getValue('conf')) {
-            $this->display = 'mapping';
-        }
+//        if (Tools::getValue('conf')) {
+//            $this->display = 'mapping';
+//        }
     }
 
     /**
@@ -933,6 +983,30 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $aeImport->save();
 
         return $aeImport;
+    }
+
+    /**
+     * @return array
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
+     */
+    public function saveImport()
+    {
+        $aeImport = $this->getAdvancedExportImportClass($this->moduleTools->getValue('id_advancedexportimport'));
+
+        $aeImport = $this->saveImportSettings($aeImport);
+        $this->createImportFolder($aeImport->id);
+        $this->uploadMappingFile($aeImport);
+        $path = $this->getImportPath($aeImport, true);
+        $labels = null;
+
+        if ($this->isPathExists($path)) {
+            $labels = $this->getLabels($path);
+            if (empty($labels)) {
+                $this->errors[] = $this->l('It looks like empty file.');
+            }
+        }
+        return array($aeImport, $labels);
     }
 
     private function getUploadFilePath($aeImport, $mapping = false)

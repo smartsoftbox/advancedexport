@@ -105,6 +105,24 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
         }
     }
 
+    public function processBulkEnableSelection()
+    {
+        if (parent::processBulkEnableSelection()) {
+            Tools::redirectAdmin(
+                Context::getContext()->link->getAdminLink(_ADMIN_AE_, true) . '&conf=4'
+            );
+        }
+    }
+
+    public function processBulkDisableSelection()
+    {
+        if (parent::processBulkDisableSelection()) {
+            Tools::redirectAdmin(
+                Context::getContext()->link->getAdminLink(_ADMIN_AE_, true) . '&conf=4'
+            );
+        }
+    }
+
     public function processDelete()
     {
         if (parent::processDelete()) {

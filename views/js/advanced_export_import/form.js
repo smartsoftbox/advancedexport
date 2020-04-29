@@ -74,6 +74,59 @@ jQuery(function ($) {
       }
     });
   });
+
+  $("#advancedexportimport_form").submit(function(e) {
+    e.preventDefault();
+    var form = $(this);
+    var url = form.attr('action') + '&ajax=1&action=submitImport';
+    $("#advancedexportimport_form_submit_btn").html(function(i,t){
+      return t.replace('Save', 'Please wait ...')
+    });
+
+    $.ajax({
+      type: "POST",
+      url: url,
+      dataType: "json",
+      data: form.serialize(),
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        jAlert("TECHNICAL ERROR: \n\nDetails:\nError thrown: " + XMLHttpRequest + "\n" + 'Text status: ' + textStatus);
+      },
+      success: function(data)
+      {
+        if (!data.errors)
+        {
+          $('div.alert').remove();
+          $("#advancedexportimport_form").after(data.form);
+          $("#id_advancedexportimport").val(data.id);
+          $("#advancedexportimport_form").hide();
+          $("#advancedexportimportmapping_form_cancel_btn").removeAttr('onclick');
+        }
+        else
+        {
+          $('div.alert').remove();
+          errors_str = '<div class="alert alert-danger">';
+          for (error in data.errors)
+          {
+            errors_str += data.errors[error]+'<br/>';
+            $('#'+error).closest('.form-group').addClass('has-error');
+          }
+          errors_str += '</div>';
+          $("#advancedexportimport_form").before(errors_str);
+          errors_str += '</div>';
+        }
+
+        $("#advancedexportimport_form_submit_btn").html(function(i,t){
+          return t.replace('Please wait ...', 'Save')
+        });
+      }
+    });
+  });
+
+  $(document.body).on('click', '#advancedexportimportmapping_form_cancel_btn', function(e) {
+    e.preventDefault();
+    $("#advancedexportimport_form").show();
+    $("#advancedexportimportmapping_form").remove();
+  });
 });
 
 
