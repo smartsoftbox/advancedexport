@@ -34,10 +34,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             }
 
             if (!is_file($dest_file)) {
+                // validator error function exists
                 $reader_excel = IOFactory::createReaderForFile($csv_folder . $filename);
                 $reader_excel->setReadDataOnly(true);
                 $excel_file = $reader_excel->load($csv_folder . $filename);
-
+                // validator error function exists
                 $csv_writer = IOFactory::createWriter($excel_file, 'Csv');
 
                 $csv_writer->setSheetIndex(0);
