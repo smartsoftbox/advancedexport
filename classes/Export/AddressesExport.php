@@ -21,7 +21,7 @@ class AddressesExport extends ExportInterface
 				LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` cl 
 				ON ( a.`id_country` = cl.`id_country` AND cl.`id_lang` = ' . $this->ae->id_lang . ')
 				LEFT JOIN `' . _DB_PREFIX_ . 'customer` cu ON ( a.`id_customer` = cu.`id_customer`)
-				' . CustomFields::addressesQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::addressesQuery() : '') . '
 				WHERE 1' . (isset($this->sorted_fields['active']) && $this->sorted_fields['active'] ? ' AND a.`active` = 1' : '') .
             (isset($this->ae->only_new) && $this->ae->only_new ? ' AND a.`id` > ' . $this->ae->last_exported_id : '') .
             ($this->ae->only_new == false && $this->ae->start_id ? ' AND a.`id` >= ' . $this->ae->start_id : '') .

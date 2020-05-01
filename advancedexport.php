@@ -24,8 +24,6 @@ require_once 'classes/Group/SupplierGroup.php';
 require_once 'classes/FTP/SFTP.php';
 require_once 'classes/FTP/FTP.php';
 
-require_once 'classes/Field/CustomFields.php';
-
 require_once 'classes/Model/AdvancedExportClass.php';
 require_once 'classes/Model/AdvancedExportCronClass.php';
 require_once 'classes/Model/AdvancedExportFieldClass.php';

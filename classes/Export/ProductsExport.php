@@ -9,7 +9,6 @@
  */
 
 include_once 'ExportInterface.php';
-require_once dirname(__FILE__) . '/../Field/CustomFields.php';
 
 class ProductsExport extends ExportInterface
 {
@@ -26,7 +25,7 @@ class ProductsExport extends ExportInterface
             LEFT JOIN `' . _DB_PREFIX_ . 'product_download` pd ON (p.`id_product` = pd.`id_product`)
             LEFT JOIN `' . _DB_PREFIX_ . 'stock_available` sa ON (sa.`id_product` = p.`id_product` AND sa
             .`id_product_attribute` = 0)
-            ' . CustomFields::productsQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::productsQuery() : '') . '
 			LEFT JOIN ( SELECT s1.`id_product`, s1.`from`, s1.`to`, s1.`id_cart`,
 				IF(s1.`reduction_type` = "percentage", s1.`reduction`, "") as discount_percent,
 				IF(s1.`reduction_type` = "amount", s1.`reduction`, "") as discount_amount

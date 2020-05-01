@@ -40,7 +40,7 @@ class OrdersExport extends ExportInterface
                 LEFT JOIN `' . _DB_PREFIX_ . 'tax` t ON ( odt.`id_tax` = t.`id_tax` )
                 LEFT JOIN `' . _DB_PREFIX_ . 'order_state_lang` osl 
                 ON ( o.`current_state` = osl.`id_order_state` AND osl.`id_lang` = ' . $this->ae->id_lang . ')
-                ' . CustomFields::ordersQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::ordersQuery() : '') . '
                 WHERE 1' .
             (isset($this->ae->only_new) && $this->ae->only_new ?
                 ' AND o.`id_order` > ' . $this->ae->last_exported_id : '') .

@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__) . '/../Field/CustomFields.php';
-
 class CustomersExport extends ExportInterface
 {
     public function getEntityData()
@@ -21,7 +19,7 @@ class CustomersExport extends ExportInterface
                 LEFT JOIN `' . _DB_PREFIX_ . 'state` s ON ( a.`id_state` = s.`id_state` )
                 LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` co 
                 ON ( co.`id_country` = a.`id_country` AND co.`id_lang` = ' . $this->ae->id_lang . ')
-                ' . CustomFields::customersQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::customersQuery() : '') . '
 				WHERE 1' . Shop::addSqlRestriction(Shop::SHARE_CUSTOMER) .
             (isset($this->sorted_fields['active']) && $this->sorted_fields['active'] ?
                 ' AND c.`active` = 1' : '') .

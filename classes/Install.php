@@ -18,7 +18,6 @@ require_once 'Field/NewslettersFields.php';
 require_once 'Field/OrdersFields.php';
 require_once 'Field/ProductsFields.php';
 require_once 'Field/SuppliersFields.php';
-require_once 'Field/CustomFields.php';
 
 class Install
 {
@@ -295,17 +294,23 @@ class Install
 
     public static function installCustomFields()
     {
-        $customFields = new CustomFields();
-        $export_types = ExportEnum::getExportEntities();
+        $dir = dirname(__FILE__).'Field/CustomFields.php';
 
-        foreach ($export_types as $tab) {
-            if (empty($export_types->$tab)) {
-                foreach ($customFields->$tab as $field) {
-                    if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
+        if(file_exists($dir)) {
+            require_once ($dir);
+
+            $customFields = new CustomFields();
+            $export_types = ExportEnum::getExportEntities();
+
+            foreach ($export_types as $tab) {
+                if (empty($export_types->$tab)) {
+                    foreach ($customFields->$tab as $field) {
+                        if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
 //                    Db::getInstance()->execute("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield`
 //                    WHERE `field` = '" . pSQL($field['field']) . "'");
 
-                        self::saveField($tab, $field, true);
+                            self::saveField($tab, $field, true);
+                        }
                     }
                 }
             }

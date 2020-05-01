@@ -17,6 +17,7 @@ abstract class ExportInterface
     protected $context;
     protected $link;
     protected $moduleTools;
+    protected $isCustomFieldsExists;
 
     abstract public function getEntityData();
 
@@ -27,10 +28,22 @@ abstract class ExportInterface
         $this->context = Context::getContext();
         $this->link = new Link();
         $this->moduleTools = new ModuleTools();
+        $this->isCustomFieldsExists = $this->isCustomFieldsExist();
     }
 
     public function getModuleTools()
     {
         return $this->moduleTools;
+    }
+
+    private function isCustomFieldsExist()
+    {
+        $dir = dirname(__FILE__).'/../Field/CustomFields.php';
+        $isCustomFieldsExists = file_exists($dir);
+        if ($isCustomFieldsExists) {
+            require_once ($dir);
+        }
+
+        return $isCustomFieldsExists;
     }
 }

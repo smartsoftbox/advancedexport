@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__) . '/../Field/CustomFields.php';
-
 class CategoriesExport extends ExportInterface
 {
     public function getEntityData()
@@ -20,7 +18,7 @@ class CategoriesExport extends ExportInterface
 			' . Shop::addSqlAssociation('category', 'c') . '
 			LEFT JOIN `' . _DB_PREFIX_ . 'category_lang` cl 
 			ON c.`id_category` = cl.`id_category`' . Shop::addSqlRestrictionOnLang('cl') . '
-			' . CustomFields::categoriesQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::categoriesQuery() : '') . '
 			WHERE 1' . ($this->ae->id_lang ? ' AND `id_lang` = ' . (int)$this->ae->id_lang : '') .
             (isset($this->ae->only_new) && $this->ae->only_new ?
                 ' AND c.`id_category` > ' . $this->ae->last_exported_id : '') .

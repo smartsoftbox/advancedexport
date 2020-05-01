@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__) . '/../Field/CustomFields.php';
-
 class ManufacturersExport extends ExportInterface
 {
     public function getEntityData()
@@ -20,7 +18,7 @@ class ManufacturersExport extends ExportInterface
             ' . Shop::addSqlAssociation('manufacturer', 'm') . '
             INNER JOIN `' . _DB_PREFIX_ . 'manufacturer_lang` ml 
             ON (m.`id_manufacturer` = ml.`id_manufacturer` AND ml.`id_lang` = ' . (int)$this->ae->id_lang . ')' . '
-            ' . CustomFields::manufacturersQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::manufacturersQuery() : '') . '
             WHERE 1' . (isset($this->sorted_fields['active']) && $this->sorted_fields['active'] ?
                 ' AND m.`active` = 1' : '') .
             (isset($this->ae->only_new) && $this->ae->only_new ?

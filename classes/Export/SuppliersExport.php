@@ -8,8 +8,6 @@
  *  International Registered Trademark & Property of Smart Soft
  */
 
-require_once dirname(__FILE__) . '/../Field/CustomFields.php';
-
 class SuppliersExport extends ExportInterface
 {
     public function getEntityData()
@@ -20,7 +18,7 @@ class SuppliersExport extends ExportInterface
             ' . Shop::addSqlAssociation('supplier', 's') . '
 		    INNER JOIN `' . _DB_PREFIX_ . 'supplier_lang` sl 
 		    ON (s.`id_supplier` = sl.`id_supplier` AND sl.`id_lang` = ' . (int)$this->ae->id_lang . ')' . '
-		    ' . CustomFields::suppliersQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::suppliersQuery() : '') . '
             WHERE 1' . (isset($this->sorted_fields['active']) && $this->sorted_fields['active'] ?
                 ' AND s.`active` = 1' : '') .
             (isset($this->ae->only_new) && $this->ae->only_new ?

@@ -15,7 +15,7 @@ class NewslettersExport extends ExportInterface
         $sql = 'SELECT n.`id` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .
                 implode(', ', $this->sorted_fields['sqlfields'])) . '
 				FROM ' . _DB_PREFIX_ . 'emailsubscription as n
-				' . CustomFields::newslettersQuery() . '
+				' . ($this->isCustomFieldsExists ? CustomFields::newslettersQuery() : '') . '
 				WHERE 1' . (isset($this->sorted_fields['active']) && $this->sorted_fields['active'] ?
                 ' AND n.`active` = 1' : '') .
             (isset($this->ae->only_new) && $this->ae->only_new ?
