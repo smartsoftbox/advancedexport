@@ -7,7 +7,7 @@
 
 <div class="alert alert-info" role="alert">
   <p class="alert-text">
-    <p style="color:#CC0000;font-weight:bold">Please always perform a full backup of your files and database before starting any update.</p>
+    <p style="font-size:15px;color:#CC0000;font-weight:bold">Please always perform a full backup of your store before import.</p>
     You can read information on import at:
     <a href="http://doc.prestashop.com/display/PS17/Import" class="_blank" target="_blank">
       http://doc.prestashop.com/display/PS17/Import

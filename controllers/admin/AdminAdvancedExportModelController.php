@@ -318,10 +318,6 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                     'label' => $this->l('Round values'),
                     'name' => 'decimal_round',
                     'options' => array(
-                        'default' => array(
-                            'label' => $this->l('default'),
-                            'value' => '-1',
-                        ),
                         'query' => array(
                             array(
                                 'value' => '0',
@@ -351,6 +347,10 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                                 'value' => '6',
                                 'label' => '6',
                             ),
+                        ),
+                        'default' => array(
+                            'label' => $this->l('default'),
+                            'value' => -1,
                         ),
                         'id' => 'value',
                         'name' => 'label',
@@ -410,7 +410,6 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 array(
                     'type' => 'free',
                     'name' => 'test_connection',
-
                 ),
                 array(
                     'type' => $this->switch,
@@ -564,6 +563,11 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
             $this->selected_cat = $fields_specific['categories'];
         }
 
+        //fix for select default value
+        if ($this->fields_value['decimal_round'] === false) {
+            $this->fields_value['decimal_round'] = -1;
+        }
+
         return $this->fields_value;
     }
 
@@ -611,8 +615,8 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
     public function processSave()
     {
-        $fields = Tools::getValue('fields[]');
-        if (!empty($fields[0]) or $fields[0] === '{}') {
+        $fields = Tools::getValue('fields');
+        if (empty($fields) or $fields[0] === '{}') {
             $this->errors[] = $this->l('You must choose at least one field.');
         }
         if (!Validate::isGenericName(Tools::getValue('name')) || Tools::getValue('name') == '') {
