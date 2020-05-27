@@ -41,7 +41,7 @@ abstract class ExportInterface
         $dir = dirname(__FILE__).'/../Field/CustomFields.php';
         $isCustomFieldsExists = file_exists($dir);
         if ($isCustomFieldsExists) {
-            require_once ($dir);
+            require_once($dir);
         }
 
         return $isCustomFieldsExists;

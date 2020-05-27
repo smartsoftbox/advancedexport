@@ -296,8 +296,8 @@ class Install
     {
         $dir = dirname(__FILE__).'Field/CustomFields.php';
 
-        if(file_exists($dir)) {
-            require_once ($dir);
+        if (file_exists($dir)) {
+            require_once($dir);
 
             $customFields = new CustomFields();
             $export_types = ExportEnum::getExportEntities();
@@ -305,7 +305,8 @@ class Install
             foreach ($export_types as $tab) {
                 if (empty($export_types->$tab)) {
                     foreach ($customFields->$tab as $field) {
-                        if (!isset($field['version']) || isset($field['version']) && _PS_VERSION_ >= $field['version']) {
+                        if (!isset($field['version']) || isset($field['version']) &&
+                            _PS_VERSION_ >= $field['version']) {
 //                    Db::getInstance()->execute("DELETE  FROM `" . _DB_PREFIX_ . "advancedexportfield`
 //                    WHERE `field` = '" . pSQL($field['field']) . "'");
 
