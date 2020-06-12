@@ -16,7 +16,6 @@ include_once 'ExportInterface.php';
 
 class Export
 {
-    const CSV_PATH = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/';
     private $hasAttr;
     private $lastElement;
     private $rowsNumber;
@@ -307,7 +306,7 @@ class Export
             $filename = $filename . '.' . $file_format;
         }
 
-        $url = self::CSV_PATH . $type;
+        $url = _PS_ROOT_DIR_ . '/modules/advancedexport/csv/' . $type;
         if (!is_dir($url)) {
             mkdir($url);
         }
