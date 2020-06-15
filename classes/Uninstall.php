@@ -26,6 +26,7 @@ class Uninstall
                 or !self::uninstallTab(_ADMIN_AE_CRON_)
                 or !self::uninstallTab(_ADMIN_AE_MODEL_FIELD_)
                 or !self::uninstallTab(_ADMIN_AE_MODEL_FILE_)
+                or !self::uninstallTab(_ADMIN_AE_IMPORT_)
                 or !self::uninstallTab(_ADMIN_AE_IMPORT_FILE_)
             ) {
                 return false;

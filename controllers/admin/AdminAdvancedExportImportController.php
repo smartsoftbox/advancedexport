@@ -1140,7 +1140,10 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      * @param int $limit
      * @param bool $validateOnly
      * @param int $moreStep
-     * @return array
+     * @param $id
+     * @return void
+     * @throws PrestaShopDatabaseException
+     * @throws PrestaShopException
      */
     public function runImport($offset, $limit, $validateOnly, $moreStep, $id)
     {

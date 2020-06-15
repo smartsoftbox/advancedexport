@@ -74,41 +74,40 @@ class Export
         $this->saveProgressToFile(0, true);
     }
 
-    public function getLabelsAndFields($type, $fields)
+    public function getLabelsAndFields($type, $specific_settings)
     {
-        $sorted_fields = array();
         $added = false; // for orders add must have fields to export all
 
-        if ($fields) {
+        if ($specific_settings) {
             set_time_limit(0);
             $allFields = AdvancedExportFieldClass::getAllFields($type);
 
-            foreach ($fields['fields[]'] as $field => $name) {
-                $this->getAllFieldsAndLabels($allFields, $field, $name, $sorted_fields);
-                $this->sortOtherFields($allFields, $field, $sorted_fields);
-                $this->sortStaticFields($allFields, $field, $sorted_fields);
-                $this->sortSqlFields($allFields, $field, $sorted_fields);
-                $this->sortAttributes($allFields, $field, $sorted_fields);
-                $this->addRequiredOrderDetailFields($allFields, $field, $sorted_fields, $added);
+            foreach ($specific_settings['fields[]'] as $field => $name) {
+                $this->getAllFieldsAndLabels($allFields, $field, $name, $specific_settings);
+                $this->sortOtherFields($allFields, $field, $specific_settings);
+                $this->sortStaticFields($allFields, $field, $specific_settings);
+                $this->sortSqlFields($allFields, $field, $specific_settings);
+                $this->sortAttributes($allFields, $field, $specific_settings);
+                $this->addRequiredOrderDetailFields($allFields, $field, $specific_settings, $added);
             }
         }
 
-        return $sorted_fields;
+        return $specific_settings;
     }
 
     /**
      * @param array $allFields
      * @param $field
-     * @param array $this ->sorted_fields
+     * @param array $specific_settings
      * @return array
      */
-    public function sortOtherFields(array $allFields, $field, array &$sorted_fields)
+    public function sortOtherFields(array $allFields, $field, array &$specific_settings)
     {
         if ($this->ifOtherAndAttributesFalse($allFields, $field)) {
-            $sorted_fields['otherfields'][$allFields[$field]['field']]['field'] = $allFields[$field]['field'];
-            $sorted_fields['otherfields'][$allFields[$field]['field']]['isCustom'] = $allFields[$field]['isCustom'];
+            $specific_settings['otherfields'][$allFields[$field]['field']]['field'] = $allFields[$field]['field'];
+            $specific_settings['otherfields'][$allFields[$field]['field']]['isCustom'] = $allFields[$field]['isCustom'];
         }
-        return $sorted_fields;
+        return $specific_settings;
     }
 
     private function ifOtherAndAttributesFalse($allFields, $field)
@@ -119,54 +118,54 @@ class Export
     /**
      * @param array $allFields
      * @param $field
-     * @param array $sorted_fields
+     * @param array $specific_settings
      * @return array
      */
-    public function sortStaticFields(array $allFields, $field, array &$sorted_fields)
+    public function sortStaticFields(array $allFields, $field, array &$specific_settings)
     {
         if ($allFields[$field]['table'] == 'static') {
-            $sorted_fields['static'][$allFields[$field]['field']] = $allFields[$field]['return'];
+            $specific_settings['static'][$allFields[$field]['field']] = $allFields[$field]['return'];
         }
-        return $sorted_fields;
+        return $specific_settings;
     }
 
     /**
      * @param array $allFields
      * @param $field
-     * @param array $sorted_fields
+     * @param array $specific_settings
      * @param $added
      */
-    public function addRequiredOrderDetailFields(array $allFields, $field, array &$sorted_fields, &$added)
+    public function addRequiredOrderDetailFields(array $allFields, $field, array &$specific_settings, &$added)
     {
         if ($allFields[$field]['table'] === 'order_detail' && !$added) {
             $added = true;
-            $sorted_fields['order_detail'] = true;
-            if (!in_array('od.`product_id`', $sorted_fields['sqlfields'])) {
-                $sorted_fields['sqlfields'][] = 'od.`product_id`';
+            $specific_settings['order_detail'] = true;
+            if (!in_array('od.`product_id`', $specific_settings['sqlfields'])) {
+                $specific_settings['sqlfields'][] = 'od.`product_id`';
             }
-            $sorted_fields['sqlfields'][] = 'od.`product_attribute_id`';
-            $sorted_fields['sqlfields'][] = 'o.`id_cart`';
+            $specific_settings['sqlfields'][] = 'od.`product_attribute_id`';
+            $specific_settings['sqlfields'][] = 'o.`id_cart`';
         }
     }
 
     /**
      * @param array $allFields
      * @param $field
-     * @param array $sorted_fields
+     * @param array $specific_settings
      */
-    public function sortAttributes(array $allFields, $field, array &$sorted_fields)
+    public function sortAttributes(array $allFields, $field, array &$specific_settings)
     {
         if (isset($allFields[$field]['attribute']) && $allFields[$field]['attribute'] == true) {
-            $sorted_fields['attribute_fields'][] = $allFields[$field]['field'];
+            $specific_settings['attribute_fields'][] = $allFields[$field]['field'];
         }
     }
 
     /**
      * @param array $allFields
      * @param $field
-     * @param array $sorted_fields
+     * @param array $specific_settings
      */
-    public function sortSqlFields(array $allFields, $field, array &$sorted_fields)
+    public function sortSqlFields(array $allFields, $field, array &$specific_settings)
     {
         if ($allFields[$field]['attribute'] == false && $allFields[$field]['table'] != 'other' &&
             $allFields[$field]['table'] != 'static') {
@@ -175,12 +174,12 @@ class Export
             $allFields[$field]['alias'] ? $allFields[$field]['alias'] . '.' : '');
 
             if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
-                $sorted_fields['sqlfields'][] = $alias . '`' . Tools::substr(
+                $specific_settings['sqlfields'][] = $alias . '`' . Tools::substr(
                     strstr($allFields[$field]['field'], '_'),
                     Tools::strlen('_')
                 ) . '` as ' . $allFields[$field]['field'] . '';
             } else {
-                $sorted_fields['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
+                $specific_settings['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
             }
         }
     }
@@ -189,12 +188,12 @@ class Export
      * @param array $allFields
      * @param $field
      * @param $name
-     * @param array $sorted_fields
+     * @param array $specific_settings
      */
-    public function getAllFieldsAndLabels(array $allFields, $field, $name, array &$sorted_fields)
+    public function getAllFieldsAndLabels(array $allFields, $field, $name, array &$specific_settings)
     {
-        $sorted_fields['allexportfields'][] = $allFields[$field]['field'];
-        $sorted_fields['labels'][] = $name[0];
+        $specific_settings['allexportfields'][] = $allFields[$field]['field'];
+        $specific_settings['labels'][] = $name[0];
     }
 
     public function saveProgressToFile($current_row, $clean = false)

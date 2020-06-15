@@ -21,7 +21,7 @@ require_once 'Field/SuppliersFields.php';
 
 class Install
 {
-    const PARENT = -1;
+    const PARENT = 0;
 
     public static function run()
     {
