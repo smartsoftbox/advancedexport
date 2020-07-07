@@ -1009,14 +1009,15 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         return array($aeImport, $labels);
     }
 
-//    private function getUploadFilePath($aeImport, $mapping = false)
-//    {
-//        if (isset($_FILES['upload_file']['tmp_name']) && $_FILES['upload_file']['tmp_name']) {
-//            return $this->getImportFilePathWithFileName($aeImport->id, $_FILES['upload_file']['name'], true);
-//        } else {
-//            return $this->getImportFilePath($aeImport->id) . '/'. $aeImport->import_filename;
-//        }
-//    }
+    private function getUploadFilePath($aeImport, $mapping = false)
+    {
+        if (isset($_FILES['upload_file']['tmp_name']) && $_FILES['upload_file']['tmp_name']) {
+            $path = $this->getImportFilePathWithFileName($aeImport->id, $_FILES['upload_file']['name'], true);
+        } else {
+            $path  = $this->getImportFilePath($aeImport->id) . '/'. $aeImport->import_filename;
+        }
+        return $path;
+    }
 
     private function getFtpFilePath($aeImport, $mapping = false)
     {

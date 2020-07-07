@@ -77,8 +77,8 @@ jQuery(function ($) {
 
   $("#advancedexportimport_form").submit(function(e) {
     e.preventDefault();
-    var form = $(this);
-    var url = form.attr('action') + '&ajax=1&action=submitImport';
+    var formData = new FormData(this);
+    var url = $(this).attr('action') + '&ajax=1&action=submitImport';
     $("#advancedexportimport_form_submit_btn").html(function(i,t){
       return t.replace('Save', 'Please wait ...')
     });
@@ -87,7 +87,10 @@ jQuery(function ($) {
       type: "POST",
       url: url,
       dataType: "json",
-      data: form.serialize(),
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
       error: function(XMLHttpRequest, textStatus, errorThrown) {
         jAlert("TECHNICAL ERROR: \n\nDetails:\nError thrown: " + XMLHttpRequest + "\n" + 'Text status: ' + textStatus);
       },
