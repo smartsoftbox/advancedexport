@@ -10,9 +10,9 @@
 {block name="input"}
     {if $input.type == 'html'}
         {if isset($input.html_content)}
-            {$input.html_content|escape:'html'}
+            {$input.html_content|escape:'html':'UTF-8'}
         {else}
-            {$input.name|escape:'html'}
+            {$input.name|escape:'html':'UTF-8'}
         {/if}
     {elseif $input.type == 'duallist'}
       <div class="alert alert-info" role="alert">
@@ -70,12 +70,12 @@
             </ul>
             <div class="additional-buttons">
               <div class="col-md-5">
-                <a href="{$link|escape:'html'}" class="btn button btn-default" title="change global field name">
+                <a href="{$link|escape:'html':'UTF-8'}" class="btn button btn-default" title="change global field name">
                   Global Field Name
                 </a>
               </div>
               <div class="btn-group col-md-5">
-                <a href="{$link|escape:'html'}&addadvancedexportfield=1" class="btn button btn-default"
+                <a href="{$link|escape:'html':'UTF-8'}&addadvancedexportfield=1" class="btn button btn-default"
                    title="add static field">
                   Add Static Field
                 </a>
