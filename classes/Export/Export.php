@@ -332,7 +332,7 @@ class Export
         return $file;
     }
 
-    public function getSpoutWriter(string $file_format)
+    public function getSpoutWriter($file_format)
     {
         $format = array('xlsx', 'ods', 'csv');
         if (!in_array($file_format, $format)) {
