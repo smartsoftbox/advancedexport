@@ -12,6 +12,7 @@ require_once dirname(__FILE__) . '/../../vendor/Box/Spout/Autoloader/autoload.ph
 require_once dirname(__FILE__) . '/../Data/ExportEnum.php';
 require_once dirname(__FILE__) . '/../FTP/SFTP.php';
 require_once dirname(__FILE__) . '/../FTP/FTP.php';
+require_once dirname(__FILE__) . '/../Data/SaveType.php';
 include_once 'ExportInterface.php';
 
 class Export
