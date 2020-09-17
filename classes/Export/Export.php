@@ -699,7 +699,7 @@ class Export
         $file_attachment['name'] = $filename . '.' . $extension;
         $file_attachment['mime'] = $this->mime_attachment[$extension];
 
-        $id_lang = $this->getConfiguration("PS_LANG_DEFAULT");
+        $id_lang = Configuration::getGlobalValue("PS_LANG_DEFAULT");
         if (!Mail::Send(
             $id_lang,
             'index',
