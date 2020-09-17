@@ -294,7 +294,7 @@ class Install
 
     public static function installCustomFields()
     {
-        $dir = dirname(__FILE__).'Field/CustomFields.php';
+        $dir = dirname(__FILE__).'/Field/CustomFields.php';
 
         if (file_exists($dir)) {
             require_once($dir);
