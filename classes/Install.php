@@ -21,8 +21,6 @@ require_once 'Field/SuppliersFields.php';
 
 class Install
 {
-    const PARENT = 0;
-
     public static function run()
     {
         if (!self::createFieldTable()
@@ -49,7 +47,7 @@ class Install
 
     public static function installTabs()
     {
-        if (!self::installTab(
+        if (!$parent = self::installTab(
             (int)Tab::getIdFromClassName('AdminTools'),
             _ADMIN_AE_,
             'Import & Export'
@@ -57,17 +55,17 @@ class Install
             return false;
         }
 
-        if (!self::installTab(self::PARENT, _ADMIN_AE_MODEL_, 'Export Model')
-            or !self::installTab(self::PARENT, _ADMIN_AE_CRON_, 'Cron Tasks')
-            or !self::installTab(self::PARENT, _ADMIN_AE_MODEL_FIELD_, 'Export Field')
-            or !self::installTab(self::PARENT, _ADMIN_AE_MODEL_FILE_, 'Export Files')
+        if (!self::installTab($parent, _ADMIN_AE_MODEL_, 'Export Model')
+            or !self::installTab($parent, _ADMIN_AE_CRON_, 'Cron Tasks')
+            or !self::installTab($parent, _ADMIN_AE_MODEL_FIELD_, 'Export Field')
+            or !self::installTab($parent, _ADMIN_AE_MODEL_FILE_, 'Export Files')
         ) {
             return false;
         }
 
         if (_PS_VERSION_ >= 1.7) {
-            if (!self::installTab(self::PARENT, _ADMIN_AE_IMPORT_, 'Import Model')
-                or !self::installTab(self::PARENT, _ADMIN_AE_IMPORT_FILE_, 'Import Files')
+            if (!self::installTab($parent, _ADMIN_AE_IMPORT_, 'Import Model')
+                or !self::installTab($parent, _ADMIN_AE_IMPORT_FILE_, 'Import Files')
             ) {
                 return false;
             }
@@ -87,7 +85,9 @@ class Install
         $tab->class_name = $class_name;
         $tab->module = 'advancedexport';
         $tab->active = 1;
-        return $tab->add();
+        $tab->add();
+
+        return $tab->id;
     }
 
     /**
