@@ -482,6 +482,13 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                     'desc' => $this->l('Format: 2012-12-31 HH-MM-SS(inclusive).')
                 )
             ),
+            'buttons' => array(
+                'cancelBlock' => array(
+                    'title' => $this->l('Cancel'),
+                    'href' => $this->context->link->getAdminLink('AdminAdvancedExport'),
+                    'icon' => 'process-icon-cancel'
+                )
+            ),
             'submit' => array(
                 'title' => $this->l('Save'),
             )
@@ -505,7 +512,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
         $result['input'] = array_merge($result['input'], $specific);
 
         $this->fields_form = $result;
-
+        $this->show_form_cancel_button = false;
         return parent::renderForm();
     }
 

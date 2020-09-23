@@ -83,6 +83,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
         $this->bootstrap = true;
         $this->addRowAction('edit');
         $this->addRowAction('delete');
+        $this->show_form_cancel_button = false;
 
         parent::processFilter();
 
@@ -306,6 +307,13 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                             'label' => $this->l('No'),
                         ),
                     )
+                )
+            ),
+            'buttons' => array(
+                'cancelBlock' => array(
+                    'title' => $this->l('Cancel'),
+                    'href' => $this->context->link->getAdminLink('AdminAdvancedExport'),
+                    'icon' => 'process-icon-cancel'
                 )
             ),
             'submit' => array(
