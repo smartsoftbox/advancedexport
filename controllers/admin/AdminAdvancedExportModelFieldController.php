@@ -70,19 +70,23 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
     {
         $id = Tools::getValue('id_advancedexportfield');
         $field = new AdvancedExportFieldClass($id);
-        $field->tab = Tools::getValue('type');
         $field->name = Tools::getValue('name');
-        $field->return = Tools::getValue('return');
-        $field->table = 'static';
-        $field->isCustom = 1;
-        if ($id) {
-            $field->field = 'field_' . $field->id;
-            $field->save();
-        } else {
-            $field->save();
-            $field->field = 'field_' . $field->id;
-            $field->save();
+
+        if(!$field->table) {
+            $field->tab = Tools::getValue('type');
+            $field->name = Tools::getValue('name');
+            $field->return = Tools::getValue('return');
+            $field->table = 'static';
+            $field->isCustom = 1;
+            if ($id) {
+                $field->field = 'field_' . $field->id;
+            } else {
+                $field->save();
+                $field->field = 'field_' . $field->id;
+            }
         }
+
+        $field->save();
 
         Tools::redirectAdmin(
             Context::getContext()->link->getAdminLink(_ADMIN_AE_MODEL_FIELD_, true) . '&conf=3'
@@ -146,6 +150,8 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
                 'desc' => $this->l('Return value'),
             );
         }
+
+        $this->fields_value['type'] = $field->tab;
 
         return parent::renderForm();
     }
