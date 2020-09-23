@@ -97,7 +97,14 @@ class OrdersForm extends MyHelperForm
                 'desc' => $this->l('If you want all leave blank. All are exported by default.'),
                 'multiple' => true,
                 'options' => array(
-                    'query' => Carrier::getCarriers($this->getConfiguration('PS_LANG_DEFAULT')),
+                    'query' => Carrier::getCarriers(
+                        $this->getConfiguration('PS_LANG_DEFAULT'),
+                        true,
+                        false,
+                        false,
+                        null,
+                        5
+                    ),
                     'id' => 'id_carrier',
                     'name' => 'name',
                 ),
