@@ -711,7 +711,7 @@ class Export
             "advanced export",
             $file_attachment,
             null,
-            dirname(__FILE__) . '/mails/'
+            dirname(__FILE__) . '/../../mails/'
         )) {
             throw new PrestaShopException("Can't sent email.");
         }
