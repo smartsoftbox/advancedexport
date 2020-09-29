@@ -700,20 +700,24 @@ class Export
         $file_attachment['mime'] = $this->mime_attachment[$extension];
 
         $id_lang = Configuration::getGlobalValue("PS_LANG_DEFAULT");
-        if (!Mail::Send(
-            $id_lang,
-            'index',
-            $name,
-            null,
-            $email,
-            null,
-            null,
-            "advanced export",
-            $file_attachment,
-            null,
-            dirname(__FILE__) . '/../../mails/'
-        )) {
-            throw new PrestaShopException("Can't sent email.");
+        $emails = array_map('trim', explode(',', $email));
+
+        foreach ($emails as $to) {
+            if (!Mail::Send(
+                $id_lang,
+                'index',
+                $name,
+                null,
+                $to,
+                null,
+                null,
+                "advanced export",
+                $file_attachment,
+                null,
+                dirname(__FILE__) . '/../../mails/'
+            )) {
+                throw new PrestaShopException("Can't sent email to " . $to);
+            }
         }
 
         return true;
