@@ -685,8 +685,7 @@ class OrdersFields extends BaseFields
             'field' => 'delivery_other',
             'as' => true,
             'database' => 'address',
-            'alias'
-            => 'a',
+            'alias' => 'a',
             'group15' => OrderGroup::DELIVERY
         ),
         array(
@@ -752,6 +751,14 @@ class OrdersFields extends BaseFields
             'database' => 'state',
             'alias' => 'inv_s',
             'group15' => OrderGroup::INVOICE
+        ),
+        array(
+            'name' => 'Product isbn',
+            'field' => 'product_isbn',
+            'database' => 'order_detail',
+            'alias' => 'od',
+            'version' => 1.7,
+            'group15' => OrderGroup::PRODUCT
         ),
     );
 }
