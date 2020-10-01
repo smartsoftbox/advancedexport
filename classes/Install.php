@@ -55,9 +55,7 @@ class Install
             return false;
         }
 
-        if (_PS_VERSION_ >= 1.7) {
-            $parent = 0;
-        }
+        $parent = -1;
 
         if (!self::installTab($parent, _ADMIN_AE_MODEL_, 'Export Model')
             or !self::installTab($parent, _ADMIN_AE_CRON_, 'Cron Tasks')
