@@ -210,6 +210,8 @@ class Export
 
     public function writeToFile($ae, $sorted_fields, $elements, $entityExportObject)
     {
+        $this->rowsNumber = $entityExportObject->rowsNumber;
+
         $url = null;
         $file = null;
         $style = $this->getHeaderStyle();
@@ -356,7 +358,6 @@ class Export
     {
         if ($ae->only_new && isset($myLastElement[$this->getId($ae->type)])) {
             $ae->last_exported_id = $myLastElement[$this->getId($ae->type)];
-            $ae->fields = Tools::jsonEncode($ae->fields);
             $ae->save();
         }
 

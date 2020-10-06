@@ -10,6 +10,8 @@
 
 class ManufacturersExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT m.`id_manufacturer` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .

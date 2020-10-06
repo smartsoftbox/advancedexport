@@ -10,6 +10,8 @@
 
 class CustomersExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT c.`id_customer` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .

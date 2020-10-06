@@ -10,6 +10,8 @@
 
 class AddressesExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT a.`id_address` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .

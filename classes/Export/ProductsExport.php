@@ -12,6 +12,8 @@ include_once 'ExportInterface.php';
 
 class ProductsExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT p.`id_product` ' . (empty($this->sorted_fields['sqlfields']) ? '' :

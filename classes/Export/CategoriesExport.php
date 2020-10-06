@@ -10,6 +10,8 @@
 
 class CategoriesExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT c.`id_category` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .

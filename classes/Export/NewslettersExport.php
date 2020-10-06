@@ -10,6 +10,8 @@
 
 class NewslettersExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT n.`id` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .

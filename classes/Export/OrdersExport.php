@@ -10,6 +10,8 @@
 
 class OrdersExport extends ExportInterface
 {
+    public  $rowsNumber;
+
     public function getEntityData()
     {
         $sql = 'SELECT o.`id_order` ' . (empty($this->sorted_fields['sqlfields']) ? '' : ', ' .
