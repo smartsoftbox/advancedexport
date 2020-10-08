@@ -12,7 +12,7 @@ include_once 'ExportInterface.php';
 
 class ProductsExport extends ExportInterface
 {
-    public  $rowsNumber;
+    public $rowsNumber;
 
     public function getEntityData()
     {

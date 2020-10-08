@@ -30,7 +30,7 @@ function upgrade_module_4_5_11($module)
         'advancedexportfield'
     )) {
         if (!DB::getInstance()->execute(
-                "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
+            "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
             `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
             `isCustom`, `group15`, `group17`, `version`) VALUES ('orders', 'Product isbn', 
             'product_isbn', 'order_detail', 'od', 0, 0, '', 0, '', 0, '', 0, '" .

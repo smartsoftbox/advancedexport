@@ -10,7 +10,7 @@
 
 class CategoriesExport extends ExportInterface
 {
-    public  $rowsNumber;
+    public $rowsNumber;
 
     public function getEntityData()
     {
