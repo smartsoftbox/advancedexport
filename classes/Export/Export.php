@@ -694,6 +694,10 @@ class Export
 
     public function sentFile($export_file, $email, $filename, $name)
     {
+        if (!$filename) {
+            $filename = pathinfo($export_file, PATHINFO_FILENAME);
+        }
+
         $extension = pathinfo($export_file, PATHINFO_EXTENSION);
         $file_attachment = null;
         $file_attachment['content'] = Tools::file_get_contents($export_file);
