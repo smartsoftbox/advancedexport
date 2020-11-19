@@ -34,7 +34,7 @@ class SFTP implements FtpInterface
 
     public function connect()
     {
-        set_include_path(dirname(__FILE__) . '/../vendor/phpseclib');
+        set_include_path(dirname(__FILE__) . '/../../vendor/phpseclib');
 
         if (!include('Net/SFTP.php')) {
             $this->errors[] = 'Can not load SFTP class';
