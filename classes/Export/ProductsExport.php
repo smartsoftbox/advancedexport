@@ -54,7 +54,7 @@ class ProductsExport extends ExportInterface
                 ' AND product_shop.`active` = 1' : '') .
             (isset($this->sorted_fields['out_of_stock']) && $this->sorted_fields['out_of_stock'] ?
                 ' AND sa.`quantity` <= 0' : '') .
-            (isset($this->sorted_fields['ean13']) && $this->sorted_fields['ean13'] ? ' AND p.`ean13` != ""' : '') .
+            (isset($this->sorted_fields['ean']) && $this->sorted_fields['ean'] ? ' AND p.`ean13` != ""' : '') .
             (isset($this->ae->date_from) && $this->ae->date_from && !$this->ae->only_new ?
                 ' AND p.`date_add` >= "' . ($this->ae->date_from) . '"' : '') .
             (isset($this->ae->date_to) && $this->ae->date_to && !$this->ae->only_new ?
