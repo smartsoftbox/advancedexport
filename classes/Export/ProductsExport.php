@@ -421,6 +421,7 @@ class ProductsExport extends ExportInterface
     public function combinationAttributes($obj, $products_attribute)
     {
         $name = null;
+
         foreach ($products_attribute['attributes'] as $attribute) {
             $name .= addslashes(htmlspecialchars($attribute[0])) . ': ' .
                 addslashes(htmlspecialchars($attribute[1])) . ';';

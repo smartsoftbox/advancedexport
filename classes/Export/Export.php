@@ -212,6 +212,10 @@ class Export
     {
         $this->rowsNumber = $entityExportObject->rowsNumber;
 
+        if(!$this->rowsNumber) {
+            return '';
+        }
+
         $url = null;
         $file = null;
         $style = $this->getHeaderStyle();
@@ -222,42 +226,44 @@ class Export
         }
 
         $i = 1;
+        $previous_id_order = 0;
         while ($element = $this->nextRow($elements)) {
             if ($i == $this->rowsNumber) {
                 $this->lastElement = $element;
             }
 
-            if ($this->isOrderPerFileEnable($sorted_fields, $ae)) {
-                $isUrlExists = isset($url[$element['id_order']]);
-                if (!$isUrlExists) {
-                    $url[$element['id_order']] = $this->getFileUrl(
-                        ($ae->filename ? $ae->filename : 'orders') . '_' . $element['id_order'],
-                        $ae->type,
-                        $ae->file_format
+            if ($this->isOrderPerFileEnable($sorted_fields, $ae) && $previous_id_order !== 0
+                && $previous_id_order !== (int)$element['id_order']) {
+                $this->closeFile($file, $ae->file_format);
+                $file = null;
+            }
+
+            if ($this->isOrderPerFileEnable($sorted_fields, $ae) && empty($file)) {
+                    $isUrlExists = isset($url[$element['id_order']]);
+                    if (!$isUrlExists) {
+                        $url[$element['id_order']] = $this->getFileUrl(
+                            ($ae->filename ? $ae->filename : 'orders') . '_' . $element['id_order'],
+                            $ae->type,
+                            $ae->file_format
+                        );
+                    }
+                    $file = $this->openFileAndWriteHeader(
+                        $url[$element['id_order']],
+                        $ae,
+                        $sorted_fields,
+                        $style,
+                        $isUrlExists
                     );
-                }
-                $file = $this->openFileAndWriteHeader(
-                    $url[$element['id_order']],
-                    $ae,
-                    $sorted_fields,
-                    $style,
-                    $isUrlExists
-                );
             }
 
             $this->getDataObjectFromAndStaticFields($element, $file, $sorted_fields, $ae, $entityExportObject);
             $this->saveProgressToFile($i);
 
-            if ($this->isOrderPerFileEnable($sorted_fields, $ae)) {
-                $this->closeFile($file, $ae->file_format);
-            }
-
+            $previous_id_order = (int)$element['id_order'];
             ++$i; //progress bar
         }
 
-        if (!$this->isOrderPerFileEnable($sorted_fields, $ae)) {
-            $this->closeFile($file, $ae->file_format);
-        }
+        $this->closeFile($file, $ae->file_format);
 
         return $url;
     }
@@ -592,11 +598,20 @@ class Export
             if ($ae->separator == '') {
                 fputs($file, implode($readyForExport, $ae->delimiter) . "\n");
             } else {
-                fputcsv($file, $readyForExport, $ae->delimiter, $ae->separator);
+                $this->fputcsv_eol($file, $readyForExport, $ae->delimiter, $ae->separator, "\r\n");
             }
         } else {
             $file->addRowWithStyle($readyForExport, $this->getRowStyle());
         }
+    }
+
+    public function fputcsv_eol($handle, $array, $delimiter = ',', $enclosure = '"', $eol = "\n")
+    {
+        $return = fputcsv($handle, $array, $delimiter, $enclosure);
+        if($return !== FALSE && "\n" != $eol && 0 === fseek($handle, -1, SEEK_CUR)) {
+            fwrite($handle, $eol);
+        }
+        return $return;
     }
 
     /**

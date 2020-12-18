@@ -742,7 +742,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
     private function getFileFormatFromPath($file_path)
     {
         $file_format = pathinfo($file_path, PATHINFO_EXTENSION);
-        return $file_format;
+        return (!empty($file_format) ? $file_format : 'csv');
     }
 
     public function getSeparatorForReader()
@@ -884,20 +884,26 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      * @param $aeImport
      * @return mixed
      */
-    public function saveImportSettings($aeImport)
+    public function createImportObject($aeImport)
     {
         $aeImport->copyFromPost();
 
         $aeImport->separator =
             ($aeImport->id_advancedexport && $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
         $aeImport->file_token = ($aeImport->file_token ? $this->generateFileToken() : $aeImport->file_token);
-        $aeImport->save();
+
+        // Don't save we will do it later
+        // $aeImport->save();
 
         return $aeImport;
     }
 
     public function createImportFolder($id)
     {
+        if(!$id) {
+            $id = 'tmp';
+        }
+
         if (!file_exists(_AE_IMPORT_PATH_ . $id)) {
             mkdir(_AE_IMPORT_PATH_ . $id, 0755);
         }
@@ -954,8 +960,18 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
 
     public function getUrlFilePath($aeImport, $mapping = false)
     {
-        $local = $this->getImportFilePathWithFileName($aeImport->id, basename($aeImport->url), $mapping);
-        Tools::copy($aeImport->url, $local);
+        $file_name = basename($aeImport->url);
+        if(!Validate::isFileName($file_name)) {
+            $file_name = $aeImport->name . '.csv';
+        }
+
+        $local = $this->getImportFilePathWithFileName($aeImport->id, $file_name, $mapping);
+        $ctx = stream_context_create(array('http'=>
+            array(
+                'timeout' => 120,  //1200 Seconds is 20 Minutes
+            )
+        ));
+        Tools::copy($aeImport->url, $local, $ctx);
         Tools::chmodr($local, 0644);
 
         return $local;
@@ -992,9 +1008,9 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      */
     public function saveImport()
     {
-        $aeImport = $this->getAdvancedExportImportClass($this->moduleTools->getValue('id_advancedexportimport'));
+        $aeImport = $this->getAdvancedExportImportClass($id = $this->moduleTools->getValue('id_advancedexportimport'));
 
-        $aeImport = $this->saveImportSettings($aeImport);
+        $aeImport = $this->createImportObject($aeImport);
         $this->createImportFolder($aeImport->id);
         $this->uploadMappingFile($aeImport);
         $path = $this->getImportPath($aeImport, true);
@@ -1004,6 +1020,10 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             $labels = $this->getLabels($path);
             if (empty($labels)) {
                 $this->errors[] = $this->l('It looks like empty file.');
+            } else {
+                if(file_exists(_AE_IMPORT_PATH_ . 'tmp') && !$id) {
+                    rename(_AE_IMPORT_PATH_ . 'tmp', _AE_IMPORT_PATH_ . $aeImport->id);
+                }
             }
         }
         return array($aeImport, $labels);
@@ -1046,6 +1066,10 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
 
     private function getImportFilePathWithFileName($id_import, $file_name, $mapping = false)
     {
+        if(!$id_import) {
+            $id_import = 'tmp';
+        }
+
         $base = $this->getImportFilePath($id_import) . '/';
 
         if ($mapping) {
@@ -1341,5 +1365,16 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         }
 
         return $is_exist;
+    }
+
+    private function getNextImportId()
+    {
+         $nextId =  Db::getInstance()->ExecuteS(
+             "SHOW TABLE STATUS LIKE '" . _DB_PREFIX_ . "advancedexportimport'"
+         );
+
+         $return = (int)$nextId[0]['Auto_increment'] + 1;
+
+         return $return;
     }
 }

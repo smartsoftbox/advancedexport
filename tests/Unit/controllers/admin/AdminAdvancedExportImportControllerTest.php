@@ -586,7 +586,7 @@ class AdminAdvancedExportImportControllerTest extends testcase
 
     /**
      * @test
-     * @covers AdminAdvancedExportImportController::saveImportSettings
+     * @covers AdminAdvancedExportImportController::createImportObject
      */
     public function AddDefaultSeparatorIfNotCsvFormatAndExportModelChosen()
     {
@@ -610,7 +610,7 @@ class AdminAdvancedExportImportControllerTest extends testcase
 
     /**
      * @test
-     * @covers AdminAdvancedExportImportController::saveImportSettings
+     * @covers AdminAdvancedExportImportController::createImportObject
      */
     public function AddUserSeparatorIfCsvFormatChosen()
     {
