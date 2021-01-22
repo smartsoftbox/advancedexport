@@ -219,6 +219,9 @@ class AdminAdvancedExportBaseController extends ModuleAdminController
 
     public function getImportFilePath($id)
     {
+        if(!$id) {
+            $id = 'tmp';
+        }
         return _AE_IMPORT_PATH_ . $id;
     }
 
