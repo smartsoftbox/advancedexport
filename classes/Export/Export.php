@@ -259,7 +259,9 @@ class Export
             $this->getDataObjectFromAndStaticFields($element, $file, $sorted_fields, $ae, $entityExportObject);
             $this->saveProgressToFile($i);
 
-            $previous_id_order = (int)$element['id_order'];
+            if ($this->isOrderPerFileEnable($sorted_fields, $ae) && $previous_id_order !== 0) {
+                $previous_id_order = (int)$element['id_order'];
+            }
             ++$i; //progress bar
         }
 
