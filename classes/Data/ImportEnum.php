@@ -25,12 +25,14 @@ class ImportEnum
             'skip' => true,
             'force' => true,
             'isMultiLang' => true,
+            'match_ref' => true,
             'id' => 1
         ),
         array(
             'entity' => 'combinations',
             'delete' => true,
             'isMultiLang' => false,
+            'match_ref' => true,
             'id' => 2
         ),
         array(

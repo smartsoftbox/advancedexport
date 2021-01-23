@@ -812,7 +812,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             $this->errors[] = $this->l('Please select model export.');
         }
 
-        if ((int)Tools::getValue('import_from') === 1 && empty($_FILES['upload_file']['tmp_name'])) {
+        if ((int)Tools::getValue('import_from') === 1 && empty($_FILES['upload_file']['tmp_name']) && (int)Tools::getValue('id_advancedexportimport') === 0) {
             $this->errors[] = $this->l('Please select upload file.');
         }
 

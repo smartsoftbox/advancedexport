@@ -44,6 +44,7 @@ jQuery(function ($) {
     $('input#truncate_on').closest('.form-group').show();
     $('input#regenerate_on').closest('.form-group').show();
     $('input#forceIDs_on').closest('.form-group').show();
+    $('input#match_ref_on').closest('.form-group').show();
 
     if (!importEntities[this.value]['delete']) {
       $('input#truncate_on').closest('.form-group').hide();
@@ -54,7 +55,12 @@ jQuery(function ($) {
     if (!importEntities[this.value]['force']) {
       $('input#forceIDs_on').closest('.form-group').hide();
     }
+    if (!importEntities[this.value]['match_ref']) {
+      $('input#match_ref_on').closest('.form-group').hide();
+    }
   });
+
+  $('select#entity').change();
 
   $('button#auto-select').on('click', function () {
     var fields = document.querySelectorAll('select[id^="fields"]');
