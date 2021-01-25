@@ -18,6 +18,17 @@ error_reporting(E_ALL & ~E_NOTICE); // todo check if you really need this line
 
 class AdminAdvancedExportPrestaImportController extends AdminImportControllerCore
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        if ((int) Tools::getValue('entity') ===
+            $this->entities[$this->trans('Combinations', array(), 'Admin.Global')]) {
+            $this->available_fields['id_product_attribute'] = array('label' => $this->trans('Product Attribute Id', array()));
+        }
+    }
+
     protected function excelToCsvFile($filename)
     {
         if (preg_match('#(.*?)\.(csv)#is', $filename)) {
@@ -410,12 +421,53 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             }
         }
 
+
+        // if a reference is specified for this product, get the associate id_product_attribute to UPDATE
+        if (isset($info['id_product_attribute']) && !empty($info['id_product_attribute']) && !isset($info['attribute']) && !isset($info['group'])) {
+            $id_product_attribute = $info['id_product_attribute'];
+
+            // updates the attribute
+            if ($id_product_attribute && !$validateOnly) {
+                // gets all the combinations of this product
+                $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute, $default_language);
+                // FIXME: ~3s/declinaison
+                foreach ($attribute_combinations as $attribute_combination) {
+                    // FIXME: ~3s/declinaison
+                    $product->updateAttribute(
+                        $id_product_attribute,
+                        (isset($info_before_default['wholesale_price']) ? (float) $info['wholesale_price'] : $attribute_combination['wholesale_price']),
+                        (isset($info_before_default['price']) ? (float) $info['price'] : $attribute_combination['price']),
+                        (isset($info_before_default['weight']) ? (float) $info['weight'] : $attribute_combination['weight']),
+                        (isset($info_before_default['unit']) ? (float) $info['unit'] : $attribute_combination['unit_price_impact']),
+                        (Configuration::get('PS_USE_ECOTAX') ? (isset($info_before_default['ecotax']) ? (float) $info['ecotax'] : $attribute_combination['ecotax']) : 0),
+                        $id_image,
+                        (isset($info_before_default['reference']) ? (string) $info['reference'] : $attribute_combination['reference']),
+                        (isset($info_before_default['ean13']) ? (string) $info['ean13'] : $attribute_combination['ean13']),
+                        (isset($info_before_default['default_on']) ?  ((int) $info['default_on'] ? (int) $info['default_on'] : null) : $attribute_combination['default_on']),
+                        (isset($info_before_default['location']) ? (float) $info['location'] : $attribute_combination['location']),
+                        (isset($info_before_default['upc']) ? (string) $info['upc'] : $attribute_combination['upc']),
+                        (isset($info_before_default['minimal_quantity']) ? (int) $info['minimal_quantity'] : $attribute_combination['minimal_quantity']),
+                        (isset($info_before_default['available_date']) ? $info['available_date'] : $attribute_combination['available_date']),
+                        null,
+                        $id_shop_list,
+                        (isset($info_before_default['isbn']) ? (float) $info['isbn'] : $attribute_combination['isbn']),
+                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold']),
+                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold'])
+                    );
+                    $id_product_attribute_update = true;
+                    if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
+                        $product->addSupplierReference($product->id_supplier, $id_product_attribute, $info['supplier_reference']);
+                    }
+                }
+            }
+        }
+
         $product->checkDefaultAttributes();
         if (!$product->cache_default_attribute && !$validateOnly) {
             Product::updateDefaultAttribute($product->id);
         }
         if ($id_product_attribute) {
-            if (!$validateOnly) {
+            if (!$validateOnly && !isset($info['id_product_attribute'])) {
                 // now adds the attributes in the attribute_combination table
                 if ($id_product_attribute_update) {
                     Db::getInstance()->execute('
