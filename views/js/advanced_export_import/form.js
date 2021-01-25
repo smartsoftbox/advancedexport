@@ -109,6 +109,7 @@ jQuery(function ($) {
           $("#id_advancedexportimport").val(data.id);
           $("#advancedexportimport_form").hide();
           $("#advancedexportimportmapping_form_cancel_btn").removeAttr('onclick');
+          $('#available_fields_form').show();
         }
         else
         {
@@ -135,6 +136,7 @@ jQuery(function ($) {
     e.preventDefault();
     $("#advancedexportimport_form").show();
     $("#advancedexportimportmapping_form").remove();
+    $('#available_fields_form').hide();
   });
 });
 
