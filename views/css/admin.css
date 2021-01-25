@@ -209,3 +209,8 @@
   display: none;
 }
 
+#advancedexportimportmapping_form {
+  width: 50%;
+  display: inline-block;
+}
+
