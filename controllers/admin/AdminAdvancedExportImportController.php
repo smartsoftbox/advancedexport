@@ -644,7 +644,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      */
     public function getAvailableFields()
     {
-        $adminImportController = new AdminImportControllerCore();
+        $adminImportController = new AdminAdvancedExportPrestaImportController();
         $available_fields = array();
 
         foreach ($adminImportController->available_fields as $key => $available_field) {
