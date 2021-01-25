@@ -580,7 +580,19 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $helper->title = $this->trans('Add a new feature value', array(), 'Admin.Catalog.Feature');
         $helper->submit_action = "saveMapping";
         $helper->show_cancel_button = true;
-        return $helper->generateForm(array($this->fields_form));
+        $form = $helper->generateForm(array($this->fields_form));
+
+        $aeImportController = new AdminAdvancedExportPrestaImportController();
+        $this->context->smarty->assign(array(
+            'available_fields' => $aeImportController->available_fields,
+            'is_combination' => (Tools::getValue('entity') == 2)
+        ));
+
+        $form .= $this->context->smarty->fetch(
+            dirname(__FILE__) . '/../../views/templates/admin/available_fields.tpl'
+        );
+
+        return $form;
     }
 
     /**
