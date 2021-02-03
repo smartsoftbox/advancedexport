@@ -24,16 +24,19 @@ class AdminAdvancedExportModelFileController extends AdminAdvancedExportBaseCont
                 'width' => 100,
                 'orderby' => false,
                 'search' => false,
+                'remove_onclick' => true
             ),
             'name' => array(
                 'title' => $this->l('Name'),
                 'width' => 100,
+                'remove_onclick' => true
             ),
             'filesize' => array(
                 'title' => $this->l('File size'),
                 'width' => 100,
                 'orderby' => false,
                 'search' => false,
+                'remove_onclick' => true
             ),
         );
 
