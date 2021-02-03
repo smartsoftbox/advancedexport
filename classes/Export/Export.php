@@ -212,9 +212,9 @@ class Export
     {
         $this->rowsNumber = $entityExportObject->rowsNumber;
 
-        if(!$this->rowsNumber) {
-            return '';
-        }
+//        if(!$this->rowsNumber) {
+//            return '';
+//        }
 
         $url = null;
         $file = null;
