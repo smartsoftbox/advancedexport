@@ -139,7 +139,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                     if (isset($info['image_alt'])) {
                         $alt = self::split($info['image_alt']);
-                        if (isset($alt[$key]) && strlen($alt[$key]) > 0) {
+                        if (isset($alt[$key]) && Tools::strlen($alt[$key]) > 0) {
                             $alt = self::createMultiLangField($alt[$key]);
                             $image->legend = $alt;
                         }
@@ -600,5 +600,4 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             }
         }
     }
-
 }

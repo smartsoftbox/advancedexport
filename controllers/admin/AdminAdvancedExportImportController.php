@@ -912,7 +912,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
 
     public function createImportFolder($id)
     {
-        if(!$id) {
+        if (!$id) {
             $id = 'tmp';
         }
 
@@ -973,7 +973,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
     public function getUrlFilePath($aeImport, $mapping = false)
     {
         $file_name = basename($aeImport->url);
-        if(!Validate::isFileName($file_name)) {
+        if (!Validate::isFileName($file_name)) {
             $file_name = $aeImport->name . '.csv';
         }
 
@@ -1033,7 +1033,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             if (empty($labels)) {
                 $this->errors[] = $this->l('It looks like empty file.');
             } else {
-                if(file_exists(_AE_IMPORT_PATH_ . 'tmp') && !$id) {
+                if (file_exists(_AE_IMPORT_PATH_ . 'tmp') && !$id) {
                     rename(_AE_IMPORT_PATH_ . 'tmp', _AE_IMPORT_PATH_ . $aeImport->id);
                 }
             }
@@ -1078,7 +1078,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
 
     private function getImportFilePathWithFileName($id_import, $file_name, $mapping = false)
     {
-        if(!$id_import) {
+        if (!$id_import) {
             $id_import = 'tmp';
         }
 
