@@ -239,21 +239,21 @@ class Export
             }
 
             if ($this->isOrderPerFileEnable($sorted_fields, $ae) && empty($file)) {
-                    $isUrlExists = isset($url[$element['id_order']]);
-                    if (!$isUrlExists) {
-                        $url[$element['id_order']] = $this->getFileUrl(
-                            ($ae->filename ? $ae->filename : 'orders') . '_' . $element['id_order'],
-                            $ae->type,
-                            $ae->file_format
-                        );
-                    }
-                    $file = $this->openFileAndWriteHeader(
-                        $url[$element['id_order']],
-                        $ae,
-                        $sorted_fields,
-                        $style,
-                        $isUrlExists
+                $isUrlExists = isset($url[$element['id_order']]);
+                if (!$isUrlExists) {
+                    $url[$element['id_order']] = $this->getFileUrl(
+                        ($ae->filename ? $ae->filename : 'orders') . '_' . $element['id_order'],
+                        $ae->type,
+                        $ae->file_format
                     );
+                }
+                $file = $this->openFileAndWriteHeader(
+                    $url[$element['id_order']],
+                    $ae,
+                    $sorted_fields,
+                    $style,
+                    $isUrlExists
+                );
             }
 
             $this->getDataObjectFromAndStaticFields($element, $file, $sorted_fields, $ae, $entityExportObject);
@@ -600,17 +600,17 @@ class Export
             if ($ae->separator == '') {
                 fputs($file, implode($readyForExport, $ae->delimiter) . "\n");
             } else {
-                $this->fputcsv_eol($file, $readyForExport, $ae->delimiter, $ae->separator, "\r\n");
+                $this->fputcsvEol($file, $readyForExport, $ae->delimiter, $ae->separator, "\r\n");
             }
         } else {
             $file->addRowWithStyle($readyForExport, $this->getRowStyle());
         }
     }
 
-    public function fputcsv_eol($handle, $array, $delimiter = ',', $enclosure = '"', $eol = "\n")
+    public function fputcsvEol($handle, $array, $delimiter = ',', $enclosure = '"', $eol = "\n")
     {
         $return = fputcsv($handle, $array, $delimiter, $enclosure);
-        if($return !== FALSE && "\n" != $eol && 0 === fseek($handle, -1, SEEK_CUR)) {
+        if ($return !== FALSE && "\n" != $eol && 0 === fseek($handle, -1, SEEK_CUR)) {
             fwrite($handle, $eol);
         }
         return $return;
