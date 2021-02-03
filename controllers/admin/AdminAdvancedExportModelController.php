@@ -56,7 +56,13 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 'search' => false,
             ),
             'save_type' => array(
-                'title' => $this->l('Save Type'),
+                'title' => $this->l('Save'),
+                'width' => 30,
+                'orderby' => false,
+                'search' => false,
+            ),
+            'last_exported_id' => array(
+                'title' => $this->l('Last id'),
                 'width' => 30,
                 'orderby' => false,
                 'search' => false,
@@ -899,6 +905,8 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 $type = SaveType::getSaveTypes();
                 $export_model['cron_url'] = self::getCronLink($export_model);
                 $export_model['save_type'] = $type[$export_model['save_type']]['short_name'];
+                $export_model['last_exported_id'] = ($export_model['only_new'] ?
+                    $export_model['last_exported_id'] : 'all');
 
                 return $export_model;
             }, $this->_list);
