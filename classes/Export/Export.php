@@ -610,7 +610,7 @@ class Export
     public function fputcsvEol($handle, $array, $delimiter = ',', $enclosure = '"', $eol = "\n")
     {
         $return = fputcsv($handle, $array, $delimiter, $enclosure);
-        if ($return !== FALSE && "\n" != $eol && 0 === fseek($handle, -1, SEEK_CUR)) {
+        if ($return !== true && "\n" != $eol && 0 === fseek($handle, -1, SEEK_CUR)) {
             fwrite($handle, $eol);
         }
         return $return;
