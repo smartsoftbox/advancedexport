@@ -845,18 +845,18 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             $this->errors[] = $this->l('Please enter filename.');
         }
 
-        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('hostname') ||
-            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('hostname')) {
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('ftp_hostname') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('ftp_hostname')) {
             $this->errors[] = $this->l('Please enter hostname.');
         }
 
-        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('username') ||
-            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('username')) {
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('ftp_user_name') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('ftp_user_name')) {
             $this->errors[] = $this->l('Please enter username.');
         }
 
-        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('username') ||
-            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('username')) {
+        if ((int)Tools::getValue('import_from') === 3 && !Tools::getValue('ftp_user_pass') ||
+            (int)Tools::getValue('import_from') === 4 && !Tools::getValue('ftp_user_pass')) {
             $this->errors[] = $this->l('Please enter password.');
         }
 
@@ -1073,7 +1073,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
 
     private function getSFtpFilePath($aeImport)
     {
-        $this->getFtpFilePath($aeImport);
+        return $this->getFtpFilePath($aeImport);
     }
 
     private function getImportFilePathWithFileName($id_import, $file_name, $mapping = false)
@@ -1189,7 +1189,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $context = Context::getContext();
         $context->employee = new Employee(1);
         $aeImportController = new AdminAdvancedExportPrestaImportController();
-
+        $aeImportController->init();
         $aeImportController->importByGroups(
             $offset,
             $limit,
