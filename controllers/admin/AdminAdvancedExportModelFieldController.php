@@ -72,7 +72,7 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
         $field = new AdvancedExportFieldClass($id);
         $field->name = Tools::getValue('name');
 
-        if ($field->isCustom !== '0') {
+        if ($field->isCustom !== '0' && $field->table !== 'other') {
             $field->tab = Tools::getValue('type');
             $field->name = Tools::getValue('name');
             $field->return = Tools::getValue('return');
@@ -142,7 +142,7 @@ class AdminAdvancedExportModelFieldController extends AdminAdvancedExportBaseCon
         $id = Tools::getValue('id_advancedexportfield');
         $field = new AdvancedExportFieldClass($id);
 
-        if ($field->isCustom or !$id) {
+        if ($field->isCustom && $field->table !== "other" or !$id && $field->table !== "other") {
             $this->fields_form['input'][] = array(
                 'type' => 'text',
                 'label' => $this->l('Return value'),
