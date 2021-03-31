@@ -129,7 +129,7 @@ class ProductsExport extends ExportInterface
         return implode(',', $feats);
     }
 
-    public function productsAttachments(Product $obj, $ae)
+    public function productsAttachments($obj, $ae)
     {
         $attachments_url = array();
         $attachments = $obj->getAttachments($this->ae->id_lang);
@@ -156,7 +156,7 @@ class ProductsExport extends ExportInterface
         }
     }
 
-    public function otherPriceTex($obj)
+    public function productsPriceTex($obj)
     {
         return $obj->getPrice(false);
     }
@@ -266,7 +266,7 @@ class ProductsExport extends ExportInterface
             }
         }
 
-        return (is_array($result) ? implode(',', $result) : '');
+        return (is_array($result) ? implode(',', array_unique($result)) : '');
     }
 
     public function productsCategoriesIds($obj, $ae)
@@ -360,11 +360,6 @@ class ProductsExport extends ExportInterface
         } else {
             return '';
         }
-    }
-
-    public function productsPriceTex($obj)
-    {
-        return $obj->getPrice(true);
     }
 
     public function productsUnitPrice($obj)
