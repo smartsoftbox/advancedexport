@@ -627,7 +627,7 @@ class Export
         $readyForExport = array();
         //put in correct sort order
         foreach ($allexportfields as $value) {
-            if (!Tools::substr($object[$value], 0, 1) == '0') {
+            if (!preg_match("/^(?:0|00)\d+$/", $object[$value])) {
                 $this->processDecimalSettings($object, $ae, $value);
                 $this->castValues($object, $value);
             }
