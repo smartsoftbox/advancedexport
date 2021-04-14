@@ -136,15 +136,15 @@ class Advancedexport extends Module
     {
         require_once 'controllers/admin/AdminAdvancedExportImportController.php';
 
-        $context = Context::getContext();
-        $context->employee = new Employee(1);
+        $id_employee = (Tools::getValue('id_employee') ? Tools::getValue('id_employee') : 1);
+        $this->context->getContext()->employee = new Employee($id_employee);
 
         $rootDir = getenv('_PS_ROOT_DIR_');
         define('_PS_ADMIN_DIR_', $rootDir . '/admin-dev');
-
+        $aeImport = new AdvancedExportImportClass($id);
         $advancedExportImportController = new AdminAdvancedExportImportController();
-        $advancedExportImportController->getImportPath(new AdvancedExportImportClass($id), false);
+        $advancedExportImportController->getImportPath($aeImport, false);
         $advancedExportImportController->addImportGETValues($id);
-        $advancedExportImportController->runImport(0, 999999999, false, 0, $id);
+        $advancedExportImportController->runImport(0, 999999999, false, 1, $id, $aeImport);
     }
 }
