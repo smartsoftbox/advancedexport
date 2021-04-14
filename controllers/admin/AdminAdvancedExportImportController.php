@@ -1119,7 +1119,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $validateOnly = ((int)$this->moduleTools->getValue('validateOnly') == 1);
         $moreStep = (int)$this->moduleTools->getValue('moreStep');
 
-        $this->runImport($offset, $limit, $validateOnly, $moreStep, $id);
+        $this->runImport($offset, $limit, $validateOnly, $moreStep, $id, $aeImport);
     }
 
     public function getImportPath($aeImport, $mapping)
@@ -1178,18 +1178,14 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
      * @param bool $validateOnly
      * @param int $moreStep
      * @param $id
+     * @param $aeImport
      * @return void
-     * @throws PrestaShopDatabaseException
-     * @throws PrestaShopException
      */
-    public function runImport($offset, $limit, $validateOnly, $moreStep, $id)
+    public function runImport($offset, $limit, $validateOnly, $moreStep, $id, $aeImport)
     {
         $results = array();
-
-        $context = Context::getContext();
-        $context->employee = new Employee(1);
         $aeImportController = new AdminAdvancedExportPrestaImportController();
-        $aeImportController->init();
+//        $aeImportController->init();
         $aeImportController->importByGroups(
             $offset,
             $limit,
@@ -1214,7 +1210,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         }
 
         if (!$validateOnly && (bool)$results['isFinished'] && !isset($results['oneMoreStep']) &&
-            (bool)Tools::getValue('sendemail')) {
+            (bool)$aeImport->send_email) {
             // Mail::Send() can sometimes throw an error...
             try {
                 unset($this->context->cookie->csv_selected); // remove CSV selection file if finished with no error.
@@ -1222,7 +1218,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 $templateVars = array(
                     '{firstname}' => $this->context->employee->firstname,
                     '{lastname}' => $this->context->employee->lastname,
-                    '{filename}' => Tools::getValue('csv'),
+                    '{filename}' => $aeImport->import_filename,
                 );
 
                 $employeeLanguage = new Language((int)$this->context->employee->id_lang);
