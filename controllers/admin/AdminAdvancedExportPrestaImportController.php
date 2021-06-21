@@ -81,8 +81,22 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
     protected function attributeImportOne($info, $default_language, &$groups, &$attributes, $regenerate, $shop_is_feature_active, $validateOnly = false)
     {
-        $info_before_default = $info;
-        AdminImportController::setDefaultValues($info);
+        /* start modification */
+        if(isset($info['id_product_attribute']) && isset($info['id_product'])) {
+            $id_product_attribute = $info['id_product_attribute'];
+            $product = new Product((int) $info['id_product'], false, $default_language);
+            $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute, $default_language);
+            foreach ($attribute_combinations as $attribute_combination) {
+                foreach ($attribute_combination as $key => $field) {
+                    if(!isset($info[$key])) {
+                        $info[$key] = $field;
+                    }
+                }
+            }
+        } else {
+            AdminImportController::setDefaultValues($info);
+        }
+        /* end modification */
 
         if (!$shop_is_feature_active) {
             $info['shop'] = 1;
@@ -105,7 +119,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         }
 
         if (isset($info['id_product']) && $info['id_product']) {
-            $product = new Product((int) $info['id_product'], false, $default_language);
+            $product = new Product((int)$info['id_product'], false, $default_language);
         } elseif (Tools::getValue('match_ref') && isset($info['product_reference']) && $info['product_reference']) {
             $datas = Db::getInstance()->getRow('
 				SELECT p.`id_product`
@@ -114,7 +128,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 				WHERE p.`reference` = "' . pSQL($info['product_reference']) . '"
 			', false);
             if (isset($datas['id_product']) && $datas['id_product']) {
-                $product = new Product((int) $datas['id_product'], false, $default_language);
+                $product = new Product((int)$datas['id_product'], false, $default_language);
             } else {
                 return;
             }
@@ -130,10 +144,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             if (is_array($info['image_url']) && count($info['image_url'])) {
                 foreach ($info['image_url'] as $key => $url) {
                     $url = trim($url);
-                    $product_has_images = (bool) Image::getImages($this->context->language->id, $product->id);
+                    $product_has_images = (bool)Image::getImages($this->context->language->id, $product->id);
 
                     $image = new Image();
-                    $image->id_product = (int) $product->id;
+                    $image->id_product = (int)$product->id;
                     $image->position = Image::getHighestPosition($product->id) + 1;
                     $image->cover = (!$product_has_images) ? true : false;
 
@@ -162,7 +176,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                             );
                             $image->delete();
                         } else {
-                            $id_image[] = (int) $image->id;
+                            $id_image[] = (int)$image->id;
                         }
                         // until here
                     } else {
@@ -191,8 +205,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                     if ($images) {
                         foreach ($images as $row) {
-                            if ($row['position'] == (int) $position) {
-                                $id_image[] = (int) $row['id_image'];
+                            if ($row['position'] == (int)$position) {
+                                $id_image[] = (int)$row['id_image'];
 
                                 break;
                             }
@@ -200,9 +214,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     }
                     if (empty($id_image)) {
                         $this->warnings[] = sprintf(
-                            $this->trans('No image was found for combination with id_product = %s and image position = %s.', array(), 'Admin.Advparameters.Notification'),
+                            $this->trans('No image was found for combination with id_product = %s and image position = %s.',
+                                array(), 'Admin.Advparameters.Notification'),
                             Tools::htmlentitiesUTF8($product->id),
-                            (int) $position
+                            (int)$position
                         );
                     }
                 }
@@ -309,8 +324,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         }
                     }
 
-                    $info['minimal_quantity'] = isset($info['minimal_quantity']) && $info['minimal_quantity'] ? (int) $info['minimal_quantity'] : 1;
-                    $info['low_stock_threshold'] = empty($info['low_stock_threshold']) && '0' != $info['low_stock_threshold'] ? null : (int) $info['low_stock_threshold'];
+                    $info['minimal_quantity'] = isset($info['minimal_quantity']) && $info['minimal_quantity'] ? (int)$info['minimal_quantity'] : 1;
+                    $info['low_stock_threshold'] = empty($info['low_stock_threshold']) && '0' != $info['low_stock_threshold'] ? null : (int)$info['low_stock_threshold'];
                     $info['low_stock_alert'] = !empty($info['low_stock_alert']);
 
                     $info['wholesale_price'] = str_replace(',', '.', $info['wholesale_price']);
@@ -337,7 +352,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                     // if a reference is specified for this product, get the associate id_product_attribute to UPDATE
                     if (isset($info['reference']) && !empty($info['reference'])) {
-                        $id_product_attribute = Combination::getIdByReference($product->id, (string) ($info['reference']));
+                        $id_product_attribute = Combination::getIdByReference($product->id,
+                            (string)($info['reference']));
 
                         // updates the attribute
                         if ($id_product_attribute && !$validateOnly) {
@@ -348,24 +364,24 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                                     // FIXME: ~3s/declinaison
                                     $product->updateAttribute(
                                         $id_product_attribute,
-                                        (isset($info_before_default['wholesale_price']) ? (float) $info['wholesale_price'] : $attribute_combination['wholesale_price']),
-                                        (isset($info_before_default['price']) ? (float) $info['price'] : $attribute_combination['price']),
-                                        (isset($info_before_default['weight']) ? (float) $info['weight'] : $attribute_combination['weight']),
-                                        (isset($info_before_default['unit']) ? (float) $info['unit'] : $attribute_combination['unit_price_impact']),
-                                        (Configuration::get('PS_USE_ECOTAX') ? (isset($info_before_default['ecotax']) ? (float) $info['ecotax'] : $attribute_combination['ecotax']) : 0),
+                                        (float) $info['wholesale_price'],
+                                        (float) $info['price'],
+                                        (float) $info['weight'],
+                                        0,
+                                        (Configuration::get('PS_USE_ECOTAX') ? (float) $info['ecotax'] : 0),
                                         $id_image,
-                                        (isset($info_before_default['reference']) ? (string) $info['reference'] : $attribute_combination['reference']),
-                                        (isset($info_before_default['ean13']) ? (string) $info['ean13'] : $attribute_combination['ean13']),
-                                        (isset($info_before_default['default_on']) ?  ((int) $info['default_on'] ? (int) $info['default_on'] : null) : $attribute_combination['default_on']),
-                                        (isset($info_before_default['location']) ? (float) $info['location'] : $attribute_combination['location']),
-                                        (isset($info_before_default['upc']) ? (string) $info['upc'] : $attribute_combination['upc']),
-                                        (isset($info_before_default['minimal_quantity']) ? (int) $info['minimal_quantity'] : $attribute_combination['minimal_quantity']),
-                                        (isset($info_before_default['available_date']) ? $info['available_date'] : $attribute_combination['available_date']),
+                                        (string) $info['reference'],
+                                        (string) $info['ean13'],
+                                        ((int) $info['default_on'] ? (int) $info['default_on'] : null),
+                                        0,
+                                        (string) $info['upc'],
+                                        (int) $info['minimal_quantity'],
+                                        $info['available_date'],
                                         null,
                                         $id_shop_list,
-                                        (isset($info_before_default['isbn']) ? (float) $info['isbn'] : $attribute_combination['isbn']),
-                                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold']),
-                                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold'])
+                                        '',
+                                        $info['low_stock_threshold'],
+                                        $info['low_stock_alert']
                                     );
                                     $id_product_attribute_update = true;
                                     if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
@@ -380,20 +396,20 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     // if no attribute reference is specified, creates a new one
                     if (!$id_product_attribute && !$validateOnly) {
                         $id_product_attribute = $product->addCombinationEntity(
-                            (float) $info['wholesale_price'],
-                            (float) $info['price'],
-                            (float) $info['weight'],
+                            (float)$info['wholesale_price'],
+                            (float)$info['price'],
+                            (float)$info['weight'],
                             0,
-                            (Configuration::get('PS_USE_ECOTAX') ? (float) $info['ecotax'] : 0),
-                            (int) $info['quantity'],
+                            (Configuration::get('PS_USE_ECOTAX') ? (float)$info['ecotax'] : 0),
+                            (int)$info['quantity'],
                             $id_image,
-                            (string) $info['reference'],
+                            (string)$info['reference'],
                             0,
-                            (string) $info['ean13'],
-                            ((int) $info['default_on'] ? (int) $info['default_on'] : null),
+                            (string)$info['ean13'],
+                            ((int)$info['default_on'] ? (int)$info['default_on'] : null),
                             0,
-                            (string) $info['upc'],
-                            (int) $info['minimal_quantity'],
+                            (string)$info['upc'],
+                            (int)$info['minimal_quantity'],
                             $id_shop_list,
                             $info['available_date'],
                             '',
@@ -402,19 +418,20 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         );
 
                         if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
-                            $product->addSupplierReference($product->id_supplier, $id_product_attribute, $info['supplier_reference']);
+                            $product->addSupplierReference($product->id_supplier, $id_product_attribute,
+                                $info['supplier_reference']);
                         }
                     }
 
                     // fills our attributes array, in order to add the attributes to the product_attribute afterwards
                     if (isset($attributes[$group . '_' . $attribute])) {
-                        $attributes_to_add[] = (int) $attributes[$group . '_' . $attribute];
+                        $attributes_to_add[] = (int)$attributes[$group . '_' . $attribute];
                     }
 
                     // after insertion, we clean attribute position and group attribute position
                     if (!$validateOnly) {
                         $obj = new Attribute();
-                        $obj->cleanPositions((int) $id_attribute_group, false);
+                        $obj->cleanPositions((int)$id_attribute_group, false);
                         AttributeGroup::cleanPositions();
                     }
                 }
@@ -429,35 +446,37 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             // updates the attribute
             if ($id_product_attribute && !$validateOnly) {
                 // gets all the combinations of this product
-                $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute, $default_language);
+                $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute,
+                    $default_language);
                 // FIXME: ~3s/declinaison
                 foreach ($attribute_combinations as $attribute_combination) {
                     // FIXME: ~3s/declinaison
                     $product->updateAttribute(
                         $id_product_attribute,
-                        (isset($info_before_default['wholesale_price']) ? (float) $info['wholesale_price'] : $attribute_combination['wholesale_price']),
-                        (isset($info_before_default['price']) ? (float) $info['price'] : $attribute_combination['price']),
-                        (isset($info_before_default['weight']) ? (float) $info['weight'] : $attribute_combination['weight']),
-                        (isset($info_before_default['unit']) ? (float) $info['unit'] : $attribute_combination['unit_price_impact']),
-                        (Configuration::get('PS_USE_ECOTAX') ? (isset($info_before_default['ecotax']) ? (float) $info['ecotax'] : $attribute_combination['ecotax']) : 0),
+                        (float) $info['wholesale_price'],
+                        (float) $info['price'],
+                        (float) $info['weight'],
+                        (float) $info['unit_price_impact'],
+                        (float) $info['ecotax'],
                         $id_image,
-                        (isset($info_before_default['reference']) ? (string) $info['reference'] : $attribute_combination['reference']),
-                        (isset($info_before_default['ean13']) ? (string) $info['ean13'] : $attribute_combination['ean13']),
-                        (isset($info_before_default['default_on']) ?  ((int) $info['default_on'] ? (int) $info['default_on'] : null) : $attribute_combination['default_on']),
-                        (isset($info_before_default['location']) ? (float) $info['location'] : $attribute_combination['location']),
-                        (isset($info_before_default['upc']) ? (string) $info['upc'] : $attribute_combination['upc']),
-                        (isset($info_before_default['minimal_quantity']) ? (int) $info['minimal_quantity'] : $attribute_combination['minimal_quantity']),
-                        (isset($info_before_default['available_date']) ? $info['available_date'] : $attribute_combination['available_date']),
+                        (string) $info['reference'],
+                        (string) $info['ean13'],
+                        ((int) $info['default_on'] ? (int) $info['default_on'] : null),
+                        $info['location'],
+                        (string) $info['upc'],
+                        (int) $info['minimal_quantity'],
+                        $info['available_date'],
                         null,
                         $id_shop_list,
-                        (isset($info_before_default['isbn']) ? (float) $info['isbn'] : $attribute_combination['isbn']),
-                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold']),
-                        (isset($info_before_default['low_stock_threshold']) ? $info['low_stock_threshold'] : $attribute_combination['low_stock_threshold'])
+                        $info['isbn'],
+                        $info['low_stock_threshold'],
+                        $info['low_stock_alert']
                     );
                     $id_product_attribute_update = true;
                     if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
                         $product->addSupplierReference($product->id_supplier, $id_product_attribute, $info['supplier_reference']);
                     }
+                    // until here
                 }
             }
         }
@@ -472,13 +491,13 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 if ($id_product_attribute_update) {
                     Db::getInstance()->execute('
 						DELETE FROM ' . _DB_PREFIX_ . 'product_attribute_combination
-						WHERE id_product_attribute = ' . (int) $id_product_attribute);
+						WHERE id_product_attribute = ' . (int)$id_product_attribute);
                 }
 
                 foreach ($attributes_to_add as $attribute_to_add) {
                     Db::getInstance()->execute('
 						INSERT IGNORE INTO ' . _DB_PREFIX_ . 'product_attribute_combination (id_attribute, id_product_attribute)
-						VALUES (' . (int) $attribute_to_add . ',' . (int) $id_product_attribute . ')', false);
+						VALUES (' . (int)$attribute_to_add . ',' . (int)$id_product_attribute . ')', false);
                 }
             }
 
@@ -524,7 +543,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $warehouse_location_entity->id_product_attribute = $id_product_attribute;
                         $warehouse_location_entity->id_warehouse = $info['warehouse'];
                         if (!$validateOnly) {
-                            if (WarehouseProductLocation::getProductLocation($product->id, $id_product_attribute, $info['warehouse']) !== false) {
+                            if (WarehouseProductLocation::getProductLocation($product->id, $id_product_attribute,
+                                    $info['warehouse']) !== false) {
                                 $warehouse_location_entity->update();
                             } else {
                                 $warehouse_location_entity->save();
@@ -562,7 +582,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         'Admin.Advparameters.Notification'
                     );
                 } elseif (!$validateOnly) {
-                    StockAvailable::setProductDependsOnStock($product->id, $info['depends_on_stock'], null, $id_product_attribute);
+                    StockAvailable::setProductDependsOnStock($product->id, $info['depends_on_stock'], null,
+                        $id_product_attribute);
                 }
 
                 // This code allows us to set qty and disable depends on stock
@@ -574,28 +595,33 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         if ($price == 0) {
                             $price = 0.000001;
                         }
-                        $price = round((float) $price, 6);
+                        $price = round((float)$price, 6);
                         $warehouse = new Warehouse($info['warehouse']);
-                        if (!$validateOnly && $stock_manager->addProduct((int) $product->id, $id_product_attribute, $warehouse, (int) $info['quantity'], 1, $price, true)) {
-                            StockAvailable::synchronize((int) $product->id);
+                        if (!$validateOnly && $stock_manager->addProduct((int)$product->id, $id_product_attribute,
+                                $warehouse, (int)$info['quantity'], 1, $price, true)) {
+                            StockAvailable::synchronize((int)$product->id);
                         }
                     } elseif (!$validateOnly) {
                         if ($shop_is_feature_active) {
                             foreach ($id_shop_list as $shop) {
-                                StockAvailable::setQuantity((int) $product->id, $id_product_attribute, (int) $info['quantity'], (int) $shop);
+                                StockAvailable::setQuantity((int)$product->id, $id_product_attribute,
+                                    (int)$info['quantity'], (int)$shop);
                             }
                         } else {
-                            StockAvailable::setQuantity((int) $product->id, $id_product_attribute, (int) $info['quantity'], $this->context->shop->id);
+                            StockAvailable::setQuantity((int)$product->id, $id_product_attribute,
+                                (int)$info['quantity'], $this->context->shop->id);
                         }
                     }
                 }
             } elseif (!$validateOnly) { // if not depends_on_stock set, use normal qty
                 if ($shop_is_feature_active) {
                     foreach ($id_shop_list as $shop) {
-                        StockAvailable::setQuantity((int) $product->id, $id_product_attribute, (int) $info['quantity'], (int) $shop);
+                        StockAvailable::setQuantity((int)$product->id, $id_product_attribute, (int)$info['quantity'],
+                            (int)$shop);
                     }
                 } else {
-                    StockAvailable::setQuantity((int) $product->id, $id_product_attribute, (int) $info['quantity'], $this->context->shop->id);
+                    StockAvailable::setQuantity((int)$product->id, $id_product_attribute, (int)$info['quantity'],
+                        $this->context->shop->id);
                 }
             }
         }
