@@ -824,7 +824,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
             $this->errors[] = $this->l('Please select model export.');
         }
 
-        if ((int)Tools::getValue('import_from') === 1 && empty($_FILES['upload_file']['tmp_name']) && (int)Tools::getValue('id_advancedexportimport') === 0) {
+        if ((int)Tools::getValue('import_from') === 1 && empty($_FILES['upload_file']['tmp_name']) &&
+            (int)Tools::getValue('id_advancedexportimport') === 0) {
             $this->errors[] = $this->l('Please select upload file.');
         }
 
@@ -901,7 +902,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $aeImport->copyFromPost();
 
         $aeImport->separator =
-            ($aeImport->id_advancedexport && (int)$aeImport->import_from === 0 && $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
+            ($aeImport->id_advancedexport && (int)$aeImport->import_from === 0 &&
+            $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
         $aeImport->file_token = ($aeImport->file_token ? $this->generateFileToken() : $aeImport->file_token);
 
         // Don't save we will do it later
