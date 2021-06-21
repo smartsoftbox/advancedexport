@@ -455,8 +455,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             // updates the attribute
             if ($id_product_attribute && !$validateOnly) {
                 // gets all the combinations of this product
-                $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute,
-                    $default_language);
+                $attribute_combinations = $product->getAttributeCombinationsById(
+                    $id_product_attribute,
+                    $default_language
+                );
                 // FIXME: ~3s/declinaison
                 foreach ($attribute_combinations as $attribute_combination) {
                     // FIXME: ~3s/declinaison
@@ -587,9 +589,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 } elseif ((!$info['advanced_stock_management'] || $info['advanced_stock_management'] == 0) && $info['depends_on_stock'] == 1) {
                     $this->warnings[] = $this->trans(
                         'Advanced stock management is not enabled, cannot set "Depends on stock" for product %name% ',
-                        array(
-                            '%name%' => Tools::htmlentitiesUTF8($product->name[$default_language]),
-                        ),
+                        array('%name%' => Tools::htmlentitiesUTF8($product->name[$default_language])),
                         'Admin.Advparameters.Notification'
                     );
                 } elseif (!$validateOnly) {
