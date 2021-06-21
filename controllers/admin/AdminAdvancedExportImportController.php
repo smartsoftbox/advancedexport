@@ -901,7 +901,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $aeImport->copyFromPost();
 
         $aeImport->separator =
-            ($aeImport->id_advancedexport && $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
+            ($aeImport->id_advancedexport && (int)$aeImport->import_from === 0 && $aeImport->file_format !== 'csv' ? ';' : $aeImport->separator);
         $aeImport->file_token = ($aeImport->file_token ? $this->generateFileToken() : $aeImport->file_token);
 
         // Don't save we will do it later
