@@ -470,7 +470,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $id_shop_list,
                         $info['isbn'],
                         $info['low_stock_threshold'],
-                        $info['low_stock_alert']
+                        $info['low_stock_alert'],
+                        (isset($info['mpn']) ? $info['mpn'] : '')
                     );
                     $id_product_attribute_update = true;
                     if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
