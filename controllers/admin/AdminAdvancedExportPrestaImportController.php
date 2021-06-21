@@ -82,13 +82,13 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
     protected function attributeImportOne($info, $default_language, &$groups, &$attributes, $regenerate, $shop_is_feature_active, $validateOnly = false)
     {
         /* start modification */
-        if(isset($info['id_product_attribute']) && isset($info['id_product'])) {
+        if (isset($info['id_product_attribute']) && isset($info['id_product'])) {
             $id_product_attribute = $info['id_product_attribute'];
             $product = new Product((int) $info['id_product'], false, $default_language);
             $attribute_combinations = $product->getAttributeCombinationsById($id_product_attribute, $default_language);
             foreach ($attribute_combinations as $attribute_combination) {
                 foreach ($attribute_combination as $key => $field) {
-                    if(!isset($info[$key])) {
+                    if (!isset($info[$key])) {
                         $info[$key] = $field;
                     }
                 }
@@ -214,8 +214,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     }
                     if (empty($id_image)) {
                         $this->warnings[] = sprintf(
-                            $this->trans('No image was found for combination with id_product = %s and image position = %s.',
-                                array(), 'Admin.Advparameters.Notification'),
+                            $this->trans(
+                                'No image was found for combination with id_product = %s and image position = %s.',
+                                array(),
+                                'Admin.Advparameters.Notification'
+                            ),
                             Tools::htmlentitiesUTF8($product->id),
                             (int)$position
                         );
@@ -352,8 +355,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                     // if a reference is specified for this product, get the associate id_product_attribute to UPDATE
                     if (isset($info['reference']) && !empty($info['reference'])) {
-                        $id_product_attribute = Combination::getIdByReference($product->id,
-                            (string)($info['reference']));
+                        $id_product_attribute = Combination::getIdByReference(
+                            $product->id,
+                            (string)($info['reference'])
+                        );
 
                         // updates the attribute
                         if ($id_product_attribute && !$validateOnly) {
@@ -418,8 +423,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         );
 
                         if (isset($info['supplier_reference']) && !empty($info['supplier_reference'])) {
-                            $product->addSupplierReference($product->id_supplier, $id_product_attribute,
-                                $info['supplier_reference']);
+                            $product->addSupplierReference(
+                                $product->id_supplier,
+                                $id_product_attribute,
+                                $info['supplier_reference']
+                            );
                         }
                     }
 
@@ -440,7 +448,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
 
         // if a reference is specified for this product, get the associate id_product_attribute to UPDATE
-        if (isset($info['id_product_attribute']) && !empty($info['id_product_attribute']) && !isset($info['attribute']) && !isset($info['group'])) {
+        if (isset($info['id_product_attribute']) && !empty($info['id_product_attribute']) &&
+            !isset($info['attribute']) && !isset($info['group'])) {
             $id_product_attribute = $info['id_product_attribute'];
 
             // updates the attribute
@@ -544,8 +553,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $warehouse_location_entity->id_product_attribute = $id_product_attribute;
                         $warehouse_location_entity->id_warehouse = $info['warehouse'];
                         if (!$validateOnly) {
-                            if (WarehouseProductLocation::getProductLocation($product->id, $id_product_attribute,
-                                    $info['warehouse']) !== false) {
+                            if (WarehouseProductLocation::getProductLocation(
+                                $product->id,
+                                $id_product_attribute,
+                                $info['warehouse']) !== false
+                            ) {
                                 $warehouse_location_entity->update();
                             } else {
                                 $warehouse_location_entity->save();
@@ -569,9 +581,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 if ($info['depends_on_stock'] != 0 && $info['depends_on_stock'] != 1) {
                     $this->warnings[] = $this->trans(
                         'Incorrect value for "Depends on stock" for product %name% ',
-                        array(
-                            '%name%' => Tools::htmlentitiesUTF8($product->name[$default_language]),
-                        ),
+                        array('%name%' => Tools::htmlentitiesUTF8($product->name[$default_language])),
                         'Admin.Notifications.Error'
                     );
                 } elseif ((!$info['advanced_stock_management'] || $info['advanced_stock_management'] == 0) && $info['depends_on_stock'] == 1) {
