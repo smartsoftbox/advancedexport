@@ -71,8 +71,8 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Price',
             'field' => 'price',
-            'database' => 'products',
-            'alias' => 'p',
+            'database' => 'product_shop',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
@@ -92,10 +92,10 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Wholesale Price',
             'field' => 'wholesale_price',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 8,
             'import_name' => 'Cost price',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
@@ -145,10 +145,10 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Tax Id Rules Group',
             'field' => 'id_tax_rules_group',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 7,
             'import_name' => 'Tax rule ID',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
@@ -187,10 +187,10 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'On Sale',
             'field' => 'on_sale',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 9,
             'import_name' => 'On sale (0/1)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
@@ -213,26 +213,26 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Date Added',
             'field' => 'date_add',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 47,
             'import_name' => 'Product creation date',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Date Update',
             'field' => 'date_upd',
-            'database' => 'products',
-            'alias' => 'p',
+            'database' => 'product_shop',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Active',
             'field' => 'active',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 2,
             'import_name' => 'Active (0/1)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
@@ -305,10 +305,10 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Online only',
             'field' => 'online_only',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 53,
             'import_name' => 'Available online only (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
@@ -323,44 +323,44 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Ecotax',
             'field' => 'ecotax',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 21,
             'import_name' => 'Ecotax',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Unity',
             'field' => 'unity',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 34,
             'import_name' => 'Unit for base price',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Unit Price Ratio',
             'field' => 'unit_price_ratio',
-            'database' => 'products',
-            'alias' => 'p',
+            'database' => 'product_shop',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::PRICES
         ),
         array(
             'name' => 'Minimal Quantity',
             'field' => 'minimal_quantity',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 29,
             'import_name' => 'Minimal quantity',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::QUANTITIES
         ),
         array(
             'name' => 'Additional Shipping Cost',
             'field' => 'additional_shipping_cost',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 33,
             'import_name' => 'Additional shipping cost',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::SHIPPING
         ),
         array(
@@ -425,62 +425,62 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Customizable',
             'field' => 'customizable',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 55,
             'import_name' => 'Customizable (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Uploadable Files',
             'field' => 'uploadable_files',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 56,
             'import_name' => 'Uploadable files (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Text Fields',
             'field' => 'text_fields',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 57,
             'import_name' => 'Text fields (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::CUSTOMIZATION
         ),
         array(
             'name' => 'Available For Order',
             'field' => 'available_for_order',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 45,
             'import_name' => 'Available for order (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Condition',
             'field' => 'condition',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 54,
             'import_name' => 'Condition',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Show Price',
             'field' => 'show_price',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 48,
             'import_name' => 'Show price (0 = No 1 = Yes)',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Indexed',
             'field' => 'indexed',
-            'database' => 'products',
-            'alias' => 'p',
+            'database' => 'product_shop',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
@@ -500,8 +500,8 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Cache Default Attribute',
             'field' => 'cache_default_attribute',
-            'database' => 'products',
-            'alias' => 'p',
+            'database' => 'product_shop',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::ATTACHMENTS
         ),
         array(
@@ -530,19 +530,19 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Visibility',
             'field' => 'visibility',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 32,
             'import_name' => 'Visibility',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::INFORMATION
         ),
         array(
             'name' => 'Product available date',
             'field' => 'available_date',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 46,
             'import_name' => 'Product availability date',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::QUANTITIES
         ),
         array(
@@ -601,12 +601,12 @@ class ProductsFields extends BaseFields
         array(
             'name' => 'Advanced stock management',
             'field' => 'advanced_stock_management',
-            'database' => 'products',
+            'database' => 'product_shop',
             'import' => 65,
             'import_name' => 'Advanced Stock Management',
             'import_combination' => 24,
             'import_combination_name' => 'Advanced Stock Management',
-            'alias' => 'p',
+            'alias' => 'product_shop',
             'group15' => ProductGroup::QUANTITIES
         ),
         array(
