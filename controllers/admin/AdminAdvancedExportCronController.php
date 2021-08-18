@@ -82,6 +82,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
 
         $this->bootstrap = true;
         $this->addRowAction('edit');
+        $this->addRowAction('resetLastExport');
         $this->addRowAction('delete');
         $this->show_form_cancel_button = false;
 
@@ -104,6 +105,20 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                 Context::getContext()->link->getAdminLink(_ADMIN_AE_, true) . '&conf=3'
             );
         }
+    }
+
+    public function displayResetLastExportLink($token, $id)
+    {
+        $tpl = $this->createTemplate('helpers/list/list_action_reset_last_export.tpl');
+
+        $tpl->assign(array(
+            'href' => self::$currentIndex . '&token=' . $token . '&' . $this->identifier .
+                '=' . $id . '&resetLastExport' . $this->table . '=1',
+            'action' => $this->l('Clean Last Export'),
+            'is_presta_16' => (_PS_VERSION_ >= 1.6 ? true : false)
+        ));
+
+        return $tpl->fetch();
     }
 
     public function processBulkEnableSelection()

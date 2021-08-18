@@ -157,3 +157,15 @@ jQuery(function ($) {
     }).hide();
   });
 });
+
+
+
+function randomToInput()
+{
+  var filename = '';
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for ( var i = 0; i < 15; i++ ) {
+    filename += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  document.getElementById('filename').value = filename;
+}

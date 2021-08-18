@@ -95,6 +95,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
         $this->addRowAction('export');
         $this->addRowAction('edit');
+        $this->addRowAction('resetId');
         $this->addRowAction('delete');
 
         $this->bulk_actions = array(
@@ -110,6 +111,24 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 true
             ) . '&type=' . $this->type
         );
+    }
+
+    public function displayResetIdLink($token, $id)
+    {
+        $aem = new AdvancedExportClass($id);
+        if (!$aem->only_new) {
+            return '';
+        }
+        $tpl = $this->createTemplate('helpers/list/list_action_resetid.tpl');
+
+        $tpl->assign(array(
+            'href' => self::$currentIndex . '&token=' . $token . '&' . $this->identifier .
+                '=' . $id . '&resetid' . $this->table . '=1',
+            'action' => $this->l('Clean last Id'),
+            'is_presta_16' => (_PS_VERSION_ >= 1.6 ? true : false)
+        ));
+
+        return $tpl->fetch();
     }
 
     public function displayExportLink($token, $id)
@@ -185,10 +204,16 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                     'desc' => $this->l('Settings insternal name'),
                 ),
                 array(
-                    'type' => 'text',
+                    'type' => 'textbutton',
                     'label' => $this->l('File name'),
                     'name' => 'filename',
                     'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
+                    'button' => array(
+                        'label' => 'generate',
+                        'attributes' => array(
+                            'onclick' => 'randomToInput();',
+                        ),
+                    ),
                 ),
                 array(
                     'type' => 'select',
@@ -674,6 +699,15 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 _ADMIN_AE_,
                 true
             ) . $this->getFilters();
+        } else if (Tools::isSubmit('resetidadvancedexport')) {
+            $aem = new AdvancedExportClass(Tools::getValue('id_advancedexport'));
+            $aem->last_exported_id = 0;
+            $aem->save();
+
+            $this->redirect_after = Context::getContext()->link->getAdminLink(
+                    _ADMIN_AE_,
+                    true
+                ) . $this->getFilters();
         }
     }
 

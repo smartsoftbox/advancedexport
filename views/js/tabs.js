@@ -112,3 +112,4 @@ function hideLoader() {
   $('#ajax-loader').hide();
   $('#right-column div.tab-content').fadeIn();
 }
+
