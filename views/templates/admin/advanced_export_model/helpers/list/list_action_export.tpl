@@ -10,6 +10,6 @@
       <i class="icon-cloud-upload"></i>
         {$action|escape:'html':'UTF-8'}
     {else}
-      <img src="../img/admin/exort.gif" alt="{$action|escape:'html':'UTF-8'}">
+      <img src="../img/admin/export.gif" alt="{$action|escape:'html':'UTF-8'}">
     {/if}
 </a>

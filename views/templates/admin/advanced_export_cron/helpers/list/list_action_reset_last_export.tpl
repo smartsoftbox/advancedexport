@@ -10,6 +10,6 @@
       <i class="icon-refresh"></i>
         {$action|escape:'html':'UTF-8'}
     {else}
-      <img src="../img/admin/refreshid.gif" alt="{$action|escape:'html':'UTF-8'}">
+      <img src="../img/admin/date.png" alt="{$action|escape:'html':'UTF-8'}">
     {/if}
 </a>

@@ -363,6 +363,22 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
         return $grouped;
     }
 
+    public function postProcess()
+    {
+        parent::postProcess();
+
+        if (Tools::isSubmit('resetLastExportadvancedexportcron')) {
+            $aem = new AdvancedExportCronClass(Tools::getValue('id_advancedexportcron'));
+            $aem->last_export = '';
+            $aem->save();
+
+            $this->redirect_after = Context::getContext()->link->getAdminLink(
+                    _ADMIN_AE_,
+                    true
+                ) . $this->getFilters();
+        }
+    }
+
     private function saveCron()
     {
         $model = Tools::getValue('id_model');
