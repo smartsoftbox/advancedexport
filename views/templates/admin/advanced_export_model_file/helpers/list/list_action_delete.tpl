@@ -1,5 +1,5 @@
 {*
- * 2020 Smart Soft.
+ * 2021 Smart Soft.
  *
  * @author    Marcin Kubiak
  * @copyright Smart Soft
