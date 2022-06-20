@@ -106,6 +106,7 @@ class Install
 			`table` varchar(255) NOT NULL,
 			`alias` varchar(255) NOT NULL,
 			`as` varchar(255) NOT NULL,
+			`concat` varchar(255) NOT NULL,
 			`attribute` BOOL NOT NULL DEFAULT 0,
 			`return` varchar(255) NOT NULL,
 			`import` int(10) unsigned NOT NULL,
@@ -174,6 +175,7 @@ class Install
         $field->group15 = (isset($item['group15']) ? $item['group15'] : '');
         $field->group17 = (isset($item['group17']) ? $item['group17'] : '');
         $field->version = (isset($item['version']) ? $item['version'] : '');
+	$field->concat = (isset($item['concat']) ? $item['concat'] : '');
         $field->add();
 
         return $item;
