@@ -226,6 +226,15 @@ class OrdersFields extends BaseFields
             'group15' => OrderGroup::CUSTOMER
         ),
         array(
+            'name' => 'Customer Full Name',
+            'field' => 'fullname_firstname',
+            'as' => true,
+            'concat' => 'lastname',
+            'database' => 'customer',
+            'alias' => 'cu',
+            'group15' => OrderGroup::CUSTOMER
+        ),
+        array(
             'name' => 'Customer Email',
             'field' => 'email',
             'database' => 'customer',
