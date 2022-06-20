@@ -32,6 +32,12 @@ class CategoriesFields extends BaseFields
             'group15' => CategoryGroup::INFORMATION
         ),
         array(
+            'name' => 'Name Parent',
+            'field' => 'name_parent',
+            'database' => 'other',
+            'group15' => CategoryGroup::INFORMATION
+        ),
+        array(
             'name' => 'Id shop default',
             'field' => 'id_shop_default',
             'database' => 'category',
