@@ -120,13 +120,31 @@ class ProductsExport extends ExportInterface
 
     public function productsFeatures($obj, $ae)
     {
-        $features = $obj->getFrontFeaturesStatic($this->ae->id_lang, $obj->id);
+        $features = $this->getFrontFeaturesStatic($this->ae->id_lang, $obj->id);
         $feats = array();
-        foreach ($features as $feature) {
-            $feats[] = $feature['name'] . '-' . $feature['value'];
+        foreach ($features as $fe) {
+            $feats[] = $fe['name'] . ':' . $fe['value'] . ':' . $fe['position'] . ':' . $fe['custom'];
         }
 
         return implode(',', $feats);
+    }
+	
+    public function getFrontFeaturesStatic($id_lang, $id_product)
+    {
+        if (!Feature::isFeatureActive()) {
+            return [];
+        }
+        return Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS(
+            'SELECT name, value, pf.id_feature, f.position, custom
+            FROM ' . _DB_PREFIX_ . 'feature_product pf
+            LEFT JOIN ' . _DB_PREFIX_ . 'feature_value fv ON (pf.id_feature_value = fv.id_feature_value)
+            LEFT JOIN ' . _DB_PREFIX_ . 'feature_lang fl ON (fl.id_feature = pf.id_feature AND fl.id_lang = ' . (int) $id_lang . ')
+            LEFT JOIN ' . _DB_PREFIX_ . 'feature_value_lang fvl ON (fvl.id_feature_value = pf.id_feature_value AND fvl.id_lang = ' . (int) $id_lang . ')
+            LEFT JOIN ' . _DB_PREFIX_ . 'feature f ON (f.id_feature = pf.id_feature AND fl.id_lang = ' . (int) $id_lang . ')
+            ' . Shop::addSqlAssociation('feature', 'f') . '
+            WHERE pf.id_product = ' . (int) $id_product . '
+            ORDER BY f.position ASC'
+        );
     }
 
     public function productsAttachments($obj, $ae)
