@@ -175,10 +175,14 @@ class Export
             $allFields[$field]['alias'] ? $allFields[$field]['alias'] . '.' : '');
 
             if (isset($allFields[$field]['as']) && $allFields[$field]['as']) {
-                $specific_settings['sqlfields'][] = $alias . '`' . Tools::substr(
+                $concat = null;
+                if (isset($allFields[$field]['concat']) && $allFields[$field]['concat']) {
+                    $concat = ', " ", ' . $alias . '`' . $allFields[$field]['concat'] . '`)';
+                }
+                $specific_settings['sqlfields'][] = ($concat ? 'CONCAT(': '') . $alias . '`' . Tools::substr(
                     strstr($allFields[$field]['field'], '_'),
                     Tools::strlen('_')
-                ) . '` as ' . $allFields[$field]['field'] . '';
+                ) . '`' . $concat . ' as ' . $allFields[$field]['field'];
             } else {
                 $specific_settings['sqlfields'][] = $alias . '`' . $allFields[$field]['field'] . '`';
             }
