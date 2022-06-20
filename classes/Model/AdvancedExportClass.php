@@ -38,6 +38,7 @@ class AdvancedExportClass extends ObjectModel
     public $ftp_port;
     public $filename;
     public $file_format;
+    public $file_no_data;
 
     public static $definition = array(
         'table' => 'advancedexport',
@@ -84,6 +85,7 @@ class AdvancedExportClass extends ObjectModel
         $fields['decimal_round'] = (int)($this->decimal_round);
         $fields['strip_tags'] = (int)($this->strip_tags);
         $fields['only_new'] = (int)($this->only_new);
+        $fields['file_no_data'] = (int)($this->file_no_data);
         $fields['date_from'] = (string)($this->date_from);
         $fields['date_to'] = (string)($this->date_to);
         $fields['last_exported_id'] = (int)($this->last_exported_id);

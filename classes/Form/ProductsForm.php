@@ -141,7 +141,7 @@ class ProductsForm extends MyHelperForm
                 'desc' => $this->l('If you want all leave blank. All are exported by default.'),
                 'tree' => array(
                     'id' => 'categories-tree',
-                    'selected_categories' => $this->selected_cat,
+                    'selected_categories' => $this->getSelectedCat(),
                     'use_search' => true,
                     'use_checkbox' => true,
                 ),
@@ -176,5 +176,14 @@ class ProductsForm extends MyHelperForm
         }
 
         return $fields;
+    }
+
+    public function getSelectedCat()
+    {
+        if(Tools::getValue('id_advancedexport')) {
+            $ae = new AdvancedExportClass(Tools::getValue('id_advancedexport'));
+            $fields = Tools::jsonDecode($ae->fields, true);
+            return (isset($fields['categories']) ? $fields['categories'] : array());
+        }
     }
 }

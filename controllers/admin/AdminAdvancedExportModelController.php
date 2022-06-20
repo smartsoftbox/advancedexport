@@ -501,6 +501,26 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                     ),
                 ),
                 array(
+                    'type' => $this->switch,
+                    'label' => $this->l('Create file when no data'),
+                    'name' => 'file_no_data',
+                    'class' => 't',
+                    'is_bool' => true,
+                    'desc' => $this->l('When there are no records create empty file.'),
+                    'values' => array(
+                        array(
+                            'id' => 'active_on',
+                            'value' => 1,
+                            'label' => $this->l('Yes'),
+                        ),
+                        array(
+                            'id' => 'active_off',
+                            'value' => 0,
+                            'label' => $this->l('No'),
+                        ),
+                    ),
+                ),
+                array(
                     'type' => 'free',
                     'name' => 'id',
                     'label' => $this->l('Id'),
@@ -660,7 +680,12 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
         if (!Validate::isGenericName(Tools::getValue('name')) || Tools::getValue('name') == '') {
             $this->errors[] = $this->l('Invalid or empty name.');
         }
-        if (Tools::getValue('filename') != '' && !Validate::isGenericName(Tools::getValue('filename'))) {
+        if (Tools::getValue('filename') != '' &&
+            !ModuleTools::getFileNameWithPattern(Tools::getValue('filename'))) {
+            $this->errors[] = $this->l('Invalid file name date format.');
+        }
+        if (Tools::getValue('filename') != '' &&
+            !Validate::isFileName(ModuleTools::getFileNameWithPattern(Tools::getValue('filename')))) {
             $this->errors[] = $this->l('Invalid file name.');
         }
         if (Tools::getValue('date_from') != '' && !Validate::isDate(Tools::getValue('date_from'))) {

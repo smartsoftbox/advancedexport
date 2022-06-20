@@ -46,7 +46,8 @@ function importNow(id, offset, limit, total, validateOnly, crossStepsVariables, 
     data: {
       ajax: 1,
       controller: ae_controller_import,
-      action: 'import'
+      action: 'import',
+      crossStepsVars: JSON.stringify(crossStepsVariables)
     },
     success: function (jsonData) {
       if (jsonData.totalCount) {

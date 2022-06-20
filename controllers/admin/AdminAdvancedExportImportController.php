@@ -1121,7 +1121,8 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $validateOnly = ((int)$this->moduleTools->getValue('validateOnly') == 1);
         $moreStep = (int)$this->moduleTools->getValue('moreStep');
 
-        $this->runImport($offset, $limit, $validateOnly, $moreStep, $id, $aeImport);
+        $results = $this->runImport($offset, $limit, $validateOnly, $moreStep, $id);
+        die(json_encode($results));
     }
 
     public function getImportPath($aeImport, $mapping)

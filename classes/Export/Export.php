@@ -212,9 +212,9 @@ class Export
     {
         $this->rowsNumber = $entityExportObject->rowsNumber;
 
-//        if(!$this->rowsNumber) {
-//            return '';
-//        }
+        if(!$this->rowsNumber && !$ae->file_no_data) {
+            return '';
+        }
 
         $url = null;
         $file = null;
@@ -307,7 +307,7 @@ class Export
         if ($filename == null || $filename == '') {
             $filename = $type . date('Y-m-d_His');
         } else {
-            $filename = $filename;
+            $filename = ModuleTools::getFileNameWithPattern($filename);
         }
 
         if ($file_format === 'csv') {

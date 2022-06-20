@@ -527,6 +527,13 @@ class OrdersFields extends BaseFields
             'group15' => OrderGroup::PRODUCT
         ),
         array(
+            'name' => 'Product Reduction percent',
+            'field' => 'reduction_percent',
+            'database' => 'order_detail',
+            'alias' => 'od',
+            'group15' => OrderGroup::PRODUCT
+        ),
+        array(
             'name' => 'Product Reduction amount',
             'field' => 'reduction_amount',
             'database' => 'order_detail',

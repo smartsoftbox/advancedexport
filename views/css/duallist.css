@@ -1,3 +1,7 @@
+.bootstrap #advancedexport_form .form-wrapper {
+  max-width: 95%;
+}
+
 .dual-list .list-group {
   margin-top: 8px;
 }

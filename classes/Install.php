@@ -194,6 +194,7 @@ class Install
 			`decimal_round` int(10) NOT NULL,
 			`strip_tags` BOOL NOT NULL DEFAULT 0,
 			`only_new` BOOL NOT NULL DEFAULT 0,
+			`file_no_data` BOOL NOT NULL DEFAULT 0,
 			`date_from` varchar(255) NOT NULL,
 			`date_to` varchar(255) NOT NULL,
             `last_exported_id` int(10) NOT NULL DEFAULT 0,

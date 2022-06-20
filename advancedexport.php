@@ -59,7 +59,7 @@ class Advancedexport extends Module
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
         $this->need_instance = 0;
-        $this->version = '4.5.15';
+        $this->version = '4.5.20';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
             'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
@@ -145,6 +145,11 @@ class Advancedexport extends Module
         $advancedExportImportController = new AdminAdvancedExportImportController();
         $advancedExportImportController->getImportPath($aeImport, false);
         $advancedExportImportController->addImportGETValues($id);
-        $advancedExportImportController->runImport(0, 999999999, false, 1, $id, $aeImport);
+        $results = $advancedExportImportController->runImport(0, 999999999, false, 0, $id, $aeImport);
+
+        if( isset($results['crossStepsVariables']['accessories']) && count($results['crossStepsVariables']['accessories']) ) {
+            $advancedExportImportController->addToGet('crossStepsVars', json_encode($results['crossStepsVariables']));
+            $advancedExportImportController->runImport(0, 999999999, false, 1, $id, $aeImport);
+        }
     }
 }
