@@ -17,6 +17,7 @@ class AdvancedExportFieldClass extends ObjectModel
     public $table;
     public $alias;
     public $as;
+    public $concat;
     public $attribute;
     public $return;
     public $import;
@@ -152,6 +153,7 @@ class AdvancedExportFieldClass extends ObjectModel
         $fields['alias'] = (string)($this->alias);
         $fields['return'] = (string)($this->return);
         $fields['as'] = (string)($this->as);
+        $fields['concat'] = (string)($this->concat);
         $fields['attribute'] = (bool)($this->attribute);
         $fields['import'] = (int)($this->import);
         $fields['import_name'] = (string)($this->import_name);
