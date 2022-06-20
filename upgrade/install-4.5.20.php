@@ -39,6 +39,24 @@ function upgrade_module_4_5_20($module)
                 $module->l('Can not insert reduction percent field');
         }
     }
+    
+    if (!UpgradeHelper::isColumnAndTabWithValueExists(
+        'field',
+        'categories',
+        'name_parent',
+        'advancedexportfield'
+    )) {
+        if (!DB::getInstance()->execute(
+            "INSERT INTO `" . _DB_PREFIX_ . "advancedexportfield` (`tab`, `name`, `field`, `table`, `alias`, `as`, 
+            `attribute`, `return`, `import`, `import_name`, `import_combination`, `import_combination_name`, 
+            `isCustom`, `group15`, `group17`, `version`) VALUES ('categories', 'Name Parent', 
+            'name_parent', 'other', '', 0, 0, '', 0, '', 0, '', 0, '" .
+            CategoryGroup::INFORMATION . "', '', '');"
+        )) {
+            $module->upgrade_detail[$upgrade_version][] =
+                $module->l('Can not insert name parent field');
+        }
+    }
 
     return (bool)!count($module->upgrade_detail[$upgrade_version]);
 }
