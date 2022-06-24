@@ -112,8 +112,8 @@ class ModuleTools
     public static function getFileNameWithPattern($filename)
     {
         $correct = true;
-        $filename = preg_replace_callback('/\[([^\]]*)\]/', function($matches) use (&$correct) {
-            if(!$date = date($matches[1]) ) {
+        $filename = preg_replace_callback('/\[([^\]]*)\]/', function ($matches) use (&$correct) {
+            if (!$date = date($matches[1])) {
                 $correct = false;
                 return false;
             }

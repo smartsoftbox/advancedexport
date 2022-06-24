@@ -175,7 +175,7 @@ class Install
         $field->group15 = (isset($item['group15']) ? $item['group15'] : '');
         $field->group17 = (isset($item['group17']) ? $item['group17'] : '');
         $field->version = (isset($item['version']) ? $item['version'] : '');
-	$field->concat = (isset($item['concat']) ? $item['concat'] : '');
+        $field->concat = (isset($item['concat']) ? $item['concat'] : '');
         $field->add();
 
         return $item;
