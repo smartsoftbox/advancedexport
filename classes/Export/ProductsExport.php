@@ -324,13 +324,15 @@ class ProductsExport extends ExportInterface
     public function productsImage($obj, $ae)
     {
         $image = Product::getCover($obj->id);
-        $imageLink = 'http://' . $this->link->getImageLink(
+        if(!$image) {
+            return '';
+        }
+
+        return 'http://' . $this->link->getImageLink(
             $obj->link_rewrite[$this->ae->id_lang],
             $obj->id . '-' . $image['id_image'],
             $this->ae->image_type
         );
-
-        return $imageLink;
     }
 
     public function productsImagePosition($obj)

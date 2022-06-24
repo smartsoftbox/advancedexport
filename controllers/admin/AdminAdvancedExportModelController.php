@@ -54,6 +54,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                 'type' => 'html',
                 'orderby' => false,
                 'search' => false,
+                'remove_onclick' => true
             ),
             'save_type' => array(
                 'title' => $this->l('Save'),

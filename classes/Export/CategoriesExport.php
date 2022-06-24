@@ -65,4 +65,10 @@ class CategoriesExport extends ExportInterface
 
         return $imageLink;
     }
+
+    public function categoriesNameParent($obj, $ae)
+    {
+        $parent = new Category($obj->id_parent, $ae->id_lang);
+        return $parent->name;
+    }
 }

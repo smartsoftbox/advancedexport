@@ -62,23 +62,23 @@ jQuery(function ($) {
 
   $('select#entity').change();
 
-  $('button#auto-select').on('click', function () {
-    var fields = document.querySelectorAll('select[id^="fields"]');
-    fields.forEach(function(field) {
-      // console.log(field);
-      var parent = field.closest('div.form-group');
-      var text = parent.querySelector('label').textContent.trim();
-      // console.log(text);
-      var selectOptions = field.options;
-      for (var opt, j = 0; opt = selectOptions[j]; j++) {
-        if (opt.text.toLowerCase() === text.toLocaleLowerCase()) {
-          console.log(field);
-          field.selectedIndex = j;
-          $(field).trigger("chosen:updated");
-          break;
+  $(document.body).on('click', 'button#auto-select', function(e) {
+      var fields = document.querySelectorAll('select[id^="fields"]');
+      fields.forEach(function(field) {
+        // console.log(field);
+        var parent = field.closest('div.form-group');
+        var text = parent.querySelector('label').textContent.trim();
+        // console.log(text);
+        var selectOptions = field.options;
+        for (var opt, j = 0; opt = selectOptions[j]; j++) {
+          if (opt.text.toLowerCase() === text.toLocaleLowerCase()) {
+            console.log(field);
+            field.selectedIndex = j;
+            $(field).trigger("chosen:updated");
+            break;
+          }
         }
-      }
-    });
+      });
   });
 
   $("#advancedexportimport_form").submit(function(e) {

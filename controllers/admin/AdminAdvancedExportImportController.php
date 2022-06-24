@@ -262,7 +262,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
                 ),
                 array(
                     'type' => $this->switch,
-                    'label' => $this->l('Delete all categories before import '),
+                    'label' => $this->l('Delete all entities before import '),
                     'name' => 'truncate',
                     'class' => 't hide',
                     'is_bool' => true,
@@ -1121,7 +1121,7 @@ class AdminAdvancedExportImportController extends AdminAdvancedExportBaseControl
         $validateOnly = ((int)$this->moduleTools->getValue('validateOnly') == 1);
         $moreStep = (int)$this->moduleTools->getValue('moreStep');
 
-        $results = $this->runImport($offset, $limit, $validateOnly, $moreStep, $id);
+        $results = $this->runImport($offset, $limit, $validateOnly, $moreStep, $id, $aeImport);
         die(json_encode($results));
     }
 

@@ -264,6 +264,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                     'type' => 'select',
                     'label' => $this->l('Hour'),
                     'name' => 'cron_hour',
+                    'default_value' => '*',
                     'options' => array(
                         'query' => $cron->getCronHour(),
                         'id' => 'value',
@@ -275,6 +276,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                     'type' => 'select',
                     'label' => $this->l('Day'),
                     'name' => 'cron_day',
+                    'default_value' => '*',
                     'options' => array(
                         'query' => $cron->getCronDay(),
                         'id' => 'value',
@@ -286,6 +288,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                     'type' => 'select',
                     'label' => $this->l('Week'),
                     'name' => 'cron_week',
+                    'default_value' => '*',
                     'options' => array(
                         'query' => $cron->getCronWeek(),
                         'id' => 'value',
@@ -297,6 +300,7 @@ class AdminAdvancedExportCronController extends AdminAdvancedExportBaseControlle
                     'type' => 'select',
                     'label' => $this->l('Month'),
                     'name' => 'cron_month',
+                    'default_value' => '*',
                     'options' => array(
                         'query' => $cron->getCronMonth(),
                         'id' => 'value',
