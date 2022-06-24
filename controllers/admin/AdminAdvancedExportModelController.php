@@ -205,7 +205,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
                     'desc' => $this->l('Settings insternal name'),
                 ),
                 array(
-                    'type' => 'textbutton',
+                    'type' => (_PS_VERSION_ > 1.6 ? 'textbutton' : 'text'),
                     'label' => $this->l('File name'),
                     'name' => 'filename',
                     'desc' => $this->l('You can set name for file or leave blank name will be given by system.'),
