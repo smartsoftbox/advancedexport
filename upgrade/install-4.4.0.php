@@ -68,7 +68,7 @@ function upgrade_module_4_4_0($module)
     $models = DB::getInstance()->executeS('select * from ' . _DB_PREFIX_ . 'advancedexport');
 
     foreach ($models as $model) {
-        $fields = Tools::jsonDecode($model['fields'], true);
+        $fields = json_decode($model['fields'], true);
         foreach ($fields['fields[]'] as $key => $field) {
             $advancedexportfield = DB::getInstance()->getRow(
                 'select * from ' . _DB_PREFIX_ . 'advancedexportfield

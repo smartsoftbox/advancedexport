@@ -14,7 +14,13 @@ require_once dirname(__FILE__) . '/../../classes/Model/AdvancedExportClass.php';
 require_once dirname(__FILE__) . '/AdminAdvancedExportImportFileController.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportEnum.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
-require_once dirname(__FILE__) . '/AdminAdvancedExportPrestaImportController.php';
+
+if (_PS_VERSION_ < 8.0.0) {
+    require_once dirname(__FILE__) . '/AdminAdvancedExportPrestaImportController_8.php';
+} else {
+    require_once dirname(__FILE__) . '/AdminAdvancedExportPrestaImportController.php';
+}
+
 require_once dirname(__FILE__) . '/AdminAdvancedExportBaseController.php';
 
 if (_PS_VERSION_ < 1.7) {

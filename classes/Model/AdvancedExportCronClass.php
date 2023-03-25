@@ -42,7 +42,7 @@ class AdvancedExportCronClass extends ObjectModel
     {
         /* Classical fields */
         foreach ($_POST as $key => $value) {
-            if (key_exists($key, $this) and $key != 'id_' . $this->table) {
+            if (property_exists($this, $key) and $key != 'id_' . $this->table) {
                 $this->{$key} = $value;
             }
         }

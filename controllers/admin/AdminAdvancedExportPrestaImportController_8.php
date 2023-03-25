@@ -105,15 +105,15 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
         if (!$shop_is_feature_active) {
             $info['shop'] = 1;
-        } elseif (!isset($info['shop']) || empty($info['shop'])) {
+        } elseif (empty($info['shop'])) {
             $info['shop'] = implode($this->multiple_value_separator, Shop::getContextListShopID());
         }
 
         // Get shops for each attributes
         $info['shop'] = explode($this->multiple_value_separator, $info['shop']);
 
-        $id_shop_list = array();
-        if (is_array($info['shop']) && count($info['shop'])) {
+        $id_shop_list = [];
+        if (is_array($info['shop'])) {
             foreach ($info['shop'] as $shop) {
                 if (!empty($shop) && !is_numeric($shop)) {
                     $id_shop_list[] = Shop::getIdByName($shop);
@@ -146,7 +146,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         if (isset($info['image_url']) && $info['image_url']) {
             $info['image_url'] = explode($this->multiple_value_separator, $info['image_url']);
 
-            if (is_array($info['image_url']) && count($info['image_url'])) {
+            if (is_array($info['image_url'])) {
                 foreach ($info['image_url'] as $key => $url) {
                     $url = trim($url);
                     $product_has_images = (bool)Image::getImages($this->context->language->id, $product->id);
@@ -195,7 +195,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                             );
                         }
                         if ($field_error !== true || $lang_field_error !== true) {
-                            $this->errors[] = ($field_error !== true ? $field_error : '') . (isset($lang_field_error) && $lang_field_error !== true ? $lang_field_error : '') . mysql_error();
+                            $this->errors[] = ($field_error !== true ? $field_error : '')
+                                . ($lang_field_error !== true ? $lang_field_error : '');
                         }
                     }
                 }
@@ -203,7 +204,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         } elseif (isset($info['image_position']) && $info['image_position']) {
             $info['image_position'] = explode($this->multiple_value_separator, $info['image_position']);
 
-            if (is_array($info['image_position']) && count($info['image_position'])) {
+            if (is_array($info['image_position'])) {
                 foreach ($info['image_position'] as $position) {
                     // choose images from product by position
                     $images = $product->getImages($default_language);
@@ -312,13 +313,13 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                 if (isset($groups_attributes[$key])) {
                     $group = $groups_attributes[$key]['group'];
-                    if (!isset($attributes[$group . '_' . $attribute]) && count($groups_attributes[$key]) == 2) {
+                    if (!isset($attributes[$group . '_' . $attribute])) {
                         $id_attribute_group = $groups_attributes[$key]['id'];
-                        $obj = new Attribute();
+                        $obj = new ProductAttribute();
                         // sets the proper id (corresponding to the right key)
                         $obj->id_attribute_group = $groups_attributes[$key]['id'];
                         $obj->name[$default_language] = str_replace('\n', '', str_replace('\r', '', $attribute));
-                        $obj->position = (!$position && isset($groups[$group])) ? Attribute::getHigherPosition($groups[$group]) + 1 : $position;
+                        $obj->position = (!$position && isset($groups[$group])) ? ProductAttribute::getHigherPosition($groups[$group]) + 1 : $position;
 
                         if (($field_error = $obj->validateFields(UNFRIENDLY_ERROR, true)) === true &&
                             ($lang_field_error = $obj->validateFieldsLang(UNFRIENDLY_ERROR, true)) === true) {
@@ -370,7 +371,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                             // gets all the combinations of this product
                             $attribute_combinations = $product->getAttributeCombinations($default_language);
                             foreach ($attribute_combinations as $attribute_combination) {
-                                if ($id_product_attribute && $id_product_attribute === $attribute_combination['id_product_attribute']) {
+                                if (in_array($id_product_attribute, $attribute_combination)) {
                                     // FIXME: ~3s/declinaison
                                     $product->updateAttribute(
                                         $id_product_attribute,
@@ -382,12 +383,12 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                                         $id_image,
                                         (string) $info['reference'],
                                         (string) $info['ean13'],
-                                        ((int) $info['default_on'] ? (int) $info['default_on'] : null),
-                                        0,
+                                        ((bool) $info['default_on'] ? (bool) $info['default_on'] : null),
+                                        '',
                                         (string) $info['upc'],
                                         (int) $info['minimal_quantity'],
                                         $info['available_date'],
-                                        null,
+                                        false,
                                         $id_shop_list,
                                         '',
                                         $info['low_stock_threshold'],
@@ -443,7 +444,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                     // after insertion, we clean attribute position and group attribute position
                     if (!$validateOnly) {
-                        $obj = new Attribute();
+                        $obj = new ProductAttribute();
                         $obj->cleanPositions((int)$id_attribute_group, false);
                         AttributeGroup::cleanPositions();
                     }
@@ -451,7 +452,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             }
         }
 
-
+        // start modification
         // if a reference is specified for this product, get the associate id_product_attribute to UPDATE
         if (isset($info['id_product_attribute']) && !empty($info['id_product_attribute']) &&
             !isset($info['attribute']) && !isset($info['group'])) {
@@ -497,13 +498,14 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 }
             }
         }
+        // end modification
 
         $product->checkDefaultAttributes();
         if (!$product->cache_default_attribute && !$validateOnly) {
             Product::updateDefaultAttribute($product->id);
         }
         if ($id_product_attribute) {
-            if (!$validateOnly && !isset($info['id_product_attribute'])) {
+            if (!$validateOnly) {
                 // now adds the attributes in the attribute_combination table
                 if ($id_product_attribute_update) {
                     Db::getInstance()->execute('
@@ -541,7 +543,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 }
                 // automaticly disable depends on stock, if a_s_m set to disabled
                 if (!$validateOnly && StockAvailable::dependsOnStock($product->id) == 1 && $info['advanced_stock_management'] == 0) {
-                    StockAvailable::setProductDependsOnStock($product->id, 0, null, $id_product_attribute);
+                    StockAvailable::setProductDependsOnStock($product->id, false, null, $id_product_attribute);
                 }
             }
 
@@ -608,7 +610,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     if ($info['depends_on_stock'] == 1) {
                         $stock_manager = StockManagerFactory::getManager();
                         $price = str_replace(',', '.', $info['wholesale_price']);
-                        if ($price == 0) {
+                        if ($price == '0') {
                             $price = 0.000001;
                         }
                         $price = round((float)$price, 6);
@@ -639,6 +641,21 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     StockAvailable::setQuantity((int)$product->id, $id_product_attribute, (int)$info['quantity'],
                         $this->context->shop->id);
                 }
+            }
+
+            // assign combination id to already associated product suppliers
+            $productSuppliers = ProductSupplier::getSupplierCollection($product->id);
+            /** @var ProductSupplier $productSupplier */
+            foreach ($productSuppliers as $productSupplier) {
+                // skip if related combination supplier already exists
+                if ((int) $productSupplier->id_product_attribute === (int) $id_product_attribute) {
+                    continue;
+                }
+
+                $combinationSupplier = clone $productSupplier;
+                $combinationSupplier->id = null;
+                $combinationSupplier->id_product_attribute = $id_product_attribute;
+                $combinationSupplier->add();
             }
         }
     }
@@ -675,15 +692,21 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
             if (is_array($category_data)) {
                 foreach ($category_data as $tmp) {
-                    if (!isset($product->category) || !$product->category || is_array($product->category)) {
-                        $product->category[] = $tmp;
+                    if ($product->category && is_array($product->category)) {
+                        continue;
                     }
+                    $product->category[] = $tmp;
                 }
             }
         }
 
         AdminImportController::setEntityDefaultValues($product);
         AdminImportController::arrayWalk($info, ['AdminImportController', 'fillInfo'], $product);
+
+        /** @var Product|null $product */
+        if (!$product) {
+            return;
+        }
 
         if (!$shop_is_feature_active) {
             $product->shop = (int) Configuration::get('PS_SHOP_DEFAULT');
@@ -698,7 +721,6 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         }
 
         // link product to shops
-        $product->id_shop_list = [];
         foreach (explode($this->multiple_value_separator, $product->shop) as $shop) {
             if (!empty($shop) && !is_numeric($shop)) {
                 $product->id_shop_list[] = Shop::getIdByName($shop);
@@ -800,7 +822,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             $product->ecotax = 0;
         }
 
-        if (isset($product->category) && is_array($product->category) && count($product->category)) {
+        if (!empty($product->category) && is_array($product->category)) {
             $product->id_category = []; // Reset default values array
             foreach ($product->category as $value) {
                 if (is_numeric($value)) {
@@ -810,8 +832,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $category_to_create = new Category();
                         $category_to_create->id = (int) $value;
                         $category_to_create->name = AdminImportController::createMultiLangField($value);
-                        $category_to_create->active = 1;
-                        $category_to_create->id_parent = Configuration::get('PS_HOME_CATEGORY'); // Default parent is home for unknown category to create
+                        $category_to_create->active = true;
+                        $category_to_create->id_parent = (int) Configuration::get('PS_HOME_CATEGORY'); // Default parent is home for unknown category to create
                         $category_link_rewrite = Tools::link_rewrite($category_to_create->name[$default_language_id]);
                         $category_to_create->link_rewrite = AdminImportController::createMultiLangField($category_link_rewrite);
                         if (($field_error = $category_to_create->validateFields(UNFRIENDLY_ERROR, true)) === true &&
@@ -854,9 +876,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
         // Category default now takes the value of the first new category during import
         if (isset($product->id_category[0])) {
-            $product->id_category_default = (int) $product->id_category[0];
+            if (empty($product->id_category_default) || !in_array($product->id_category_default, $product->id_category)) {
+                $product->id_category_default = (int) $product->id_category[0];
+            }
         } else {
-            if (!isset($product->id_category_default) || !$product->id_category_default) {
+            if (empty($product->id_category_default)) {
                 $defaultProductShop = new Shop($product->id_shop_default);
                 $product->id_category_default = Category::getRootCategory(null, Validate::isLoadedObject($defaultProductShop) ? $defaultProductShop : null)->id;
             }
@@ -908,7 +932,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
         }
 
         // Indexation is already 0 if it's a new product, but not if it's an update
-        $product->indexed = 0;
+        $product->indexed = false;
         $productExistsInDatabase = false;
 
         if ($product->id && Product::existsInDatabase((int) $product->id, 'product')) {
@@ -953,7 +977,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             $product->force_id = (bool) $force_ids;
 
             if (!$res) {
-                if (isset($product->date_add) && $product->date_add != '') {
+                if ($product->date_add != '') {
                     $res = ($validateOnly || $product->add(false));
                 } else {
                     $res = ($validateOnly || $product->add());
@@ -1013,23 +1037,20 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 !empty($info['name']) ? Tools::safeOutput($info['name']) : 'No Name',
                 !empty($info['id']) ? Tools::safeOutput($info['id']) : 'No ID'
             );
-            $this->errors[] = ($field_error !== true ? $field_error : '') . (isset($lang_field_error) && $lang_field_error !== true ? $lang_field_error : '') .
+            $this->errors[] = ($field_error !== true ? $field_error : '') . ($lang_field_error !== true ? $lang_field_error : '') .
                 Db::getInstance()->getMsgError();
         } else {
             // Product supplier
-            if (!$validateOnly && isset($product->id) && $product->id && isset($product->id_supplier) && property_exists($product,
-                    'supplier_reference')) {
-                $id_product_supplier = (int)ProductSupplier::getIdByProductAndSupplier((int)$product->id, 0,
-                    (int)$product->id_supplier);
+            if (!$validateOnly && !empty($product->id) && property_exists($product, 'supplier_reference') && !empty($product->id_supplier)) {
+                $id_product_supplier = (int) ProductSupplier::getIdByProductAndSupplier((int) $product->id, 0, (int) $product->id_supplier);
                 if ($id_product_supplier) {
                     $product_supplier = new ProductSupplier($id_product_supplier);
                 } else {
                     $product_supplier = new ProductSupplier();
                 }
-
-                $product_supplier->id_product = (int)$product->id;
+                $product_supplier->id_product = (int) $product->id;
                 $product_supplier->id_product_attribute = 0;
-                $product_supplier->id_supplier = (int)$product->id_supplier;
+                $product_supplier->id_supplier = (int) $product->id_supplier;
                 $product_supplier->product_supplier_price_te = $product->wholesale_price;
                 $product_supplier->product_supplier_reference = $product->supplier_reference;
                 $product_supplier->id_currency = Currency::getDefaultCurrency()->id;
@@ -1049,7 +1070,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             $id_shop_list = [];
             foreach ($info['shop'] as $shop) {
                 if (!empty($shop) && !is_numeric($shop)) {
-                    $id_shop_list[] = (int)Shop::getIdByName($shop);
+                    $id_shop_list[] = (int) Shop::getIdByName($shop);
                 } elseif (!empty($shop)) {
                     $id_shop_list[] = $shop;
                 }
@@ -1060,11 +1081,11 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     $specific_price = SpecificPrice::getSpecificPrice($product->id, $id_shop, 0, 0, 0, 1, 0, 0, 0, 0);
 
                     if (is_array($specific_price) && isset($specific_price['id_specific_price'])) {
-                        $specific_price = new SpecificPrice((int)$specific_price['id_specific_price']);
+                        $specific_price = new SpecificPrice((int) $specific_price['id_specific_price']);
                     } else {
                         $specific_price = new SpecificPrice();
                     }
-                    $specific_price->id_product = (int)$product->id;
+                    $specific_price->id_product = (int) $product->id;
                     $specific_price->id_specific_price_rule = 0;
                     $specific_price->id_shop = $id_shop;
                     $specific_price->id_currency = 0;
@@ -1078,28 +1099,24 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     $specific_price->from = (isset($info['reduction_from']) && Validate::isDate($info['reduction_from'])) ? $info['reduction_from'] : '0000-00-00 00:00:00';
                     $specific_price->to = (isset($info['reduction_to']) && Validate::isDate($info['reduction_to'])) ? $info['reduction_to'] : '0000-00-00 00:00:00';
                     if (!$validateOnly && !$specific_price->save()) {
-                        $this->addProductWarning(Tools::safeOutput($info['name']), $product->id,
-                            $this->trans('Discount is invalid', [], 'Admin.Advparameters.Notification'));
+                        $this->addProductWarning(Tools::safeOutput($info['name']), $product->id, $this->trans('Discount is invalid', [], 'Admin.Advparameters.Notification'));
                     }
                 }
             }
 
-            if (!$validateOnly && isset($product->tags) && !empty($product->tags)) {
+            if (!$validateOnly && !empty($product->tags)) {
                 if (isset($product->id) && $product->id) {
                     $tags = Tag::getProductTags($product->id);
                     if (is_array($tags) && count($tags)) {
-                        if (!empty($product->tags)) {
-                            $product->tags = explode($this->multiple_value_separator, $product->tags);
-                        }
-                        if (is_array($product->tags) && count($product->tags)) {
-                            foreach ($product->tags as $key => $tag) {
-                                if (!empty($tag)) {
-                                    $product->tags[$key] = trim($tag);
-                                }
+                        /** @phpstan-ignore-next-line $product->tags is filled with a string at line 1986 */
+                        $productTags = explode($this->multiple_value_separator, $product->tags);
+                        foreach ($productTags as $key => $tag) {
+                            if (!empty($tag)) {
+                                $productTags[$key] = trim($tag);
                             }
-                            $tags[$id_lang] = $product->tags;
-                            $product->tags = $tags;
                         }
+                        $tags[$id_lang] = $productTags;
+                        $product->tags = $tags;
                     }
                 }
                 // Delete tags for this id product, for no duplicating error
@@ -1109,8 +1126,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     foreach ($product->tags as $key => $tags) {
                         $is_tag_added = Tag::addTags($key, $product->id, $tags, $this->multiple_value_separator);
                         if (!$is_tag_added) {
-                            $this->addProductWarning(Tools::safeOutput($info['name']), $product->id,
-                                $this->trans('Tags list is invalid', [], 'Admin.Advparameters.Notification'));
+                            $this->addProductWarning(Tools::safeOutput($info['name']), $product->id, $this->trans('Tags list is invalid', [], 'Admin.Advparameters.Notification'));
 
                             break;
                         }
@@ -1125,7 +1141,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
                         $is_tag_added = Tag::addTags($key, $product->id, $str, $this->multiple_value_separator);
                         if (!$is_tag_added) {
-                            $this->addProductWarning(Tools::safeOutput($info['name']), (int)$product->id, $this->trans(
+                            $this->addProductWarning(Tools::safeOutput($info['name']), (int) $product->id, $this->trans(
                                 'Invalid tag(s) (%s)',
                                 [$str],
                                 'Admin.Notifications.Error'
@@ -1139,13 +1155,13 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
             //delete existing images if "delete_existing_images" is set to 1
             if (!$validateOnly && isset($product->delete_existing_images)) {
-                if ((bool)$product->delete_existing_images) {
+                if ((bool) $product->delete_existing_images) {
                     $product->deleteImages();
                 }
             }
 
             if (!$validateOnly && isset($product->image) && is_array($product->image) && count($product->image)) {
-                $product_has_images = (bool)Image::getImages($this->context->language->id, (int)$product->id);
+                $product_has_images = (bool) Image::getImages($this->context->language->id, (int) $product->id);
                 foreach ($product->image as $key => $url) {
                     $url = trim($url);
                     $error = false;
@@ -1153,7 +1169,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $url = str_replace(' ', '%20', $url);
 
                         $image = new Image();
-                        $image->id_product = (int)$product->id;
+                        $image->id_product = (int) $product->id;
                         $image->position = Image::getHighestPosition($product->id) + 1;
                         $image->cover = (!$key && !$product_has_images) ? true : false;
                         $alt = $product->image_alt[$key];
@@ -1162,15 +1178,12 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         }
                         // file_exists doesn't work with HTTP protocol
                         if (($field_error = $image->validateFields(UNFRIENDLY_ERROR, true)) === true &&
-                            ($lang_field_error = $image->validateFieldsLang(UNFRIENDLY_ERROR,
-                                true)) === true && $image->add()) {
+                            ($lang_field_error = $image->validateFieldsLang(UNFRIENDLY_ERROR, true)) === true && $image->add()) {
                             // associate image to selected shops
                             $image->associateTo($shops);
-                            if (!AdminImportController::copyImg($product->id, $image->id, $url, 'products',
-                                !$regenerate)) {
+                            if (!AdminImportController::copyImg($product->id, $image->id, $url, 'products', !$regenerate)) {
                                 $image->delete();
-                                $this->warnings[] = $this->trans('Error copying image: %url%', ['%url%' => $url],
-                                    'Admin.Advparameters.Notification');
+                                $this->warnings[] = $this->trans('Error copying image: %url%', ['%url%' => $url], 'Admin.Advparameters.Notification');
                             }
                         } else {
                             $error = true;
@@ -1182,7 +1195,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     if ($error) {
                         $this->warnings[] = $this->trans(
                             'Product #%id%: the picture (%url%) cannot be saved.', [
-                            '%id%' => Tools::htmlentitiesUTF8($image->id_product),
+                            '%id%' => Tools::htmlentitiesUTF8(isset($image) ? $image->id_product : ''),
                             '%url%' => Tools::htmlentitiesUTF8($url),
                         ],
                             'Admin.Advparameters.Notification'
@@ -1211,16 +1224,15 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                     $tab_feature = explode(':', $single_feature);
                     $feature_name = isset($tab_feature[0]) ? trim($tab_feature[0]) : '';
                     $feature_value = isset($tab_feature[1]) ? trim($tab_feature[1]) : '';
-                    $position = isset($tab_feature[2]) ? (int)$tab_feature[2] - 1 : false;
-                    $custom = isset($tab_feature[3]) ? (int)$tab_feature[3] : false;
+                    $position = isset($tab_feature[2]) ? (int) $tab_feature[2] - 1 : false;
+                    $custom = isset($tab_feature[3]) ? (int) $tab_feature[3] : false;
                     if (!empty($feature_name) && !empty($feature_value)) {
-                        $id_feature = (int)Feature::addFeatureImport($feature_name, $position);
+                        $id_feature = (int) Feature::addFeatureImport($feature_name, $position);
                         $id_product = null;
                         if ($force_ids || $match_ref) {
-                            $id_product = (int)$product->id;
+                            $id_product = (int) $product->id;
                         }
-                        $id_feature_value = (int)FeatureValue::addFeatureValueImport($id_feature, $feature_value,
-                            $id_product, $id_lang, $custom);
+                        $id_feature_value = (int) FeatureValue::addFeatureValueImport($id_feature, $feature_value, $id_product, $id_lang, $custom);
                         Product::addFeatureProductImport($product->id, $id_feature, $id_feature_value);
                     }
                 }
@@ -1229,7 +1241,8 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
             Feature::cleanPositions();
 
             // set advanced stock managment
-            if (!$validateOnly && isset($product->advanced_stock_management)) {
+            if (!$validateOnly) {
+                /* @phpstan-ignore-next-line Data from the property `advanced_stock_management` come from the database */
                 if ($product->advanced_stock_management != 1 && $product->advanced_stock_management != 0) {
                     $this->warnings[] = $this->trans(
                         'Advanced stock management has incorrect value. Not set for product %name%',
@@ -1251,7 +1264,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 }
                 // automaticly disable depends on stock, if a_s_m set to disabled
                 if (StockAvailable::dependsOnStock($product->id) == 1 && $product->advanced_stock_management == 0) {
-                    StockAvailable::setProductDependsOnStock($product->id, 0);
+                    StockAvailable::setProductDependsOnStock($product->id, false);
                 }
             }
 
@@ -1277,8 +1290,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         $warehouse_location_entity->id_product = $product->id;
                         $warehouse_location_entity->id_product_attribute = 0;
                         $warehouse_location_entity->id_warehouse = $product->warehouse;
-                        if (WarehouseProductLocation::getProductLocation($product->id, 0,
-                                $product->warehouse) !== false) {
+                        if (WarehouseProductLocation::getProductLocation($product->id, 0, $product->warehouse) !== false) {
                             $warehouse_location_entity->update();
                         } else {
                             $warehouse_location_entity->save();
@@ -1298,6 +1310,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
 
             // stock available
             if (isset($product->depends_on_stock)) {
+                /* @phpstan-ignore-next-line Data from the property `depends_on_stock` come from the database */
                 if ($product->depends_on_stock != 0 && $product->depends_on_stock != 1) {
                     $this->warnings[] = $this->trans(
                         'Incorrect value for "Depends on stock" for product %name%',
@@ -1306,6 +1319,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                         ],
                         'Admin.Advparameters.Notification'
                     );
+                    /* @phpstan-ignore-next-line Data from properties `advanced_stock_management` & `depends_on_stock` come from the database */
                 } elseif ((!$product->advanced_stock_management || $product->advanced_stock_management == 0) && $product->depends_on_stock == 1) {
                     $this->warnings[] = $this->trans(
                         'Advanced stock management is not enabled, cannot set "Depends on stock" for product %name%',
@@ -1319,28 +1333,26 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 }
 
                 // This code allows us to set qty and disable depends on stock
-                if (!$validateOnly && isset($product->quantity)) {
+                if (!$validateOnly) {
                     // if depends on stock and quantity, add quantity to stock
                     if ($product->depends_on_stock == 1) {
                         $stock_manager = StockManagerFactory::getManager();
-                        $price = str_replace(',', '.', $product->wholesale_price);
-                        if ($price == 0) {
+                        $price = str_replace(',', '.', (string) $product->wholesale_price);
+                        if ($price == '0') {
                             $price = 0.000001;
                         }
-                        $price = round((float)$price, 6);
+                        $price = round((float) $price, 6);
                         $warehouse = new Warehouse($product->warehouse);
-                        if ($stock_manager->addProduct((int)$product->id, 0, $warehouse, (int)$product->quantity, 1,
-                            $price, true)) {
-                            StockAvailable::synchronize((int)$product->id);
+                        if ($stock_manager->addProduct((int) $product->id, 0, $warehouse, (int) $product->quantity, 1, $price, true)) {
+                            StockAvailable::synchronize((int) $product->id);
                         }
                     } else {
                         if ($shop_is_feature_active) {
                             foreach ($shops as $shop) {
-                                StockAvailable::setQuantity((int)$product->id, 0, (int)$product->quantity, (int)$shop);
+                                StockAvailable::setQuantity((int) $product->id, 0, (int) $product->quantity, (int) $shop);
                             }
                         } else {
-                            StockAvailable::setQuantity((int)$product->id, 0, (int)$product->quantity,
-                                (int)$this->context->shop->id);
+                            StockAvailable::setQuantity((int) $product->id, 0, (int) $product->quantity, (int) $this->context->shop->id);
                         }
                     }
                 }
@@ -1348,11 +1360,10 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                 // if not depends_on_stock set, use normal qty
                 if ($shop_is_feature_active) {
                     foreach ($shops as $shop) {
-                        StockAvailable::setQuantity((int)$product->id, 0, (int)$product->quantity, (int)$shop);
+                        StockAvailable::setQuantity((int) $product->id, 0, (int) $product->quantity, (int) $shop);
                     }
                 } else {
-                    StockAvailable::setQuantity((int)$product->id, 0, (int)$product->quantity,
-                        (int)$this->context->shop->id);
+                    StockAvailable::setQuantity((int) $product->id, 0, (int) $product->quantity, (int) $this->context->shop->id);
                 }
             }
 

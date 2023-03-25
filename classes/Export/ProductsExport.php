@@ -462,7 +462,7 @@ class ProductsExport extends ExportInterface
     {
         $value = array();
         foreach ($products_attribute['attributes_value'] as $attribute) {
-            $attr = new Attribute($attribute[1]);
+            $attr = new ProductAttribute($attribute[1]);
             $value[] = addslashes(htmlspecialchars($attribute[0])) . ':' .
                 addslashes(htmlspecialchars($attr->position));
         }

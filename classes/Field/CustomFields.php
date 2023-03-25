@@ -19,12 +19,12 @@ class CustomFields
     public $newsletters = array();
     public $addresses = array();
 
-    public static function productsQuery()
-    {
+    public static function productsQuery(){
+
     }
 
-    public static function ordersQuery()
-    {
+    public static function ordersQuery(){
+
     }
 
     public static function categoriesQuery()

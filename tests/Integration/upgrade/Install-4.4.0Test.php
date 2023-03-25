@@ -103,7 +103,7 @@ class Install_4_4_0Test extends IntegrationTestCase
         $field418 = new Field418();
 
         foreach ($models as $model) {
-            $fields = Tools::jsonDecode($model['fields'], true);
+            $fields = json_decode($model['fields'], true);
             $tab = $model['type'];
             foreach ($fields['fields[]'] as $key => $field) {
 //                $advancedexportfield = DB::getInstance()->executeS(
@@ -118,7 +118,7 @@ class Install_4_4_0Test extends IntegrationTestCase
         // check combination is added to combination fields
         foreach ($models as $model) {
             if ($model['type'] == 'products') {
-                $fields = Tools::jsonDecode($model['fields'], true);
+                $fields = json_decode($model['fields'], true);
                 $this->assertSame(true, isset($fields['fields[]']['combination_reference']));
             }
         }

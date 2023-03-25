@@ -279,7 +279,7 @@ class CombinationTest extends IntegrationTestCase
             $aec->type = $type;
             $aec->name = 'test';
             $aec->filename = 'test_' . $type . '_combination';
-            $aec->fields = Tools::jsonEncode(
+            $aec->fields = json_encode(
                 [
                     'fields[]' => $this->getFieldsNames($type),
                     "active" => "0",

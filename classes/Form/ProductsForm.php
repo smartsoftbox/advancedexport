@@ -182,7 +182,7 @@ class ProductsForm extends MyHelperForm
     {
         if(Tools::getValue('id_advancedexport')) {
             $ae = new AdvancedExportClass(Tools::getValue('id_advancedexport'));
-            $fields = Tools::jsonDecode($ae->fields, true);
+            $fields = json_decode($ae->fields, true);
             return (isset($fields['categories']) ? $fields['categories'] : array());
         }
     }

@@ -346,7 +346,7 @@ class Combination17Test extends IntegrationTestCase
         $aec->name = 'test';
         $aec->filename = 'test_' . $type . '_combination';
         $aec->file_format = 'csv';
-        $aec->fields = Tools::jsonEncode(
+        $aec->fields = json_encode(
             [
                 'fields[]' => $this->getFieldsNames($type),
                 "active" => "0",

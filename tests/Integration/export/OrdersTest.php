@@ -288,7 +288,7 @@ class OrdersTest extends IntegrationTestCase
             $aec->type = $type;
             $aec->name = 'test';
             $aec->filename = 'test_' . $type;
-            $aec->fields = Tools::jsonEncode(
+            $aec->fields = json_encode(
                 [
                     'fields[]' => $this->getFieldsNames($type)
                 ]

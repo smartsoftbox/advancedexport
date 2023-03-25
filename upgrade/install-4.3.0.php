@@ -105,7 +105,7 @@ function upgrade_module_4_3_0($module)
  */
 function checkIfModelContainsCustomFields($model)
 {
-    $fields = Tools::jsonDecode($model['fields'], true);
+    $fields = json_decode($model['fields'], true);
 
     foreach ($fields['fields[]'] as $field) {
         if ($model['type'] == 'products' && $field > 63
@@ -130,7 +130,7 @@ function checkIfModelContainsCustomFields($model)
 function changeIdsToFieldNames($model, $allFields)
 {
 
-    $fields = Tools::jsonDecode($model['fields'], true);
+    $fields = json_decode($model['fields'], true);
     $fieldNames = array();
     foreach ($fields['fields[]'] as $field) {
         $fieldNames[] = $allFields[$model['type']][$field]['field'];
@@ -138,5 +138,5 @@ function changeIdsToFieldNames($model, $allFields)
 
     $fields['fields[]'] = $fieldNames;
 
-    return Tools::jsonEncode($fields, true);
+    return json_encode($fields, true);
 }

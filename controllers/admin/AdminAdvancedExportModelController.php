@@ -585,7 +585,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
     {
         parent::getFieldsValue($ae);
 
-        $fields_specific = Tools::jsonDecode($ae->fields, true);
+        $fields_specific = json_decode($ae->fields, true);
         $specific = $this->getExportModelFormSpecificFields($this->type);
 
         foreach ($specific as $value) {
@@ -794,7 +794,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
         $ae->name = 'combination_import';
         $ae->filename = 'combination_import';
         $ae->file_format = 'csv';
-        $ae->fields = Tools::jsonEncode(
+        $ae->fields = json_encode(
             array(
                 'fields[]' => $combination_fields,
                 'attributes' => 1,
@@ -832,7 +832,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
         $ae->name = $type . '_import';
         $ae->filename = $type . '_import';
         $ae->file_format = 'csv';
-        $ae->fields = Tools::jsonEncode(array('fields[]' => $fields));
+        $ae->fields = json_encode(array('fields[]' => $fields));
         $ae->add();
 
         return $ae;
@@ -896,7 +896,7 @@ class AdminAdvancedExportModelController extends AdminAdvancedExportBaseControll
 
         $ae = new AdvancedExportClass(Tools::getValue('id_advancedexport'));
         $ae->copyFromPost();
-        $ae->fields = Tools::jsonEncode($to_serialize);
+        $ae->fields = json_encode($to_serialize);
         $ae->save();
 
         return true;
