@@ -106,13 +106,6 @@ class OrdersFields extends BaseFields
             'group15' => OrderGroup::ORDER
         ),
         array(
-            'name' => 'Shipping number',
-            'field' => 'shipping_number',
-            'database' => 'orders',
-            'alias' => 'o',
-            'group15' => OrderGroup::ORDER
-        ),
-        array(
             'name' => 'Delivery number',
             'field' => 'delivery_number',
             'database' => 'orders',

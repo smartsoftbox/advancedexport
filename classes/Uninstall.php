@@ -10,7 +10,7 @@
 
 class Uninstall
 {
-    public function run()
+    public static function run()
     {
         $tables = array('advancedexport', 'advancedexportfield', 'advancedexportcron', 'advancedexportimport');
 

@@ -15,7 +15,7 @@ require_once dirname(__FILE__) . '/AdminAdvancedExportImportFileController.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportEnum.php';
 require_once dirname(__FILE__) . '/../../classes/Data/ImportFrom.php';
 
-if (_PS_VERSION_ < 8.0.0) {
+if (version_compare(PHP_VERSION, '8.0.1', '>=')) {
     require_once dirname(__FILE__) . '/AdminAdvancedExportPrestaImportController_8.php';
 } else {
     require_once dirname(__FILE__) . '/AdminAdvancedExportPrestaImportController.php';
