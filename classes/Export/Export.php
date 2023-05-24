@@ -585,6 +585,9 @@ class Export
                 if (isset($combinaison['mpn'])) {
                     $combArray[$combinaison['id_product_attribute']]['mpn'] = $combinaison['mpn'];
                 }
+                if (isset($combinaison['isbn'])) {
+                    $combArray[$combinaison['id_product_attribute']]['isbn'] = $combinaison['isbn'];
+                }
             }
         }
 

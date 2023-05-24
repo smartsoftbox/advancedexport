@@ -390,7 +390,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                                         $info['available_date'],
                                         false,
                                         $id_shop_list,
-                                        '',
+                                        ($info['isbn'] ? $info['isbn'] : ''),
                                         $info['low_stock_threshold'],
                                         $info['low_stock_alert']
                                     );
@@ -423,7 +423,7 @@ class AdminAdvancedExportPrestaImportController extends AdminImportControllerCor
                             (int)$info['minimal_quantity'],
                             $id_shop_list,
                             $info['available_date'],
-                            '',
+                            ($info['isbn'] ? $info['isbn'] : ''),
                             $info['low_stock_threshold'],
                             $info['low_stock_alert']
                         );

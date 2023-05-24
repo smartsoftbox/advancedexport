@@ -558,6 +558,11 @@ class ProductsExport extends ExportInterface
         return $product_attribute['ean13'];
     }
 
+    public function combinationIsbn($obj, $product_attribute)
+    {
+        return $product_attribute['isbn'];
+    }
+
     public function combinationUpc($obj, $product_attribute)
     {
         return $product_attribute['upc'];

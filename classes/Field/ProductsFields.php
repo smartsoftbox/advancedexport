@@ -203,6 +203,13 @@ class ProductsFields extends BaseFields
             'group15' => ProductGroup::INFORMATION
         ),
         array(
+            'name' => 'ISBN',
+            'field' => 'isbn',
+            'database' => 'products',
+            'alias' => 'p',
+            'group15' => ProductGroup::INFORMATION
+        ),
+        array(
             'name' => 'Supplier Reference',
             'field' => 'supplier_reference',
             'database' => 'other',
@@ -850,11 +857,18 @@ class ProductsFields extends BaseFields
             'group15' => ProductGroup::COMBINATIONS
         ),
         array(
-            'name' => 'Combination EAN 13',
+            'name' => 'Combination EAN13',
             'field' => 'combination_ean13',
             'database' => '',
             'import_combination' => 7,
-            'import_combination_name' => 'EAN13',
+            'import_combination_name' => 'ean13',
+            'attribute' => true,
+            'group15' => ProductGroup::COMBINATIONS
+        ),
+        array(
+            'name' => 'Combination ISBN',
+            'field' => 'combination_isbn',
+            'database' => '',
             'attribute' => true,
             'group15' => ProductGroup::COMBINATIONS
         ),
