@@ -35,7 +35,6 @@ class OrdersExport extends ExportInterface
                 LEFT JOIN `' . _DB_PREFIX_ . 'country_lang` inv_cl 
                 ON ( inv_cl.`id_country` = inv_co.`id_country` AND inv_cl.`id_lang`= ' . $this->ae->id_lang . ')
                 LEFT JOIN `' . _DB_PREFIX_ . 'carrier` ca ON ( ca.`id_carrier` = o.`id_carrier` )
-                LEFT JOIN `' . _DB_PREFIX_ . 'order_payment` op ON ( op.`order_reference` = o.`reference` )
                 LEFT JOIN `' . _DB_PREFIX_ . 'message` m ON ( m.`id_order` = o.`id_order` )
                 LEFT JOIN `' . _DB_PREFIX_ . 'currency` cur ON ( o.`id_currency` = cur.`id_currency` )
                 LEFT JOIN `' . _DB_PREFIX_ . 'order_detail_tax` odt ON ( od.`id_order_detail` = odt.`id_order_detail` )
@@ -114,5 +113,23 @@ class OrdersExport extends ExportInterface
     public function ordersTotalProductWeight($obj)
     {
         return $obj->getTotalWeight();
+    }
+
+    public function ordersPayments($obj, $ae, $element)
+    {
+        $result = $obj->getOrderPayments();
+        $formattedPayment = array();
+        foreach ($result as $res) {
+            $payments = array();
+            $payments[] = 'payment method: ' . $res->payment_method;
+            $payments[] = 'amount:' . $res->amount;
+            $payments[] = 'transaction id: ' . $res->transaction_id;
+            $payments[] = 'date add: ' . $res->date_add;
+            $payments[] = 'order reference: ' . $res->order_reference;
+
+            $formattedPayment[] = implode(' ', $payments);
+        }
+
+        return implode(',', $formattedPayment);
     }
 }

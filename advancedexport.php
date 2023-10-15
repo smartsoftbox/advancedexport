@@ -59,10 +59,10 @@ class Advancedexport extends Module
         $this->bootstrap = true;
         $this->author = 'Smart Soft';
         $this->need_instance = 0;
-        $this->version = '4.5.27';
+        $this->version = '4.5.29';
         $this->displayName = $this->l('Advanced Export');
         $this->description = $this->l(
-            'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories, 
+            'Advanced CSV Export is an easy to use but powerful tool for export products, orders, categories,
             suppliers, manufacturers, newsletters in csv format.'
         );
         $this->module_key = 'a3895af3e1e55fa47a756b6e973e77fe';
@@ -100,6 +100,7 @@ class Advancedexport extends Module
 
     public function getContent()
     {
+        Install::reinstallFields();
         $this->moduleTools->redirectAdmin(
             Context::getContext()->link->getAdminLink(_ADMIN_AE_, true)
         );

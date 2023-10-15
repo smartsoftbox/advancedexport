@@ -446,10 +446,9 @@ class OrdersFields extends BaseFields
         ),
         //ORDER_PAYMENT
         array(
-            'name' => 'Transaction Id',
-            'field' => 'transaction_id',
-            'database' => 'order_payment',
-            'alias' => 'op',
+            'name' => 'Payments',
+            'field' => 'payments',
+            'database' => 'other',
             'group15' => OrderGroup::PAYMENT
         ),
         //PS_CARRIER
@@ -645,6 +644,14 @@ class OrdersFields extends BaseFields
             'field' => 'total_amount',
             'database' => 'order_detail_tax',
             'alias' => 'odt',
+            'group15' => OrderGroup::PRODUCT
+        ),
+        array(
+            'name' => 'Product mpn',
+            'field' => 'product_mpn',
+            'database' => 'order_detail',
+            'alias' => 'od',
+            'version' => '1.7.7',
             'group15' => OrderGroup::PRODUCT
         ),
         array(

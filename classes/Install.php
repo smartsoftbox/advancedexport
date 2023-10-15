@@ -21,6 +21,14 @@ require_once 'Field/SuppliersFields.php';
 
 class Install
 {
+    public static function reinstallFields()
+    {
+        $tables = array('advancedexportfield');
+        Uninstall::dropTables($tables);
+
+        self::createFieldTable();
+    }
+
     public static function run()
     {
         if (!self::createFieldTable()
